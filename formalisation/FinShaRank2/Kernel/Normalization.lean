@@ -18,7 +18,8 @@ rank two*:
   case split `Kernel/Anomalous.noAnomalous` (T24) consumes; hence
   `isPUnit_one_sub_alphaInv_of_split` produces the `IsPUnit (1 − α_p⁻¹)`
   hypothesis of (A) from the `AnalyticData` field shapes alone — **except** at
-  `p = 5`, where the value `a₅ = −2` must be supplied (see the contract section).
+  `p = 5`, where the value `a₅ = −2` must be supplied (see the consumption
+  section).
 
 This file also held the digit-certificate extraction lemmas
 `isUnit_of_toZModPow_cert`, `isUnit_of_toZModPow_cert'`, `isUnit_of_cert_five`
@@ -40,25 +41,24 @@ the multiplicative norm collapses the two extra factors, so
 `Nat.Prime 9 = False` closes it, and the result feeds `noAnomalous`'s
 `13 ≤ p ∨ (p = 5 ∧ a = −2)` disjunction.
 
-## Interface consumption (contract for T31)
+## Interface consumption
 
-* **T31 (`prop:consequence`).** `isPUnit_c2tilde_iff` is stated on `Defs.c2tilde`
-  with an integral `c2 : ℤ_[p]` coerced to `ℚ_[p]`, i.e. against the mandatory
-  double-coercion spelling `c2tilde ((coeff 2 Lp : ℤ_[p]) : ℚ_[p])
+* **`prop:consequence` and `thm:reduction`.** `isPUnit_c2tilde_iff` is stated on
+  `Defs.c2tilde` with an integral `c2 : ℤ_[p]` coerced to `ℚ_[p]`, i.e. against
+  the mandatory double-coercion spelling `c2tilde ((coeff 2 Lp : ℤ_[p]) : ℚ_[p])
   (((α : ℤ_[p]) : ℚ_[p])⁻¹) tst` used by `PrimeData.c2norm_tie` (T14) and
   `Statements.PrimeData.c2tilde` (T15); it applies to those terms with no
   adapter. Its `tors = 1` hypothesis is discharged by
   `ClassicalInputs.torsSqOverTam_eq`, and its `IsPUnit (1 − alphaInv)` hypothesis
-  by `isPUnit_one_sub_alphaInv_of_split` below (or directly by T24's
-  `noAnomalous`), whose hypotheses are the `AnalyticData` fields `hasse`,
-  `ap_from_CM`, `alpha_root` verbatim. `isPUnit_c2tilde_iff_of_split` packages
-  the two into a single call.
-* **Residual input at `p = 5`.** `isPUnit_one_sub_alphaInv_of_split` carries the
-  side condition `p = 5 → a = −2`. It is *vacuous at every split prime `p ≠ 5`*
-  and must be supplied by the caller at `p = 5`. It cannot be removed:
-  `ClassicalInputs.S` is opaque `Finset ℕ` data, so `p ∉ S` carries no formal
-  non-anomality content (the four membership reasons of `eq:Sexc` are
-  documentation), and `a₅ = −2` is a numerical fact about the testbed curve.
+  by `ClassicalInputs.isPUnit_one_sub_alphaInv` (`Main/Consequence.lean`) from
+  the `notAnomalous` field, the `S_an` clause of `eq:Sexc`.
+* **The two `_of_split` lemmas are off that route** since task R2a. They compose
+  (B) with (A) and so carry the residual side condition `p = 5 → a = −2`, which
+  the caller had to supply at `p = 5`; `notAnomalous` supplies non-anomality at
+  every split `p ∉ S` instead. They are kept because (B) is the *proved*
+  `lem:noanomalous`(2) — it derives non-anomality from the Hasse bound and the CM
+  shape at every split `p ≥ 13`, which bounds what `notAnomalous` assumes beyond
+  the proved lemma to the single value `a₅`.
 
 Paper labels quoted below: `rmk:normalisation`, `def:c2tilde`,
 `lem:noanomalous`.
@@ -107,8 +107,14 @@ single case `p = 5`.
 
 The side condition `h5 : p = 5 → a = -2` is vacuous at every split prime `p ≠ 5`
 (`fun h => absurd h (by omega)` and the like) and must be supplied by the caller
-at `p = 5`. It is genuinely needed: `ClassicalInputs.S` is opaque `Finset` data,
-so `p ∉ S` carries no formal non-anomality content.
+at `p = 5`.
+
+**Not on the route the main theorems take.** They obtain non-anomality from
+`ClassicalInputs.notAnomalous`, the `S_an` clause of `eq:Sexc`, through
+`ClassicalInputs.isPUnit_one_sub_alphaInv` (`Main/Consequence.lean`), and so carry
+no `p = 5` side condition. This lemma is what makes that assumption small: it
+proves the same conclusion outright at every split `p ≥ 13`, from the
+`AnalyticData` fields alone.
 
 Route: `eq_five_or_thirteen_le` supplies `noAnomalous`'s case split. PAPER:
 `lem:noanomalous`, `rmk:normalisation`(i). -/
@@ -122,17 +128,20 @@ theorem isPUnit_one_sub_alphaInv_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α
   noAnomalous hasse ap_from_CM alpha_root
     ((eq_five_or_thirteen_le (Fact.out : p.Prime) hsplit).symm.imp_right fun h => ⟨h, h5 h⟩)
 
-/-- **`rmk:normalisation`(i), packaged for T31.** The composition of
-`isPUnit_one_sub_alphaInv_of_split` and `isPUnit_c2tilde_iff`: from the
-`AnalyticData` fields alone (plus `p = 5 → a = −2` and the pinned rational factor
-`torsSqOverTam = 1` of `ClassicalInputs.torsSqOverTam_eq`),
+/-- **`rmk:normalisation`(i) composed with `lem:noanomalous`(2).** The
+composition of `isPUnit_one_sub_alphaInv_of_split` and `isPUnit_c2tilde_iff`:
+from the `AnalyticData` fields alone (plus `p = 5 → a = −2` and the pinned
+rational factor `torsSqOverTam = 1` of `ClassicalInputs.torsSqOverTam_eq`),
 
 `IsPUnit (c̃₂(p)) ↔ IsUnit (c₂(p))`
 
 with `c̃₂(p)` in the mandatory double-coercion spelling
 `c2tilde ((c2 : ℤ_[p]) : ℚ_[p]) (((α : ℤ_[p]) : ℚ_[p])⁻¹) tors` of
-`PrimeData.c2norm_tie` / `Statements.PrimeData.c2tilde`. PAPER:
-`rmk:normalisation`(i), `def:c2tilde`, `lem:noanomalous`. -/
+`PrimeData.c2norm_tie` / `Statements.PrimeData.c2tilde`.
+
+Like `isPUnit_one_sub_alphaInv_of_split`, it is off the route the main theorems
+take since task R2a; see that lemma's docstring. PAPER: `rmk:normalisation`(i),
+`def:c2tilde`, `lem:noanomalous`. -/
 theorem isPUnit_c2tilde_iff_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α : ℤ_[p]ˣ}
     (c2 : ℤ_[p]) (tors : ℚ)
     (hsplit : p % 4 = 1)

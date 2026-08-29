@@ -62,6 +62,15 @@ strengthens `lem:noanomalous`(2) to an equivalence. `eq_five_or_thirteen_le` mov
 `Kernel/Normalization.lean` to `Kernel/Anomalous.lean` and keeps its name, so its entry
 below is unchanged.
 
+**Amended 2026-08-29 (R2a).** The interface rewiring adds three declarations: the toy
+Eisenstein–Kronecker package `Toy.toyEK`, which is the `ClassicalInputs.ek` field of both
+toy instances; `Toy.Setup.ap_ne_one`, which discharges `ClassicalInputs.notAnomalous`
+there; and `ClassicalInputs.isPUnit_one_sub_alphaInv`, the bridge from that field to
+`rmk:normalisation`(i). No declaration was removed: the three retired `KatzData` fields
+were structure fields, not audited declarations, and `isPUnit_c2tilde_iff_of_split` is
+kept (see its docstring — it is `lem:noanomalous`(2) composed with
+`rmk:normalisation`(i), and is no longer on the route the main theorems take).
+
 (Note for editors: step [2/3] greps this tree for the bare word "s·o·r·r·y", so
 prose here must not spell it out — that is why the allowlist file is referred to
 obliquely above.)
@@ -108,9 +117,12 @@ def auditedDecls : List Name :=
    ``FinShaRank2.c0_eq_zero, ``FinShaRank2.c1_eq_zero,
    ``FinShaRank2.prop_consequence, ``FinShaRank2.prop_dictionary,
    ``FinShaRank2.thm_reduction,
+  -- R2a — the eq:Sexc non-anomality clause, bridged to rmk:normalisation(i)
+   ``FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv,
   -- T40 — non-vacuity: ClassicalInputs is satisfiable, layer by layer
    ``FinShaRank2.Toy.toyAnalytic, ``FinShaRank2.Toy.toySelmer, ``FinShaRank2.Toy.toyIwasawa,
-   ``FinShaRank2.Toy.toyHeight, ``FinShaRank2.Toy.toyKatz, ``FinShaRank2.Toy.toyPrimeData,
+   ``FinShaRank2.Toy.toyHeight, ``FinShaRank2.Toy.toyKatz, ``FinShaRank2.Toy.toyEK,
+   ``FinShaRank2.Toy.Setup.ap_ne_one, ``FinShaRank2.Toy.toyPrimeData,
   -- T41 — anti-vacuity: the interface alone does NOT force the conclusion
    ``FinShaRank2.Toy.shaAnalytic, ``FinShaRank2.Toy.shaSelmer, ``FinShaRank2.Toy.shaIwasawa,
    ``FinShaRank2.Toy.shaHeight, ``FinShaRank2.Toy.shaKatz, ``FinShaRank2.Toy.shaPrimeData,

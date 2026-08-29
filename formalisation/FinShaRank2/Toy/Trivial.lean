@@ -1,5 +1,6 @@
 import FinShaRank2.Interface.Global
 import FinShaRank2.Toy.Analytic
+import FinShaRank2.Toy.EK
 import FinShaRank2.Toy.Iwasawa
 import FinShaRank2.Toy.Heights
 import FinShaRank2.Toy.Katz
@@ -24,13 +25,17 @@ negatively by a Lean-kernel-checked construction (`TASK_BOARD.md` §1).
 | datum | toy value | file |
 |---|---|---|
 | `S` | `∅` (so every split prime carries data) | here |
-| `δ_E`, `(#tors)²/∏cᵥ` | `1`, `1` | here |
+| `(#tors)²/∏cᵥ` | `1` | here |
+| `ek` (`D_E`, `𝓡_E`, `v_𝔭`, `supp`) | one point over `ℚ`, sections `1`, trivial `v` | `Toy/EK.lean` |
 | `Lp` | `X²` | `Toy/Analytic.lean` |
 | `a_p`, `α` | `2a` with `a² + b² = p`; Hensel unit root | `Toy/Analytic.lean` |
 | `X` (Iwasawa) | `(Λ/(X))²` | `Toy/Iwasawa.lean` |
 | `SelDual`, `ShaDual` | `ℤ_[p]²`, `PUnit` | `Toy/Iwasawa.lean` |
 | `Reg_γ`, `shaOrd`, `heightNondeg` | `1`, `1`, `True` | `Toy/Heights.lean` |
 | `W`, `LKatz`, `m2core` | `ℤ_[p]`, `X²`, `1` | `Toy/Katz.lean` |
+
+`notAnomalous` is discharged from the toy arithmetic itself: `a_p = 2a` with
+`1 ≤ a` and `2a < p`, so `2a ≢ 1 (mod p)` (`Toy.Setup.ap_ne_one`).
 
 This is a *toy* world: it is not the testbed curve, and no faithfulness claim is
 made about it. Its only job is to witness satisfiability of the assumption
@@ -54,12 +59,12 @@ namespace Toy
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- **Toy `PrimeData`** at a split prime `p`, with the three T14 tie-equations
+/-- **Toy `PrimeData`** at a split prime `p`, with the two tie-equations
 discharged: the height proxy `c2norm` *is* the normalised analytic jet of
-`Lp = X²`, the Ш-order proxy is a unit exactly as `ShaDual = PUnit` is trivial,
-and the local `δ_E` is the global `1`. -/
+`Lp = X²`, and the Ш-order proxy is a unit exactly as `ShaDual = PUnit` is
+trivial. -/
 noncomputable def toyPrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) :
-    PrimeData p hsplit 1 1 where
+    PrimeData p hsplit 1 where
   analytic := toyAnalytic hsplit (setup p hsplit)
   selmer := toySelmer p
   iwasawa := toyIwasawa p
@@ -78,26 +83,28 @@ noncomputable def toyPrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) :
       exact (inferInstance : Subsingleton PUnit)
     · intro _
       exact (norm_one : ‖(1 : ℚ_[p])‖ = 1)
-  deltaE_tie := rfl
 
 end Toy
 
 /-- **Non-vacuity of the assumption surface (task T40).**
 
 `ToyTrivial` is a *proved* instance of `ClassicalInputs`: the excluded set is
-empty, the two global rationals are `1`, and every split prime carries the toy
-per-prime bundle of `Toy.toyPrimeData`. Its existence shows that
-`ClassicalInputs` is satisfiable, hence that the headline implications
-`theorem … (H : ClassicalInputs) (C : Certificates H) : …` are not vacuous.
+empty, the Eisenstein–Kronecker package is `Toy.toyEK`, the rational factor is
+`1`, and every split prime carries the toy per-prime bundle of
+`Toy.toyPrimeData`. Its existence shows that `ClassicalInputs` is satisfiable,
+hence that the headline implications `theorem … (H : ClassicalInputs) : …` are
+not vacuous.
 
 SOURCE: none — this is a construction, not an assumption.
 PAPER:  `TASK_BOARD.md` §1 (trust story, non-vacuity).
 STATUS: theorem (toy model). -/
 noncomputable def ToyTrivial : ClassicalInputs where
   S := ∅
-  deltaE := 1
+  ek := Toy.toyEK
   torsSqOverTam := 1
   torsSqOverTam_eq := rfl
   dataAt := fun p hp hsplit _ => @Toy.toyPrimeData p (Fact.mk hp) hsplit
+  notAnomalous := fun p hp hsplit _ =>
+    @Toy.Setup.ap_ne_one p (Fact.mk hp) (@Toy.setup p (Fact.mk hp) hsplit)
 
 end FinShaRank2

@@ -1,5 +1,6 @@
 import Mathlib
 import FinShaRank2.Defs
+import FinShaRank2.Interface.EK
 
 /-!
 # Katz interface: `KatzData p` + `SinnottHyp` (task T13)
@@ -14,9 +15,13 @@ applications to the Tate–Shafarevich group in rank two* (paper §`sec:deltaE`)
 * the grading congruence reducing `v_p(c₂(L^K)) = 0` to nonvanishing of the
   mod-𝔭 **criterion class** built from grade-two moments (`prop:jetformula`,
   `prop:grading`);
-* the candidate invariant `δ_E` and its resultant-norm link to the level-𝔭
-  nonvanishing datum (`def:deltaE`);
 * the mod-𝔭 Sinnott trace `traceClass`.
+
+The candidate invariant `δ_E(c)` is no longer a field of this structure. It is
+the def `EKPackage.deltaE` of `Interface/EK.lean`, computed from the divisor
+`D_E`, the package `𝓡_E` and the coefficient vector `c`; `SinnottHyp` below
+carries the package and the vector, and `thm:reduction` routes the resultant
+step through `Kernel/Resultant.forall_eq_one_of_prod_eq_one`.
 
 ## Epistemic split (board §1 — load-bearing)
 
@@ -25,11 +30,26 @@ classical mathematics, a data equation, or an *opaque* predicate whose
 truth is never asserted here. The conjectural content of the paper —
 `hyp:sinnott`, `conj:EK` — is kept OUT of `KatzData` and lives only in
 `SinnottHyp` (a `Prop`-valued structure used in **hypothesis position** of
-`thm:reduction`) and in the hypothesis `H.deltaE ≠ 0` of `thm:reduction`.
+`thm:reduction`) and in the hypothesis `δ_E(c) ≠ 0` of `thm:reduction`.
 `SinnottHyp` is referenced by nothing instantiable.
 
 The bridge `criterionClass` between `KatzData` and `SinnottHyp` is a **def**
 (not a field): `criterionClass K := IsLocalRing.residue K.W K.m2core`.
+
+## The valuation normalisation is multiplicative
+
+`SinnottHyp` below states `hyp:sinnott`'s integrality and nonvanishing clauses
+through the multiplicative valuation `P.v p` of `EKPackage`. Mathlib's
+`Valuation L Γ` is a monoid-with-zero hom into a linearly ordered commutative
+monoid with zero, so the order runs opposite to the paper's additive `v_𝔭`:
+
+| paper (`v_𝔭`, additive) | Lean (`P.v p`, multiplicative) |
+|---|---|
+| `v_𝔭(x) ≥ 0` (`x` is `𝔭`-integral) | `P.v p x ≤ 1` |
+| `v_𝔭(x) = 0` (`𝔭 ∤ x`) | `P.v p x = 1` |
+
+The same dictionary is stated in `Interface/EK.lean` and in
+`Kernel/Resultant.lean`; this is the third place a reader meets it.
 
 ## Threading of `Lp` (contract for T14)
 
@@ -136,38 +156,12 @@ structure KatzData (p : ℕ) [Fact p.Prime] (Lp : Λ p) where
   PAPER: `prop:jetformula`, `prop:grading`(1). STATUS: consequence-form. -/
   grading_congr : ∃ κ₀ : Wˣ,
       (p : W) ^ 2 * ((κ₀ : W) * coeff 2 LKatz - m2core) ∈ Ideal.span {(p : W) ^ 3}
-  /-- The **candidate invariant** `δ_E ∈ ℚ` (local avatar): the resultant-norm
-  `Nm_{/ℚ} Res(...)` of the fixed grade-two combination of the
-  Eisenstein–Kronecker jet package `𝓡_E` on the divisor `D_E` (`def:deltaE`).
-  A nonzero algebraic number precisely when that fixed combination is not
-  identically zero on `D_E` (which is exactly `conj:EK`).
-  SOURCE: `def:deltaE` (resultant-norm of the fixed algebraic expression);
-  Bannai–Kobayashi (BK2) algebraicity.
-  PAPER: `def:deltaE`. STATUS: data. (T14 ties `deltaE_local` to the global
-  `δ_E` of `ClassicalInputs`, or passes it as a parameter.) -/
-  deltaE_local : ℚ
-  /-- **Nonvanishing on `D_E mod 𝔭`** (opaque predicate): the fixed grade-two
-  combination of `𝓡_E` reduces to a nonzero section on `D_E mod 𝔭`. This is
-  the antecedent of `hyp:sinnott`(ii) and the object `conj:EK`/`δ_E` control.
-  SOURCE: `def:deltaE`, `hyp:sinnott`(ii).
-  PAPER: `hyp:sinnott`(ii), `thm:reduction` proof. STATUS: opaque assumption. -/
-  NonvanishingOnDE : Prop
-  /-- **Resultant link** (`def:deltaE` resultant-norm property): if `δ_E ≠ 0`
-  (`conj:EK`) and `𝔭 ∤ δ_E` (i.e. `padicValRat p deltaE_local = 0`), then the
-  reduction of the fixed combination is nonvanishing on `D_E mod 𝔭`.
-
-  This is the classical half of `thm:reduction`'s proof step "since `δ_E` is its
-  resultant-norm, `𝔭 ∤ δ_E` implies its reduction is nonvanishing on
-  `D_E mod 𝔭`"; the conjectural inputs `δ_E ≠ 0` and the trace-nonvanishing
-  (`hyp:sinnott`(ii)) stay out of `KatzData`.
-  SOURCE: `def:deltaE`, resultant-norm property (classical).
-  PAPER: `def:deltaE`, `thm:reduction` proof. STATUS: classical. -/
-  resultant_link : deltaE_local ≠ 0 → padicValRat p deltaE_local = 0 → NonvanishingOnDE
   /-- The **mod-𝔭 Sinnott trace** `traceClass ∈ residue field of W` (opaque
   data): the trace, over the 𝔭-torsion translates of `ssec:moments`, of the
   reductions of the fixed grade-two combination of the sections `𝓡_E`. Its
   equality with `criterionClass` is `hyp:sinnott`(i) (a `SinnottHyp` field, not
-  asserted here); its nonvanishing under `NonvanishingOnDE` is `hyp:sinnott`(ii).
+  asserted here); its nonvanishing under pointwise `𝔭`-unitness of `F_c` on
+  `D_E` is `hyp:sinnott`(ii).
   SOURCE: Bannai–Kobayashi §§2–3 calculus [Duke Math. J. 153 (2010), 229–295]
   (the second-order Kummer-congruence analysis of the p-adic theta expansion).
   PAPER: `hyp:sinnott`, §`ssec:moments`. STATUS: opaque data. -/
@@ -221,22 +215,41 @@ end KatzData
 (board §1 epistemic split). It is referenced by no instantiable structure, so
 the conjectural content never leaks into the assumption surface.
 
-The two fields are exactly the two named inputs the paper does not prove: -/
-structure SinnottHyp (p : ℕ) [Fact p.Prime] (Lp : Λ p) (K : KatzData p Lp) : Prop where
-  /-- **`hyp:sinnott`(i) (Presentation).** The criterion class `𝔠(𝔭)` of
-  `prop:grading` admits the presentation constructed in §`ssec:moments`: it is
-  the mod-𝔭 trace `traceClass` of the reductions of the fixed grade-two
-  combination of `𝓡_E`. (Bannai–Kobayashi calculus bookkeeping — expected
-  provable, stated as hypothesis because the bookkeeping is not carried to the
-  last constant.)
+It is stated for a `KatzData` at `p` together with the Eisenstein–Kronecker
+package `P` and the coefficient vector `c` of `hyp:sinnott`(i), so that the
+values `F_c(t)` the hypothesis speaks about are the `EKPackage.Fc` of
+`Interface/EK.lean` rather than an opaque predicate.
+
+The three fields are the paper's own clauses: -/
+structure SinnottHyp (p : ℕ) [Fact p.Prime] (Lp : Λ p) (Kd : KatzData p Lp)
+    (P : EKPackage) (c : Fin 6 → P.K) : Prop where
+  /-- **`hyp:sinnott`(i), integrality clause.** The values `F_c(t)`, `t ∈ D_E`,
+  are `𝔭`-integral: in the paper `v_𝔭(F_c(t)) ≥ 0`, here `P.v p (P.Fc c t) ≤ 1`
+  (the multiplicative normalisation of the module docstring).
+
+  This clause sits in hypothesis position, which is where the paper puts it. In
+  the structure this file replaces it was baked into the `KatzData` field
+  `resultant_link`, an unproved implication carried on the instantiable
+  assumption surface under `STATUS: classical`.
   PAPER: `hyp:sinnott`(i). -/
-  presentation : IsLocalRing.residue K.W K.m2core = K.traceClass
-  /-- **`hyp:sinnott`(ii) (Nonvanishing).** The trace `traceClass` is nonzero
-  whenever the underlying fixed combination is nonvanishing on `D_E mod 𝔭`
-  (`NonvanishingOnDE`): passing to the level-`p` trace introduces no new zeros
-  beyond those detected by `δ_E`. The genuine jet-level analogue of Sinnott's
-  lemma.
+  integral : ∀ t ∈ P.D, P.v p (P.Fc c t) ≤ 1
+  /-- **`hyp:sinnott`(i), presentation clause.** The criterion class `𝔠(𝔭)` of
+  `prop:grading` admits the presentation constructed in §`ssec:moments`: it is
+  the mod-𝔭 trace `traceClass` of the reductions of the combination `F_c` of the
+  sections `𝓡_E`, weighted over the `𝔭^k`-torsion translation data. (Bannai–
+  Kobayashi calculus bookkeeping — expected provable, stated as hypothesis
+  because the bookkeeping is not carried to the last constant.)
+  PAPER: `hyp:sinnott`(i). -/
+  presentation : IsLocalRing.residue Kd.W Kd.m2core = Kd.traceClass
+  /-- **`hyp:sinnott`(ii) (Nonvanishing).** If `F_c` is a `𝔭`-unit at every point
+  of `D_E` — the paper's `v_𝔭(F_c(t)) = 0` for all `t ∈ D_E`, here
+  `P.v p (P.Fc c t) = 1` — then the trace `traceClass` is nonzero: passing to
+  the level-`p` trace introduces no new zeros beyond those detected by
+  `δ_E(c)`. The genuine jet-level analogue of Sinnott's lemma.
+
+  The antecedent is the paper's explicit pointwise condition; the structure this
+  file replaces stated it as an opaque `Prop` field of `KatzData`.
   PAPER: `hyp:sinnott`(ii). -/
-  nonvanishing : K.NonvanishingOnDE → K.traceClass ≠ 0
+  nonvanishing : (∀ t ∈ P.D, P.v p (P.Fc c t) = 1) → Kd.traceClass ≠ 0
 
 end FinShaRank2

@@ -4,9 +4,9 @@ import FinShaRank2.Toy.ShaAnalytic
 /-!
 # Anti-vacuity Katz layer (task T41): `Toy.shaKatz`
 
-The Katz-measure / `δ_E` layer of the anti-vacuity instance `ToySha`. As in the
-T40 layer (`Toy/Katz.lean`) the unramified coefficient ring is `W := ℤ_[p]`
-itself, `L^{Katz} := Lp`, `δ_E := 1` and `NonvanishingOnDE := True`.
+The Katz-measure layer of the anti-vacuity instance `ToySha`. As in the T40 layer
+(`Toy/Katz.lean`) the unramified coefficient ring is `W := ℤ_[p]` itself and
+`L^{Katz} := Lp`.
 
 The one change forced by `Lp = C p · X²` is the **grade-two core**: since
 `coeff 2 L^{Katz} = p`, the frozen `grading_congr` field
@@ -29,7 +29,7 @@ namespace Toy
 variable {p : ℕ} [Fact p.Prime]
 
 /-- **Anti-vacuity `KatzData`** over `Lp = C p · X²`: `W = ℤ_[p]`,
-`L^{Katz} = C p · X²`, `m2core = p`, `δ_E = 1`. -/
+`L^{Katz} = C p · X²`, `m2core = p`. -/
 noncomputable def shaKatz (p : ℕ) [Fact p.Prime] : KatzData p (shaLp p) where
   W := ℤ_[p]
   algInj := by intro x y h; simpa using h
@@ -38,9 +38,6 @@ noncomputable def shaKatz (p : ℕ) [Fact p.Prime] : KatzData p (shaLp p) where
   comparison := ⟨1, 1, by simp [shaLp]⟩
   m2core := (p : ℤ_[p])
   grading_congr := ⟨1, by simp [coeff_two_shaLp]⟩
-  deltaE_local := 1
-  NonvanishingOnDE := True
-  resultant_link := fun _ _ => trivial
   traceClass := 1
 
 end Toy

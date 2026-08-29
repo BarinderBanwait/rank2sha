@@ -1,4 +1,5 @@
 import FinShaRank2.Interface.Global
+import FinShaRank2.Toy.EK
 import FinShaRank2.Toy.ShaAnalytic
 import FinShaRank2.Toy.ShaIwasawa
 import FinShaRank2.Toy.ShaHeights
@@ -27,7 +28,8 @@ stops compiling, which is exactly its job.
 | datum | value | file |
 |---|---|---|
 | `S` | `∅` (so every split prime carries data) | here |
-| `δ_E`, `(#tors)²/∏cᵥ` | `1`, `1` | here |
+| `(#tors)²/∏cᵥ` | `1` | here |
+| `ek` (`D_E`, `𝓡_E`, `v_𝔭`, `supp`) | as `ToyTrivial` | `Toy/EK.lean` |
 | `Lp` | `C p · X²` (so `coeff 2 Lp = p`, a **non-unit**) | `Toy/ShaAnalytic.lean` |
 | `a_p`, `α` | `2a` with `a² + b² = p`; Hensel unit root (as T40) | `Toy/ShaAnalytic.lean` |
 | `X` (Iwasawa) | `Λ/(X) × Λ/(X) × Λ/(C p)` | `Toy/ShaIwasawa.lean` |
@@ -57,13 +59,13 @@ namespace Toy
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- **Anti-vacuity `PrimeData`** at a split prime `p`, with the three T14
-tie-equations discharged: the height proxy `c2norm` *is* the normalised analytic
-jet of `Lp = C p · X²`; the Ш-order proxy `shaOrd = p` is a non-unit exactly as
+/-- **Anti-vacuity `PrimeData`** at a split prime `p`, with the two tie-equations
+discharged: the height proxy `c2norm` *is* the normalised analytic jet of
+`Lp = C p · X²`; and the Ш-order proxy `shaOrd = p` is a non-unit exactly as
 `ShaDual = ℤ_[p]/(p)` is nontrivial (`shaOrd_tie` is an iff between two false
-statements); and the local `δ_E` is the global `1`. -/
+statements). -/
 noncomputable def shaPrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) :
-    PrimeData p hsplit 1 1 where
+    PrimeData p hsplit 1 where
   analytic := shaAnalytic hsplit (setup p hsplit)
   selmer := shaSelmer p
   iwasawa := shaIwasawa p
@@ -75,7 +77,6 @@ noncomputable def shaPrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) :
             (((((setup p hsplit).α : ℤ_[p]) : ℚ_[p]))⁻¹) 1
     rw [coeff_two_shaLp]
   shaOrd_tie := iff_of_false not_isPUnit_p not_subsingleton_ShaK
-  deltaE_tie := rfl
 
 /-! ### The two failures of the headline conclusion -/
 
@@ -113,10 +114,12 @@ PAPER:  `TASK_BOARD.md` §1 (trust story), §2 conv. 4 (no conclusion leakage).
 STATUS: theorem (toy model). -/
 noncomputable def ToySha : ClassicalInputs where
   S := ∅
-  deltaE := 1
+  ek := Toy.toyEK
   torsSqOverTam := 1
   torsSqOverTam_eq := rfl
   dataAt := fun p hp hsplit _ => @Toy.shaPrimeData p (Fact.mk hp) hsplit
+  notAnomalous := fun p hp hsplit _ =>
+    @Toy.Setup.ap_ne_one p (Fact.mk hp) (@Toy.setup p (Fact.mk hp) hsplit)
 
 /-- **`ToySha` fails the headline conclusion at every split prime.** Three
 conclusions are false in this world: Ш is nontrivial, `μ ≠ 0`, and

@@ -208,6 +208,28 @@ theorem nonempty_setup (hsplit : p % 4 = 1) : Nonempty (Setup p) := by
 noncomputable def setup (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) : Setup p :=
   (nonempty_setup hsplit).some
 
+/-- **The toy prime is not anomalous**: `a_p = 2a ≢ 1 (mod p)`.
+
+`Setup` carries `1 ≤ a` and `2a < p`, so `2a − 1` lies strictly between `0` and
+`p` and cannot be divisible by `p`. This is the form `ClassicalInputs.notAnomalous`
+asks for — the `S_an` clause of `eq:Sexc` — and it is discharged from the toy data
+itself, with no change to the toy `a_p`.
+
+Used by both toy worlds: `ToyTrivial` and `ToySha` take the same `a_p = 2a`. -/
+theorem Setup.ap_ne_one (s : Setup p) : ¬ (((2 * (s.a : ℤ) : ℤ) : ZMod p) = 1) := by
+  intro hcong
+  have hpos : (1 : ℤ) ≤ (s.a : ℤ) := by exact_mod_cast s.ha_pos
+  have hlt : 2 * (s.a : ℤ) < (p : ℤ) := by exact_mod_cast s.ha_lt
+  have hdvd : (p : ℤ) ∣ (2 * (s.a : ℤ) - 1) := by
+    have h0 : ((2 * (s.a : ℤ) - 1 : ℤ) : ZMod p) = 0 := by
+      push_cast
+      push_cast at hcong
+      rw [hcong]
+      ring
+    exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ p).mp h0
+  have hle : (p : ℤ) ≤ 2 * (s.a : ℤ) - 1 := Int.le_of_dvd (by omega) hdvd
+  omega
+
 /-! ### The analytic layer -/
 
 /-- **Toy `AnalyticData`** at a split prime: `Lp = X²`, `a_p = 2a`, `α` the

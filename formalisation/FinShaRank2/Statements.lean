@@ -1,7 +1,7 @@
 import FinShaRank2.Interface.Global
 
 /-!
-# Frozen paper statements (task T15): `HorizontalVanishing`, `ConjStrong`, `ConjWeak`
+# Frozen paper statements (task T15): `HorizontalControl`, `ConjStrong`, `ConjWeak`
 
 The formal renderings of the paper's *definitions and conjectures* for *Horizontal
 rigidity for second jets of Katz p-adic L-functions, with applications to the
@@ -9,16 +9,17 @@ Tate–Shafarevich group in rank two*. These three declarations are part of the 
 **statement freeze**: their shapes are a contract (`TASK_BOARD.md` §2 conv. 7).
 
 Faithfulness is the deliverable; each declaration is docstringed with its tex label
-and the translation conventions used (dual side, junk values, `padicValRat` for
-`v_𝔭`).
+and the translation conventions used (dual side, junk values, the multiplicative
+rendering of `v_𝔭`).
 
 ## Dual-side / valuation translations (`TASK_BOARD.md` §2)
 
 * "`Ш(E/ℚ)[p^∞] = 0`" ⇔ `Subsingleton (…).selmer.ShaDual` (conv. 1).
 * "`c̃₂(p) ∈ ℤ_p^×`" ⇔ `IsPUnit (…).c2tilde` — the p-adic unit predicate `‖·‖ = 1`
   on `ℚ_[p]` (`Defs.IsPUnit`), applied to the normalised second jet `def:c2tilde`.
-* "`𝔭 ∤ δ_E`", i.e. `v_𝔭(ι_p δ_E) = 0` (`ssec:notation`), ⇔ `padicValRat p H.deltaE = 0`
-  for the fixed rational datum `δ_E = H.deltaE`.
+* "`𝔭 ∤ δ`", i.e. `v_𝔭(ι_p δ) = 0` (`ssec:notation`), ⇔ `H.ek.v p δ = 1`. Mathlib's
+  `Valuation` is multiplicative, so the paper's `v_𝔭(x) = 0` is `v x = 1` here; see
+  the module docstring of `Interface/EK.lean`.
 
 Paper labels rendered here: `def:horizontal`, `conj:strong`, `conj:weak`.
 -/
@@ -42,58 +43,66 @@ statements phrased through this jet transfer to the height dictionary
 
 TRANSLATION: `c̃₂(p)` of `def:c2tilde` on the dual/analytic side. -/
 noncomputable def PrimeData.c2tilde {p : ℕ} [Fact p.Prime] {hsplit : p % 4 = 1}
-    {dE tst : ℚ} (D : PrimeData p hsplit dE tst) : ℚ_[p] :=
+    {tst : ℚ} (D : PrimeData p hsplit tst) : ℚ_[p] :=
   _root_.FinShaRank2.c2tilde ((PowerSeries.coeff 2 D.analytic.Lp : ℤ_[p]) : ℚ_[p])
     (((D.analytic.α : ℤ_[p]) : ℚ_[p])⁻¹) tst
 
-/-- **`def:horizontal` — the horizontal vanishing statement.**
+/-- **`def:horizontal` — horizontal control.**
 
-> *We say the horizontal vanishing statement holds for `E` along a set `𝒫` of
-> primes if `Ш(E/ℚ)[p] = 0` for all but finitely many `p ∈ 𝒫`.*
+> *We say horizontal control holds for `E` along a set `𝒫` of primes if*
+> *`Ш(E/ℚ)[p] = 0` for all but finitely many `p ∈ 𝒫`.*
 
 Rendered as a predicate on a set of primes `P` and a per-prime triviality
-predicate `shaVanishes` (on the dual side, `shaVanishes p` stands for
-"`Ш(E/ℚ)[p^∞] = 0`", i.e. `Subsingleton (…).selmer.ShaDual`; conv. 1): the set of
-`p ∈ P` at which vanishing *fails* is finite. This is "holds for all but finitely
-many `p ∈ P`" verbatim.
+predicate `shaVanishes`: the set of `p ∈ P` at which vanishing *fails* is finite.
+This is "holds for all but finitely many `p ∈ P`" verbatim.
+
+The paper's conclusion is about the `p`-torsion `Ш(E/ℚ)[p]`. On the dual side
+`shaVanishes p` is supplied as `Subsingleton (…).selmer.ShaDual`, which renders
+`Ш(E/ℚ)[p^∞] = 0` (conv. 1) and so is the stronger statement; substituting it
+gives a stronger conclusion than `def:horizontal` asks for.
 
 The definition is deliberately standalone and general — `def:horizontal` in the
 paper precedes all interface data — so any concrete triviality predicate can be
-substituted. `prop:consequence`/`cor` supply the concrete `shaVanishes` through the
+substituted. `prop:consequence` supplies the concrete `shaVanishes` through the
 Selmer-dual layer.
 
 TRANSLATION: `𝒫 ↦ P`; "`Ш(E/ℚ)[p] = 0`" ↦ `shaVanishes p`; "all but finitely many"
 ↦ finiteness of the failure set. -/
-def HorizontalVanishing (P : Set ℕ) (shaVanishes : ℕ → Prop) : Prop :=
+def HorizontalControl (P : Set ℕ) (shaVanishes : ℕ → Prop) : Prop :=
   {p | p ∈ P ∧ ¬ shaVanishes p}.Finite
 
 /-- **`conj:strong` — horizontal rigidity, strong form**, relative to the fixed
-classical inputs `H` (so `δ_E := H.deltaE`, `S := H.S`).
+classical inputs `H`.
 
-> *There exist a nonzero `δ_E ∈ ℚ̄^×` … and a finite explicit set `S_E` of primes,
-> such that `c̃₂(p) ∈ ℤ_p` for every split `p ∉ S_E`, and `c̃₂(p) ∈ ℤ_p^×` for every
-> split `p ∉ S_E` with `𝔭 ∤ δ_E`.*
+> *There exists a nonzero `δ_E ∈ ℚ̄^×` … and a finite explicit set `Σ` of primes,*
+> *such that `c̃₂(p) ∈ ℤ_p` for every split `p ∉ Σ`, and `c̃₂(p) ∈ ℤ_p^×` for every*
+> *split `p ∉ Σ` with `𝔭 ∤ δ_E`.*
 
-The existence of the nonzero `δ_E` and the excluded set are represented by the
-data `H.deltaE`, `H.S` already carried by `ClassicalInputs`; the nonvanishing
-`δ_E ≠ 0` (= `conj:EK`) enters as a per-implication hypothesis, matching the board
-shape (`TASK_BOARD.md` T15). Concretely: for every split prime `p ∉ S`, if
-`δ_E ≠ 0` and `𝔭 ∤ δ_E` (`padicValRat p H.deltaE = 0`) then `c̃₂(p)` is a p-adic
-unit.
+The conjecture is an existential and is rendered as one: `δ` ranges over `H.ek.L`,
+the paper's `Q̄`, and `Sig` over finite sets of primes. The paper's `Σ` is
+`H.S ∪ Sig`: `H.S` is already the standing exclusion of every statement about `H`,
+so the predicate quantifies over split `p ∉ H.S` with `p ∉ Sig` in addition.
+`thm:reduction` witnesses the existential with `δ := H.ek.deltaE c` and
+`Sig := H.ek.supp c`, which is the paper's `Σ = S_E ∪ supp(c)`.
+
+Until R2a this predicate pinned `δ := H.deltaE` and `Σ := H.S` from the data
+carried by `ClassicalInputs`, discharging the existential by fiat.
 
 The integrality clause "`c̃₂(p) ∈ ℤ_p`" is *not* part of this predicate: by
-`rmk:normalisation`(iii) integrality is classical (modular-symbol integrality for
-`p ∉ S`) and "not the substance of the conjecture; the unit assertion is". This
-predicate captures the unit assertion, which is what the arithmetic consequences
-(`prop:consequence`) and `thm:reduction` consume.
+`rmk:integrality` integrality is classical (modular-symbol integrality for
+`p ∉ S`) and "the integrality assertion is therefore not its substance; the unit
+assertion is". This predicate captures the unit assertion, which is what the
+arithmetic consequences (`prop:consequence`) and `thm:reduction` consume.
 
-TRANSLATION: `S_E ↦ H.S`; nonzero `δ_E ↦ H.deltaE` with `δ_E ≠ 0` a hypothesis;
-"`𝔭 ∤ δ_E`" ↦ `padicValRat p H.deltaE = 0`; "`c̃₂(p) ∈ ℤ_p^×`" ↦ `IsPUnit (…).c2tilde`. -/
+TRANSLATION: `Σ ↦ H.S ∪ Sig`; nonzero `δ_E ↦ δ : H.ek.L` with `δ ≠ 0`;
+"`𝔭 ∤ δ_E`" ↦ `H.ek.v p δ = 1` (multiplicative valuation); "`c̃₂(p) ∈ ℤ_p^×`" ↦
+`IsPUnit (…).c2tilde`. -/
 def ConjStrong (H : ClassicalInputs) : Prop :=
-  ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (_hpS : p ∉ H.S),
-    H.deltaE ≠ 0 → padicValRat p H.deltaE = 0 →
-      letI : Fact p.Prime := ⟨hp⟩
-      IsPUnit (H.dataAt p hp hsplit _hpS).c2tilde
+  ∃ (δ : H.ek.L) (Sig : Finset ℕ), δ ≠ 0 ∧
+    ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ H.S) (_ : p ∉ Sig),
+      H.ek.v p δ = 1 →
+        letI : Fact p.Prime := ⟨hp⟩
+        IsPUnit (H.dataAt p hp hsplit hpS).c2tilde
 
 /-- **`conj:weak` — horizontal rigidity, weak form**, relative to `H`.
 

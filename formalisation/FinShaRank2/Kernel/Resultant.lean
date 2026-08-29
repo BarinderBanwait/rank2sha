@@ -46,9 +46,11 @@ this step, and because `Γ` nontrivial is an extra assumption.
 
 ## Downstream
 
-`thm:reduction` currently consumes this step as the assumed field `KatzData.resultant_link`
-(`Interface/Katz.lean`), which asserts the conclusion outright. Rewiring that field to these
-theorems is task R2a.
+`Main/Reduction.lean` consumes `forall_eq_one_of_prod_eq_one` as the first step of
+`thm_reduction`, applied to the divisor `D_E` and the values `F_c` of `EKPackage`
+(`Interface/EK.lean`). Until task R2a that step was the assumed `KatzData` field
+`resultant_link`, which asserted its conclusion outright; the integrality it rested on is
+now the hypothesis `SinnottHyp.integral`, where the paper puts it.
 
 Paper labels: `thm:reduction`, `def:deltaE`, `hyp:sinnott`(i), `ssec:notation`.
 -/

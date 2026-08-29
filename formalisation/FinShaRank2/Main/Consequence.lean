@@ -37,40 +37,54 @@ no conjecture — matching `TASK_BOARD.md` §1 (no conjectural hypothesis outsid
 * `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2` ↦
   `Module.finrank ℤ_[p] (…).selmer.SelDual = 2` (conv. 1, dual side).
 * `Ш(E/ℚ)[p^∞] = 0` ↦ `Subsingleton (…).selmer.ShaDual` (conv. 1, dual side).
-* "split prime `p ∉ S`" ↦ the binders `hsplit : p % 4 = 1` and `hpS : p ∉ H.S`;
-  they enter the proof only by producing the per-prime bundle
-  `H.dataAt p Fact.out hsplit hpS`, since `ClassicalInputs.S` is opaque data.
-* "non-anomalous" is *not* an assumption here: for `K = ℚ(i)` it is a theorem
-  (`lem:noanomalous`, T24), proved from the `AnalyticData` fields `hasse` and
-  `ap_from_CM` at every split `p ≥ 13`. See `h5` below for the one residual case.
+* "split prime `p ∉ S`" ↦ the binders `hsplit : p % 4 = 1` and `hpS : p ∉ H.S`.
+  `hpS` now carries content: `ClassicalInputs.notAnomalous` is the `S_an` clause
+  of `eq:Sexc`.
+* "non-anomalous" is *not* an assumption of this theorem: it is `H.notAnomalous`
+  at `p`, which is a clause of the definition of `S`.
 
-## The residual hypothesis `h5` (PM ruling 2026-07-30, option (a))
+## How non-anomality reaches `rmk:normalisation`(i)
 
-T24's non-anomality lemma splits split primes as `p = 5 ∨ 13 ≤ p`
-(`Kernel.Normalization.eq_five_or_thirteen_le`). The branch `p ≥ 13` is closed
-unconditionally; the branch `p = 5` needs the single arithmetic value `a₅ = −2`,
-and **nothing in `ClassicalInputs` supplies it** — `S : Finset ℕ` is opaque, so
-`p ∉ H.S` carries no formal non-anomality content (the `eq:Sexc` membership
-reasons are prose in a docstring). Hence the minimal residual hypothesis
+`Kernel.Anomalous.isPUnit_one_sub_alphaInv_iff`, applied to the `AnalyticData`
+field `alpha_root`, turns `H.notAnomalous p …` — the statement `a_p ≢ 1 (mod p)`
+in the spelling that lemma uses — into `IsPUnit ((1 : ℚ_[p]) − α_p⁻¹)`, which is
+the hypothesis of `Kernel.Normalization.isPUnit_c2tilde_iff`.
+
+Until R2a this theorem instead carried a residual hypothesis
 
 ```
 h5 : p = 5 → (H.dataAt p Fact.out hsplit hpS).analytic.ap = -2
 ```
 
-which is vacuous at every split `p ≠ 5` (discharged by `omega` at a concrete
-prime) and is discharged at `p = 5` from `Certificates.a5` (T34). It is
-**certificate-grade arithmetic, not a conjecture**, so the epistemic split of
-`TASK_BOARD.md` §1 is untouched. Adding a non-anomality *field* to
-`ClassicalInputs` was explicitly rejected: it would discard the proved
-`lem:noanomalous` and enlarge the trust surface.
+because `S : Finset ℕ` was opaque data and `p ∉ H.S` had no formal non-anomality
+content. `notAnomalous` supplies that content at every split `p ∉ S`, so `h5` is
+gone from this theorem and from `thm_reduction`. The proved non-anomality lemma
+`lem:noanomalous`(2) is not discarded: `Kernel.Anomalous.anomalous_iff_five`
+still gives the clause unconditionally at every split `p ≥ 13`.
 
-Paper labels rendered here: `prop:consequence`, `lem:noanomalous`,
+Paper labels rendered here: `prop:consequence`, `lem:noanomalous`, `eq:Sexc`,
 `rmk:normalisation`(i).
 -/
 
 open PowerSeries
 
 namespace FinShaRank2
+
+/-- **Non-anomality at a split prime `p ∉ S`, in the form `rmk:normalisation`(i)
+consumes.** `ClassicalInputs.notAnomalous` is the `S_an` clause of `eq:Sexc`,
+stated as `a_p ≢ 1 (mod p)`; `Kernel.Anomalous.isPUnit_one_sub_alphaInv_iff`, fed
+the `AnalyticData` field `alpha_root`, converts it into the `p`-adic unit
+statement for the local factor `1 − α_p⁻¹`.
+
+This is the bridge that lets `prop_consequence` and `thm_reduction` call
+`Kernel.Normalization.isPUnit_c2tilde_iff` with no residual `p = 5` hypothesis.
+PAPER: `eq:Sexc` (`S_an`), `def:anomalous`, `rmk:normalisation`(i). -/
+theorem ClassicalInputs.isPUnit_one_sub_alphaInv (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
+    (hsplit : p % 4 = 1) (hpS : p ∉ H.S) :
+    IsPUnit ((1 : ℚ_[p]) -
+      (((H.dataAt p Fact.out hsplit hpS).analytic.α : ℤ_[p]) : ℚ_[p])⁻¹) :=
+  (isPUnit_one_sub_alphaInv_iff (H.dataAt p Fact.out hsplit hpS).analytic.alpha_root).mpr
+    (H.notAnomalous p Fact.out hsplit hpS)
 
 /-- **`prop:consequence`** at a split prime `p ∉ H.S` whose normalised second jet
 `c̃₂(p)` is a `p`-adic unit.
@@ -83,7 +97,8 @@ The four conclusions are returned in the order `MuZero`, `lambdaAn = 2`,
 μ/λ pair split, kept adjacent per conv. 5.
 
 Assembly route for T31 (`TASK_BOARD.md`): `rmk:normalisation`(i) via
-`Kernel.Normalization.isPUnit_c2tilde_iff_of_split` turns `hc2` into
+`Kernel.Normalization.isPUnit_c2tilde_iff`, fed non-anomality by
+`ClassicalInputs.isPUnit_one_sub_alphaInv`, turns `hc2` into
 `IsUnit (coeff 2 Lp)`; `lem:c0c1` (T30) gives `c₀ = c₁ = 0`; T21 factors
 `Lp = X² · unit`, yielding `MuZero`/`lambdaAn = 2` and
 `Associated (∏ fᵢ) X²` for `iwasawa.rubin_structure`; T23
@@ -91,14 +106,12 @@ Assembly route for T31 (`TASK_BOARD.md`): `rmk:normalisation`(i) via
 identify `SelDual ≃ₗ ℤ_p²`; T27 (`sha_endgame_of_nonempty`) then consumes the five
 `SelmerData` exactness fields to deliver `Subsingleton ShaDual` and `finrank = 2`.
 
-`hsplit`/`hpS` are the paper's "split `p ∉ S`"; `h5` is the residual `a₅ = −2`
-input described in the module docstring. No conjectural hypothesis appears.
+`hsplit`/`hpS` are the paper's "split `p ∉ S`". No conjectural hypothesis appears.
 
 TRANSLATION: see the module docstring (dual-side coranks, `IsPUnit`,
 `MuZero`/`lambdaAn` pairing). -/
 theorem prop_consequence (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
     (hsplit : p % 4 = 1) (hpS : p ∉ H.S)
-    (h5 : p = 5 → (H.dataAt p Fact.out hsplit hpS).analytic.ap = -2)
     (hc2 : IsPUnit (H.dataAt p Fact.out hsplit hpS).c2tilde) :
     MuZero (H.dataAt p Fact.out hsplit hpS).analytic.Lp
       ∧ lambdaAn (H.dataAt p Fact.out hsplit hpS).analytic.Lp = 2
@@ -106,10 +119,10 @@ theorem prop_consequence (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
       ∧ Subsingleton (H.dataAt p Fact.out hsplit hpS).selmer.ShaDual := by
   set D := H.dataAt p Fact.out hsplit hpS with hDdef
   -- **step 1** `rmk:normalisation`(i): the normalised jet is a unit iff `c₂` is.
+  --   Non-anomality comes from `H.notAnomalous`, the `S_an` clause of `eq:Sexc`.
   have step1 : IsUnit (coeff 2 D.analytic.Lp) :=
-    (isPUnit_c2tilde_iff_of_split (coeff 2 D.analytic.Lp) H.torsSqOverTam hsplit
-      D.analytic.hasse D.analytic.ap_from_CM D.analytic.alpha_root h5
-      H.torsSqOverTam_eq).mp hc2
+    (isPUnit_c2tilde_iff (coeff 2 D.analytic.Lp) _ H.torsSqOverTam
+      (H.isPUnit_one_sub_alphaInv hsplit hpS) H.torsSqOverTam_eq).mp hc2
   -- **steps 2 and 3** `lem:c0c1` (T30), applied to the bundle's `AnalyticData`.
   have step2 : constantCoeff D.analytic.Lp = 0 := c0_eq_zero D.analytic
   have step3 : coeff 1 D.analytic.Lp = 0 := c1_eq_zero D.analytic
