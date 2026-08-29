@@ -1,25 +1,21 @@
 name: Blueprint
 
-# Builds and publishes the blueprint on every push to main, and on demand.
+# Publishing is OFF. The workflow is disabled at GitHub and the Pages site has
+# been deleted, so nothing is served and nothing republishes. Re-enable with
+#   gh workflow enable blueprint.yml
+#   gh api -X POST repos/BarinderBanwait/rank2sha/pages -f build_type=workflow
+#   gh workflow run blueprint.yml
+# and add a push trigger below if it should republish on its own.
 #
-# It was manual-dispatch only while the formalisation was being restructured,
-# so that a push mid-refactor could not deploy a blueprint describing a tree
-# that no longer existed. That restructure has landed, so the blueprint now
-# republishes itself.
-#
-# A push that touches nothing under formalisation/blueprint/ still runs this,
-# and still produces the same pages: the build reads blueprint/src/ and nothing
-# else. Add a `paths:` filter below if the runs become noise.
+# The trigger is workflow_dispatch alone, deliberately: re-enabling the workflow
+# should not by itself put the blueprint back on the public web.
 #
 # This builds the blueprint alone. It does not build the Lean project and does
 # not produce API documentation, so the `\dochome` links in the blueprint
 # (`/find/#doc/FinShaRank2....`) do not resolve and are stripped further down.
 # Resolving them needs doc-gen4 as a Lake dependency, which means editing
-# lakefile.toml and lake-manifest.json; that is the formalisation's business,
-# not the blueprint's.
+# lakefile.toml and lake-manifest.json.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
