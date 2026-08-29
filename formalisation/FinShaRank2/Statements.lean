@@ -5,8 +5,9 @@ import FinShaRank2.Interface.Global
 
 The formal renderings of the paper's *definitions and conjectures* for *Horizontal
 rigidity for second jets of Katz p-adic L-functions, with applications to the
-Tate–Shafarevich group in rank two*. These three declarations are part of the T15
-**statement freeze**: their shapes are a contract (`TASK_BOARD.md` §2 conv. 7).
+Tate–Shafarevich group in rank two*. The first three declarations are part of the
+T15 **statement freeze**: their shapes are a contract (`TASK_BOARD.md` §2 conv. 7).
+`ConjEK` was added by R2b and is not under the freeze.
 
 Faithfulness is the deliverable; each declaration is docstringed with its tex label
 and the translation conventions used (dual side, junk values, the multiplicative
@@ -21,7 +22,7 @@ rendering of `v_𝔭`).
   `Valuation` is multiplicative, so the paper's `v_𝔭(x) = 0` is `v x = 1` here; see
   the module docstring of `Interface/EK.lean`.
 
-Paper labels rendered here: `def:horizontal`, `conj:strong`, `conj:weak`.
+Paper labels rendered here: `def:horizontal`, `conj:strong`, `conj:weak`, `conj:EK`.
 -/
 
 open PowerSeries
@@ -124,5 +125,38 @@ def ConjWeak (H : ClassicalInputs) : Prop :=
     p ∉ T →
       letI : Fact p.Prime := ⟨hp⟩
       IsPUnit (H.dataAt p hp hsplit _hpS).c2tilde
+
+/-- **`conj:EK` — Eisenstein–Kronecker nonvanishing**, relative to `H`.
+
+> *Let `E/ℚ` have CM by the maximal order `𝒪_K` of an imaginary quadratic field*
+> *`K`, with `L(E,1) = 0`, `w(E) = +1` and `#Cl_𝔣(K) ≥ 6`, and let `δ_E(c)` be the*
+> *invariants of Definition `def:deltaE`. Then `δ_E(c) ≠ 0` for every nonzero*
+> *`c ∈ K⁶`.*
+
+`δ_E(c)` is the def `EKPackage.deltaE H.ek c` (`Interface/EK.lean`), so the
+conjecture is a statement about the package `H.ek` alone. The curve-level
+hypotheses `L(E,1) = 0` and `w(E) = +1` and CM by the maximal order are carried by
+`H` and its per-prime bundles, as everywhere else in this project, and are not
+restated.
+
+**Descope — the hypothesis `#Cl_𝔣(K) ≥ 6` is not rendered.** The paper carries it
+and explains that it is forced: the equivariant functions on the torsor `D_E` form
+a `K`-space of dimension `#Cl_𝔣(K)`, so with fewer classes than sections some
+combination of the six sections vanishes identically on `D_E`, and `δ_E(c) = 0`
+for that `c`. In this encoding `EKPackage.D` is an abstract `Finset` with no class
+group and no equivariance, so the hypothesis has nothing to attach to. Dropping it
+widens what `ConjEK` asserts: a package with `#D < 6` makes `ConjEK` false, and
+nothing in this encoding rules such a package out. `ConjEK H` therefore renders
+`conj:EK` only for those `H` whose package meets the paper's hypothesis.
+
+`ConjEK` is conjectural. It occurs in hypothesis position of
+`thm_reduction_of_conjEK` and nowhere else: it is not a field of any structure and
+does not appear in `prop_consequence`, `prop_dictionary` or `cor_horizontal`
+(`TASK_BOARD.md` §1).
+
+TRANSLATION: `c ∈ K⁶` ↦ `c : Fin 6 → H.ek.K`; "nonzero `c`" ↦ `c ≠ 0`;
+`δ_E(c)` ↦ `H.ek.deltaE c`; `#Cl_𝔣(K) ≥ 6` ↦ not rendered (descope, above). -/
+def ConjEK (H : ClassicalInputs) : Prop :=
+  ∀ c : Fin 6 → H.ek.K, c ≠ 0 → H.ek.deltaE c ≠ 0
 
 end FinShaRank2

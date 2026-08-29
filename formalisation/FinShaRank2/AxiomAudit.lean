@@ -71,6 +71,13 @@ were structure fields, not audited declarations, and `isPUnit_c2tilde_iff_of_spl
 kept (see its docstring — it is `lem:noanomalous`(2) composed with
 `rmk:normalisation`(i), and is no longer on the route the main theorems take).
 
+**Amended 2026-08-29 (R2b).** Two declarations added. `cor_horizontal`
+(`Main/Horizontal.lean`) is the paper's Theorem A, which until now had no Lean
+counterpart; `thm_reduction_of_conjEK` (`Main/Reduction.lean`) is Theorem C with its
+first input supplied by `ConjEK` rather than by a single instance. With these the three
+lettered results of the paper are all audited: Theorem A is `cor_horizontal`, Theorem B
+is `prop_consequence`, Theorem C is `thm_reduction`.
+
 (Note for editors: step [2/3] greps this tree for the bare word "s·o·r·r·y", so
 prose here must not spell it out — that is why the allowlist file is referred to
 obliquely above.)
@@ -119,6 +126,8 @@ def auditedDecls : List Name :=
    ``FinShaRank2.thm_reduction,
   -- R2a — the eq:Sexc non-anomality clause, bridged to rmk:normalisation(i)
    ``FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv,
+  -- R2b — Theorem A, and Theorem C with its first input from conj:EK
+   ``FinShaRank2.cor_horizontal, ``FinShaRank2.thm_reduction_of_conjEK,
   -- T40 — non-vacuity: ClassicalInputs is satisfiable, layer by layer
    ``FinShaRank2.Toy.toyAnalytic, ``FinShaRank2.Toy.toySelmer, ``FinShaRank2.Toy.toyIwasawa,
    ``FinShaRank2.Toy.toyHeight, ``FinShaRank2.Toy.toyKatz, ``FinShaRank2.Toy.toyEK,

@@ -15,11 +15,13 @@ import FinShaRank2.Kernel.Orbit
 import FinShaRank2.Kernel.Resultant
 import FinShaRank2.Kernel.ShaEndgame
 import FinShaRank2.Kernel.TsqUnit
+import FinShaRank2.Toy.EK
 import FinShaRank2.Toy.Trivial
 import FinShaRank2.Toy.ShaTrivial
 import FinShaRank2.Statements
 import FinShaRank2.Main.Lemma41
 import FinShaRank2.Main.Consequence
+import FinShaRank2.Main.Horizontal
 import FinShaRank2.Main.Dictionary
 import FinShaRank2.Main.Reduction
 

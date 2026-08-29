@@ -13,6 +13,10 @@ import FinShaRank2.Statements
 /-!
 # `thm:reduction` — Conjecture `conj:EK` + Hypothesis `hyp:sinnott` ⟹ `conj:strong` (task T33)
 
+`thm_reduction` is the paper's theorem, taking one instance of `conj:EK`;
+`thm_reduction_of_conjEK` (task R2b) is the same statement with that instance
+supplied by the conjecture.
+
 > **Theorem (Reduction, `thm:reduction`).** *Assume Hypothesis `hyp:sinnott` for*
 > *`E`, let `c` be a vector as in its part (i), and assume `δ_E(c) ≠ 0`. Then for*
 > *every split `p ≥ 5` of good reduction with `p ∉ S_E ∪ supp(c)` and*
@@ -22,17 +26,21 @@ import FinShaRank2.Statements
 
 ## The epistemic firewall (`TASK_BOARD.md` §1, conv. 4)
 
-**This is the only declaration in the project that may mention conjectural
-input.** The two conjectural items appear here strictly in hypothesis position:
+**`conj:EK` and `hyp:sinnott` occur in this file and nowhere else.** Both appear
+strictly in hypothesis position:
 
-* `hEK` = `conj:EK`, the nonvanishing of the Eisenstein–Kronecker invariant
-  `def:deltaE`; formally `H.ek.deltaE c ≠ 0`;
+* `hEK` = one instance of `conj:EK`, the nonvanishing of the Eisenstein–Kronecker
+  invariant `def:deltaE`; formally `H.ek.deltaE c ≠ 0`. The conjecture itself is
+  `ConjEK H` (`Statements.lean`) and is a hypothesis of `thm_reduction_of_conjEK`
+  below, which is the only declaration that mentions it;
 * `hsin` = `hyp:sinnott`, formally the `Prop`-structure `SinnottHyp` quantified
   over every split `p ∉ H.S ∪ supp(c)`.
 
-Neither occurs in `prop_consequence` or `prop_dictionary`: those are conditional
-on the interface alone. `SinnottHyp` is never a field of an instantiable
-structure, so the assumption surface `ClassicalInputs` stays free of conjecture.
+Neither occurs in `prop_consequence`, `prop_dictionary` or `cor_horizontal`: those
+are conditional on the interface alone, apart from `cor_horizontal`'s `ConjWeak`,
+which is the paper's own hypothesis for Theorem A. `SinnottHyp` is never a field of
+an instantiable structure, so the assumption surface `ClassicalInputs` stays free
+of conjecture.
 
 ## Translation conventions (`TASK_BOARD.md` §2)
 
@@ -203,5 +211,41 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
   have hc2 := key p hp hsplit hpS hsupp hval
   obtain ⟨hmu, hlam, _, hsha⟩ := prop_consequence H hsplit hpS hc2
   exact ⟨hc2, hmu, hlam, hsha⟩
+
+/-- **`thm:reduction` with its first input supplied by Conjecture `conj:EK`.**
+
+Theorem C lists as its input (i) the nonvanishing `δ_E(c) ≠ 0` for a vector `c` as
+in its input (ii), and records that `conj:EK` implies it, that vector being
+nonzero. `thm_reduction` takes the single instance `H.ek.deltaE c ≠ 0`; this
+corollary takes the conjecture instead and applies it at `c`.
+
+`hc : c ≠ 0` is the nonzeroness that `hyp:sinnott`(i) asserts of the vector it
+produces ("There exist a nonzero `c ∈ K⁶` and an integer `k ≥ 1` …"). It is a
+separate hypothesis here because `SinnottHyp` renders the three clauses
+`integral`, `presentation` and `nonvanishing` and carries `c` as a parameter, so
+the existential of `hyp:sinnott`(i) — and with it the nonzeroness of its witness —
+is discharged by the caller, as in `thm_reduction`.
+
+`hconj` and `hsin` are conjectural and occur in hypothesis position only. This is
+the only declaration in the project that mentions `ConjEK`.
+
+TRANSLATION: as `thm_reduction`; `conj:EK` ↦ `ConjEK H` (`Statements.lean`), whose
+docstring records the one hypothesis of `conj:EK` that is not rendered. -/
+theorem thm_reduction_of_conjEK (H : ClassicalInputs) (c : Fin 6 → H.ek.K) (hc : c ≠ 0)
+    (hconj : ConjEK H)
+    (hsin : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ H.S),
+      p ∉ H.ek.supp c →
+      letI : Fact p.Prime := ⟨hp⟩
+      SinnottHyp p (H.dataAt p hp hsplit hpS).analytic.Lp (H.dataAt p hp hsplit hpS).katz
+        H.ek c) :
+    (∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ H.S), p ∉ H.ek.supp c →
+        H.ek.v p (H.ek.deltaE c) = 1 →
+          letI : Fact p.Prime := ⟨hp⟩
+          IsPUnit (H.dataAt p hp hsplit hpS).c2tilde
+            ∧ MuZero (H.dataAt p hp hsplit hpS).analytic.Lp
+            ∧ lambdaAn (H.dataAt p hp hsplit hpS).analytic.Lp = 2
+            ∧ Subsingleton (H.dataAt p hp hsplit hpS).selmer.ShaDual)
+      ∧ ConjStrong H :=
+  thm_reduction H c (hconj c hc) hsin
 
 end FinShaRank2
