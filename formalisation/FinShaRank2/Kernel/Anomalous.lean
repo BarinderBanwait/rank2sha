@@ -27,8 +27,17 @@ The argument has four gap-free pieces, matching the paper's proof:
   `1 − α⁻¹` is a unit iff `a ≢ 1 (mod p)`.
 * **(iv) CM evenness** (`two_dvd_ap`). The `ap_from_CM` datum `a = 2·Re(π)`
   yields `2 ∣ a` in one line.
+* **(v) Split-prime dichotomy and the anomalous `iff`**
+  (`eq_five_or_thirteen_le`, `anomalous_iff_five`, task R1β). A prime
+  `p ≡ 1 (mod 4)` is either `5` or at least `13`, since the residues `1` and `9`
+  below `13` are not prime. Combining that with (i) gives part (2) of
+  `lem:noanomalous` in the strengthened form the paper now states: for
+  `p ≡ 1 (mod 4)` and `a` even with `a² ≤ 4p`, the prime is anomalous
+  (`a ≡ 1 (mod p)`) if and only if `p = 5` and `a = −4`. `eq_five_or_thirteen_le`
+  was moved here from `Kernel/Normalization.lean` (which imports this file, so it
+  could not be used from there); the name is unchanged.
 
-The composed convenience lemma `noAnomalous` packages all four for T31: from the
+The composed convenience lemma `noAnomalous` packages (i)–(iv) for T31: from the
 `AnalyticData` fields `hasse`, `ap_from_CM`, `alpha_root` and the split-prime
 case split `13 ≤ p ∨ (p = 5 ∧ a_p = −2)`, it concludes
 `IsPUnit ((1 : ℚ_[p]) − α_p⁻¹)`.
@@ -42,6 +51,16 @@ local ring an element is a unit exactly when its residue is nonzero
 (`toZMod_eq_zero_iff_not_isUnit`). Reducing `alpha_root` under `toZMod` and
 cancelling the unit `toZMod α` gives `toZMod α = (a : ZMod p)` directly, and the
 whole equivalence follows in the field `ZMod p`.
+
+## Descoped: part (1) of `lem:noanomalous`
+
+Part (1) states that `p ≢ 1 (mod 4)` implies `p ∣ a_p`, hence that such a `p` is
+not anomalous. Its proof reduces to Deuring's reduction criterion: a prime inert
+or ramified in the CM field has supersingular reduction, and supersingular means
+`p ∣ a_p`. mathlib has neither Deuring's criterion nor the reduction of an
+elliptic curve with complex multiplication, so part (1) is not formalised. The
+formalised statements above cover part (2), the split case, which is the case
+every downstream theorem uses.
 
 Paper labels: `lem:noanomalous`, `def:c2tilde`, `rmk:normalisation`.
 -/
@@ -157,6 +176,61 @@ non-anomalous: `−2 ≢ 1 (mod 5)`, checked by kernel-level `decide` (no
 `native_decide`). This covers the prime `p = 5 < 13` where the Hasse squeeze
 `ap_ne_one_of_hasse` does not apply. -/
 theorem neg_two_ne_one_zmod_five : ¬ (((-2 : ℤ) : ZMod 5) = 1) := by decide
+
+/-! ### (v) Split primes: the dichotomy and the anomalous `iff` -/
+
+/-- **Split primes are `5` or at least `13`.** A prime `p` with `p ≡ 1 (mod 4)`
+— the paper's standing splitness assumption for `K = ℚ(i)`, carried as
+`AnalyticData`'s `hsplit` — satisfies `p = 5 ∨ 13 ≤ p`: below `13` the residue
+class `1 mod 4` contains only `1` and `9`, neither of which is prime.
+
+This is exactly the disjunction `noAnomalous` consumes, so it is what turns the
+split hypothesis into the Hasse-squeeze / small-prime case split of
+`lem:noanomalous`. -/
+theorem eq_five_or_thirteen_le {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) :
+    p = 5 ∨ 13 ≤ p := by
+  rcases Nat.lt_or_ge p 13 with hlt | hge
+  · refine Or.inl ?_
+    interval_cases p <;> first | omega | exact absurd hp (by norm_num)
+  · exact Or.inr hge
+
+/-- **`lem:noanomalous`(2): anomality at a split prime happens only at `p = 5`.**
+Let `p` be a prime with `p ≡ 1 (mod 4)` and let `a` be an even integer obeying
+the Hasse bound `a² ≤ 4p`. Then `a ≡ 1 (mod p)` holds if and only if `p = 5` and
+`a = −4`.
+
+Forward: `eq_five_or_thirteen_le` splits into `13 ≤ p`, killed by the Hasse
+squeeze `ap_ne_one_of_hasse`, and `p = 5`. At `p = 5` the congruence gives
+`5 ∣ a − 1`, the Hasse bound gives `a² ≤ 20` hence `−5 < a < 5`, and evenness
+excludes `a = 1`; the only remaining value is `a = −4`. Backward: `−4 ≡ 1
+(mod 5)`, checked by kernel-level `decide`; the corresponding point count is
+`#Ẽ(𝔽₅) = 5 + 1 + 4 = 10`, divisible by `5`.
+
+The trace of the testbed curve at `5` is `a₅ = −2` (see
+`neg_two_ne_one_zmod_five`), so the testbed is not the anomalous case.
+
+Part (1) of `lem:noanomalous` — that `p ≢ 1 (mod 4)` implies `p ∣ a_p` — is not
+formalised; see the module docstring. -/
+theorem anomalous_iff_five {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) {a : ℤ}
+    (heven : 2 ∣ a) (hhasse : a ^ 2 ≤ 4 * (p : ℤ)) :
+    ((a : ZMod p) = 1) ↔ (p = 5 ∧ a = -4) := by
+  constructor
+  · intro hcong
+    have hp5 : p = 5 := by
+      rcases eq_five_or_thirteen_le hp hsplit with h5 | h13
+      · exact h5
+      · exact absurd hcong (ap_ne_one_of_hasse heven hhasse h13)
+    subst hp5
+    refine ⟨rfl, ?_⟩
+    have hdvd : (5 : ℤ) ∣ (a - 1) := by
+      have h0 : ((a - 1 : ℤ) : ZMod 5) = 0 := by push_cast; rw [hcong]; ring
+      exact_mod_cast (ZMod.intCast_zmod_eq_zero_iff_dvd _ 5).mp h0
+    have h20 : a ^ 2 ≤ 20 := by push_cast at hhasse; linarith
+    have hlow : -5 < a := by nlinarith
+    have hhigh : a < 5 := by nlinarith
+    omega
+  · rintro ⟨rfl, rfl⟩
+    decide
 
 /-! ### (iv) CM evenness -/
 

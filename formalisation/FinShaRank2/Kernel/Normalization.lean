@@ -14,8 +14,8 @@ rank two*:
   test: `IsPUnit (c̃₂(p)) ↔ IsUnit (c₂(p))`. Formally
   `isPUnit_c2tilde_iff`, on the standalone `Defs.c2tilde`.
 * **(B) Non-anomality bridge.** Every split prime of the testbed is either `5` or
-  at least `13` (`eq_five_or_thirteen_le`), which is exactly the case split
-  `Kernel/Anomalous.noAnomalous` (T24) consumes; hence
+  at least `13` (`Kernel/Anomalous.eq_five_or_thirteen_le`), which is exactly the
+  case split `Kernel/Anomalous.noAnomalous` (T24) consumes; hence
   `isPUnit_one_sub_alphaInv_of_split` produces the `IsPUnit (1 − α_p⁻¹)`
   hypothesis of (A) from the `AnalyticData` field shapes alone — **except** at
   `p = 5`, where the value `a₅ = −2` must be supplied (see the contract section).
@@ -93,22 +93,11 @@ theorem isPUnit_c2tilde_iff {p : ℕ} [Fact p.Prime] (c2 : ℤ_[p]) (alphaInv : 
   simp only [c2tilde, norm_mul, norm_pow, norm_inv, hanom', Rat.cast_one,
     inv_one, one_pow, mul_one]
 
-/-! ### (B) Bridging T24's non-anomality to the normalisation hypothesis -/
+/-! ### (B) Bridging T24's non-anomality to the normalisation hypothesis
 
-/-- **Split primes are `5` or at least `13`.** A prime `p` with `p ≡ 1 (mod 4)`
-— the paper's standing splitness assumption for `K = ℚ(i)`, carried as
-`AnalyticData`'s `hsplit` — satisfies `p = 5 ∨ 13 ≤ p`: below `13` the residue
-class `1 mod 4` contains only `1` and `9`, neither of which is prime.
-
-This is exactly the disjunction `Kernel/Anomalous.noAnomalous` consumes, so it is
-what turns the split hypothesis into the Hasse-squeeze / small-prime case split
-of `lem:noanomalous`. -/
-theorem eq_five_or_thirteen_le {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) :
-    p = 5 ∨ 13 ≤ p := by
-  rcases Nat.lt_or_ge p 13 with hlt | hge
-  · refine Or.inl ?_
-    interval_cases p <;> first | omega | exact absurd hp (by norm_num)
-  · exact Or.inr hge
+The split-prime dichotomy `eq_five_or_thirteen_le` used below was moved to
+`Kernel/Anomalous.lean` (task R1β), where `anomalous_iff_five` also needs it;
+`Anomalous.lean` is imported by this file, so the name is unchanged. -/
 
 /-- **Non-anomality at a split prime, in the form `rmk:normalisation`(i)
 consumes.** From the `AnalyticData` fields `hasse`, `ap_from_CM`, `alpha_root`

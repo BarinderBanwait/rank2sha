@@ -10,6 +10,8 @@ import FinShaRank2.Kernel.FunctionalEquation
 import FinShaRank2.Kernel.GradingValuation
 import FinShaRank2.Kernel.LambdaModule
 import FinShaRank2.Kernel.Normalization
+import FinShaRank2.Kernel.Orbit
+import FinShaRank2.Kernel.Resultant
 import FinShaRank2.Kernel.ShaEndgame
 import FinShaRank2.Kernel.TsqUnit
 import FinShaRank2.Toy.Trivial

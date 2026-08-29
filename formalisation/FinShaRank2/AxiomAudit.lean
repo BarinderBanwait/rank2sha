@@ -55,6 +55,13 @@ result, so their names are gone from the list below. The anti-vacuity block keep
 its size: `isEmpty_certificates_toySha` is replaced by the certificate-free
 `toySha_fails_c2_5_certificate`, which carries the same content.
 
+**Amended 2026-08-29 (R1β).** Five declarations added: the two `Kernel/Resultant.lean`
+valuation lemmas rendering the resultant step of `thm:reduction`, the two
+`Kernel/Orbit.lean` lemmas rendering `lem:orbit`, and `anomalous_iff_five`, which
+strengthens `lem:noanomalous`(2) to an equivalence. `eq_five_or_thirteen_le` moved from
+`Kernel/Normalization.lean` to `Kernel/Anomalous.lean` and keeps its name, so its entry
+below is unchanged.
+
 (Note for editors: step [2/3] greps this tree for the bare word "s·o·r·r·y", so
 prose here must not spell it out — that is why the allowlist file is referred to
 obliquely above.)
@@ -109,7 +116,15 @@ def auditedDecls : List Name :=
    ``FinShaRank2.Toy.shaHeight, ``FinShaRank2.Toy.shaKatz, ``FinShaRank2.Toy.shaPrimeData,
    ``FinShaRank2.ToySha, ``FinShaRank2.interface_does_not_force_sha_trivial,
    ``FinShaRank2.toySha_conclusions_fail, ``FinShaRank2.toySha_fails_c2_5_certificate,
-   ``FinShaRank2.ToyTrivial]
+   ``FinShaRank2.ToyTrivial,
+  -- R1β — resultant valuation step (thm:reduction proof)
+   ``FinShaRank2.Resultant.forall_eq_one_of_prod_eq_one,
+   ``FinShaRank2.Resultant.prod_ne_zero_of_prod_eq_one,
+  -- R1β — orbit criterion (lem:orbit)
+   ``FinShaRank2.Orbit.prod_mem_range_algebraMap,
+   ``FinShaRank2.Orbit.forall_eq_zero_of_exists_eq_zero,
+  -- R1β — anomalous primes at split p (lem:noanomalous(2))
+   ``FinShaRank2.anomalous_iff_five]
 
 /-- Collect the axioms of every declaration in `auditedDecls` and throw
 (failing elaboration, so `lake env lean` exits nonzero) if any declaration is
