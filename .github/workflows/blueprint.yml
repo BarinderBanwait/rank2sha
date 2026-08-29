@@ -1,19 +1,25 @@
 name: Blueprint
 
-# Manual dispatch only, deliberately.
+# Builds and publishes the blueprint on every push to main, and on demand.
 #
-# The formalisation is under active development, and a workflow that fired on
-# every push would deploy the blueprint from whatever state the Lean tree
-# happened to be in, and would send a failed-run notification for every push
-# that did not build.  Change `on:` to include `push: {branches: [main]}` once
-# the blueprint content tracks the Lean declarations again.
+# It was manual-dispatch only while the formalisation was being restructured,
+# so that a push mid-refactor could not deploy a blueprint describing a tree
+# that no longer existed. That restructure has landed, so the blueprint now
+# republishes itself.
 #
-# This builds the blueprint alone.  It does not build the Lean project and does
+# A push that touches nothing under formalisation/blueprint/ still runs this,
+# and still produces the same pages: the build reads blueprint/src/ and nothing
+# else. Add a `paths:` filter below if the runs become noise.
+#
+# This builds the blueprint alone. It does not build the Lean project and does
 # not produce API documentation, so the `\dochome` links in the blueprint
-# (`/find/#doc/FinShaRank2....`) stay unresolved.  Resolving them needs doc-gen4
-# as a Lake dependency, which means editing lakefile.toml and
-# lake-manifest.json; that is the formalisation's business, not the blueprint's.
+# (`/find/#doc/FinShaRank2....`) do not resolve and are stripped further down.
+# Resolving them needs doc-gen4 as a Lake dependency, which means editing
+# lakefile.toml and lake-manifest.json; that is the formalisation's business,
+# not the blueprint's.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
