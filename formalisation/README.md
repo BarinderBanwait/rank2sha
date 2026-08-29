@@ -27,7 +27,7 @@ first build takes minutes rather than hours.
 ## Build
 
 ```sh
-lake exe cache get   # prebuilt mathlib oleans (mathlib v4.32.0, per lean-toolchain)
+lake exe cache get   # prebuilt mathlib oleans (mathlib v4.33.1, per lean-toolchain)
 lake build
 ```
 
@@ -58,17 +58,19 @@ From a clean `lake build` this checks two things:
 ## Blueprint
 
 Built locally: `blueprint/bp pdf` writes `blueprint/print/print.pdf`, and
-`blueprint/bp web` writes `blueprint/web/`. See `blueprint/README.md`. It is not
-published, there being no GitHub Pages on this repository.
+`blueprint/bp web` writes `blueprint/web/`. See `blueprint/README.md`. The
+GitHub Pages workflow at `.github/workflows/blueprint.yml` in the repository root
+runs the same two commands, on manual dispatch only.
 
 ## Documentation
 
 `FORMALIZATION.md` is the referee-facing guide and the right place to start: what
-is proved, what is assumed on citation, what is certified numerically, what is
-descoped and why, and how to re-run every check here. Its §6 reproduces the build
-and audit transcripts, and §6.6 gives a short metaprogram confirming that the two
-anchor corollaries' proofs never touch the conjectural surface.
+is proved, what is assumed on citation, what is descoped and why, and how to
+re-run every check here. Its §6 reproduces the build and audit transcripts, and
+§6.6 gives a short metaprogram confirming that the proofs of `prop_consequence`,
+`prop_dictionary` and `cor_horizontal` never touch the conjectural surface.
 
 The paper's own discussion of this formalisation (v1 §1.9 and Appendix B) was
-removed in the v2 rewrite of 2026-08-25; `FORMALIZATION.md` is now the canonical
-account. See the dated note at its head for what changed and why.
+removed in the v2 rewrite of 2026-08-25, and v2's replacement section is at
+present a placeholder; `FORMALIZATION.md` is the canonical account. See the dated
+note at its head for what changed and why.

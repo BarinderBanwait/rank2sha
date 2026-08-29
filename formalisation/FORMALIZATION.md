@@ -1,46 +1,46 @@
-# FORMALIZATION.md — Referee guide to the Lean formalization
+# FORMALIZATION.md — Referee guide to the Lean formalisation
 
-*Companion to "Horizontal rigidity for second jets of Katz p-adic L-functions, with
-applications to the Tate–Shafarevich group in rank two" (`main.tex`). This document
-explains what has been machine-checked by Lean 4 (mathlib, pinned to release
-`v4.33.1`), what is assumed and why, and how to reproduce the verification from a
-fresh clone of this repository.*
+*Companion to "Second derivatives of $p$-adic $L$-functions and the
+Shafarevich–Tate group of rank-two CM elliptic curves". This document records
+what has been checked by the Lean 4 kernel against mathlib (pinned to release
+`v4.33.1`), what is assumed and on whose authority, and how to reproduce every
+check from a fresh clone of this repository.*
 
-Status: COMPLETE (all six sections). Last updated 2026-08-18 (task T52).
+Last rebuilt 2026-08-29 (task R3doc), against commit `3b54e41` of the Lean tree.
 
-> **Note added 2026-08-25 (paper v2).** The paper has been rewritten (v2, ≤30 pp)
-> and by design carries **no formalization discussion**: v1's §1.9 (the
-> formalization essay) and Appendix B (the statement-correspondence tables) were
-> removed from the manuscript, and **this document is their canonical home** —
-> §1 here covers v1 §1.9's content (interface-first design, axiom discipline,
-> the literature/certificate/conjecture three-way split, the ToyTrivial/ToySha
-> non-vacuity instances, honest limits), and §2 carries the correspondence
-> tables. Three things a reader coming from v2 should know:
+> **State of the tree, 2026-08-29.** The Lean sources were resynchronised with
+> version 2 of the paper on this date, in eight commits. Four changes matter to a
+> reader of this document.
 >
-> 1. **Statement numbering below refers to v1** (`main.tex`, frozen). v2
->    renumbers sections and *removes* Corollaries `cor:sha5`/`cor:sha13` as
->    paper statements: Coates–Liang–Sujatha (J. Algebra 322 (2009) 657–674;
->    Milan J. Math. 78 (2010) 395–416, Thm. 1.3) prove Ш(E₁/Q)[p^∞] = 0 for the
->    2-isogenous partner E₁ : y² = x³ + 14x at every split p < 30,000, which
->    transfers to E across the 2-isogeny — subsuming the two corollaries. The
->    Lean theorems `cor_sha5`/`cor_sha13` remain exactly what they always were:
->    kernel-checked implications from the certificate bundle, unaffected by the
->    literature having independently established their conclusions.
-> 2. **(H5)/comparison docstring correction.** The interface field
->    `KatzData.comparison` and related docstrings describe the
->    MTT-vs-Katz comparison in v1's terms (a comparison constant c_p assembled
->    from a period ratio and local factors). Per `H5_CORRECTION_NOTE.md` in the
->    working directory (verified against Rubin, Invent. Math. 103 (1991), §12):
->    Rubin's Thm. 12.3 is stated over Q for the Mazur–Swinnerton-Dyer
->    L-function, the Katz-to-cyclotomic comparison is carried out inside his
->    proof as an equality of ideals, and the honest quoted residue is only the
->    MSD(1974)-vs-MTT(1986) normalisation. This does not affect any Lean proof
->    (the field is an assumption, not a theorem), but the docstring's
->    *description* of the cited literature is superseded; v2 §3 carries the
->    corrected account.
-> 3. v2's evidence sections reframe the 508-prime regulator scan using the CLS
->    input (no Ш assumption below 30,000); the certificates consumed by the
->    Lean project (`Certificates.c2_5`, `c2_13`, `a5`, `a13`) are unchanged.
+> 1. **The anchor corollaries are retired.** `cor_sha5` and `cor_sha13` — the
+>    statements that Ш(E/ℚ)[5^∞] = 0 and Ш(E/ℚ)[13^∞] = 0 for the testbed curve —
+>    together with the `Certificates` structure and the four digit-extraction
+>    lemmas, were moved to `legacy/Anchors.lean`, which is outside Lake's build,
+>    outside the audit, and outside the shipped repository — `legacy/` is
+>    gitignored. Coates, Liang and Sujatha proved Ш(E₁/ℚ)[p^∞] = 0 at
+>    every split p < 30,000 for the 2-isogenous partner E₁ : y² = x³ + 14x
+>    (J. Algebra 322 (2009) 657–674; Milan J. Math. 78 (2010) 395–416, Thm. 1.3),
+>    and odd-primary Ш is invariant under a 2-isogeny, so both corollaries are
+>    subsumed. Paper v2 withdrew them and the displays `eq:match5` and
+>    `eq:pred13` with them. §3 below records what the certificates were and why
+>    the record is kept.
+> 2. **`δ_E` became the family `δ_E(c)`, and is a definition rather than a
+>    datum.** `EKPackage.deltaE` computes the resultant ∏_{t ∈ D_E} F_c(t) from
+>    the divisor, the six sections and the coefficient vector. Three assumed
+>    interface fields — `KatzData.deltaE_local`, `NonvanishingOnDE` and
+>    `resultant_link` — were deleted; the content of `resultant_link` is now the
+>    proved lemma `Resultant.forall_eq_one_of_prod_eq_one`.
+> 3. **The paper's three lettered results are all formalised.** Theorem A is
+>    `cor_horizontal`, Theorem B is `prop_consequence`, Theorem C is
+>    `thm_reduction`. Theorem A had no Lean counterpart before 2026-08-29.
+> 4. **The residual hypothesis `h5 : p = 5 → a_p = -2` is gone** from every
+>    headline theorem: `ClassicalInputs.notAnomalous` renders the `S_an` clause of
+>    `eq:Sexc`, which supplies non-anomality at every split p ∉ S.
+>
+> Version 2 of the paper carries a section headed *Formalisation*
+> (`sec:formalisation`), which is at present a placeholder. Until it is written,
+> this document is the only account of the formalisation. Statement numbering
+> below refers to paper v2 throughout, by label rather than by printed number.
 
 ## Table of contents
 
@@ -57,277 +57,377 @@ Status: COMPLETE (all six sections). Last updated 2026-08-18 (task T52).
 
 ### 1.1 What this document is for
 
-This paper was produced by AI agents. That is exactly the situation in which a human
-referee's trust should be *conditional and checkable*, not taken on faith. The
-formalization exists to shrink the referee's job to two finite, human-sized tasks:
+This paper was produced by AI agents. A referee's trust should therefore be
+conditional and checkable rather than granted. The formalisation reduces the
+check to two finite tasks.
 
-1. **Read one small tree of assumption *statements*** — plain mathematical
-   propositions, each carrying a pinpoint literature citation — and judge whether they
-   are true (they are, with two clearly marked exceptions that the paper itself flags
-   as conjectural).
-2. **Read the five headline Lean statements side by side with the corresponding
-   statements in `main.tex`**, and judge whether the Lean sentence says what the paper
+1. **Read the tree of assumption *statements*** — plain mathematical
+   propositions, each carrying a pinpoint literature citation — and judge whether
+   they are true. The two conjectural items are not among them: they sit in
+   hypothesis position, and §1.4 says where.
+2. **Read the five headline Lean statements beside the corresponding statements
+   in the paper**, and judge whether the Lean sentence says what the paper
    sentence says.
 
-Once those two checks pass, the referee does **not** need to check any of the
-algebra, the module theory, the case-splitting, or the bookkeeping in between: Lean's
-kernel — a small, independently-implemented, widely-trusted piece of software — has
-mechanically verified that the conclusion follows from the stated assumptions by
-pure logic. That is what "formally verified" buys here, and §1.4 below is explicit
-about what it does *not* buy.
+Once those two checks pass, the referee does not need to check the algebra, the
+module theory, the case splits, or the bookkeeping in between: the Lean kernel
+has verified that the conclusion follows from the stated assumptions. §1.7 says
+what that does not cover.
+
+The five headline declarations are
+
+| Lean declaration | File | Paper |
+|---|---|---|
+| `cor_horizontal` | `FinShaRank2/Main/Horizontal.lean` | Theorem A = `cor:horizontal` |
+| `prop_consequence` | `FinShaRank2/Main/Consequence.lean` | Theorem B = `prop:consequence` |
+| `thm_reduction` | `FinShaRank2/Main/Reduction.lean` | Theorem C = `thm:reduction` |
+| `thm_reduction_of_conjEK` | `FinShaRank2/Main/Reduction.lean` | Theorem C with input (i) supplied by `conj:EK` |
+| `prop_dictionary` | `FinShaRank2/Main/Dictionary.lean` | `prop:dictionary` |
 
 ### 1.2 What "formally verified" means concretely
 
-Every proof in this repository is checked by the Lean 4 kernel against mathlib
-(pinned to release `v4.33.1`, mathlib commit `0df444a360eaa60ab8c11dca51a86af692955474`
-— see §6). Concretely:
+Every proof in this repository is checked by the Lean 4 kernel against mathlib,
+pinned to release `v4.33.1`, mathlib commit
+`0df444a360eaa60ab8c11dca51a86af692955474` (§6). Concretely:
 
-* **Zero global `axiom` declarations anywhere in the project.** Every assumed
-  mathematical input — every classical theorem, every numerical computation this
-  project performed itself, every genuinely open conjecture the paper depends on — is
-  a *field of an explicit Lean structure*, and the five headline theorems are literal
-  implications of the form
+* **There are no global `axiom` declarations in the project.** Every assumed
+  mathematical input — every classical theorem, every numerical value, every open
+  conjecture the argument depends on — is a field of an explicit Lean structure or
+  a hypothesis of a theorem, and each headline theorem is a literal implication of
+  the form
   ```
   theorem prop_consequence (H : ClassicalInputs) … (hc2 : IsPUnit …) : … := by …
   ```
-  i.e. "given data `H` satisfying these named properties, the conclusion holds." There
-  is no hidden `axiom foo : bar` anywhere for the kernel to take on faith outside of
-  Lean's own three built-in logical axioms.
-* **`#print axioms` on every headline declaration shows exactly**
-  `propext, Classical.choice, Quot.sound` **and nothing else.** These three are
-  mathlib's standing background axioms (propositional extensionality, choice,
-  quotient soundness) — universally accepted foundational principles of the
-  mathlib/Lean ecosystem, not project-specific assumptions, and not something this
-  formalization introduces. This was re-derived independently by the project's own PM
-  role and can be reproduced by any referee in one command (§6).
-* **The `scripts/audit.sh` gate is mechanical**, not a matter of an agent's say-so: it
-  (1) rebuilds the whole project, (2) greps every audited file for the literal
-  substrings that mark an incomplete proof, against an allowlist file that is
-  currently *empty*, and (3) elaborates a program that calls Lean's own
-  `Lean.collectAxioms` on a fixed list of 74 declarations and fails the build if any
-  of them uses anything outside the three-axiom whitelist above. Verified output is
-  quoted in full in §6.
+  that is, "given data `H` satisfying these named properties, the conclusion
+  holds".
+* **`#print axioms` on every audited declaration shows `propext`,
+  `Classical.choice`, `Quot.sound` and nothing else.** These three are mathlib's
+  standing background axioms; they are not project-specific assumptions. Four
+  audited declarations use fewer: `two_dvd_ap` uses none, and
+  `neg_two_ne_one_zmod_five`, `eq_five_or_thirteen_le` and
+  `Orbit.forall_eq_zero_of_exists_eq_zero` use only `propext` and `Quot.sound`.
+* **The gate `scripts/audit.sh` is mechanical.** It (1) rebuilds the project,
+  (2) greps every audited file for the substrings that mark an incomplete proof,
+  against an allowlist file that is empty, and (3) elaborates a program that calls
+  Lean's own `Lean.collectAxioms` on a fixed list of **82** declarations and fails
+  the build if any of them uses anything outside the three-axiom whitelist. The
+  output is quoted in full in §6.4.
 
 ### 1.3 Why an interface-first design
 
-A fully "from-scratch" formalization of this paper — one that constructs Selmer
-groups, the Tate–Shafarevich group, Katz's two-variable p-adic L-functions, and
-cyclotomic p-adic heights as literal mathlib objects and *proves* Mazur's control
-theorem, Rubin's Iwasawa main conjecture for CM fields, and the Bannai–Kobayashi
-comparison theorem inside Lean — is a multi-year formalization project in its own
-right, comparable in scope to formalizing a large fraction of a graduate course in
-Iwasawa theory. As of the mathlib pin used here, mathlib has essentially none of this
-machinery: a project audit (`TASK_BOARD.md` task T64, repeated at each mathlib
-version check) found continuous-cohomology infrastructure landing piecemeal
-(`RepresentationTheory/Homological/ContCohomology`, merged 2026-07-02) but **no
-definition of the Tate–Shafarevich group, the Weil–Châtelet group, or Selmer groups
-anywhere in mathlib** — confirmed by source search, not merely absence of a
-convenient name.
+A from-scratch formalisation of this paper — one that constructs Selmer groups,
+the Shafarevich–Tate group, Katz's two-variable p-adic L-functions and cyclotomic
+p-adic heights as mathlib objects and proves Mazur's control theorem, Rubin's main
+conjecture for CM fields and the Bannai–Kobayashi comparison theorem inside Lean —
+is a multi-year formalisation project of its own. At the mathlib pin used here,
+mathlib has none of that machinery. A referee can check this by source search over
+`.lake/packages/mathlib/Mathlib/`: there is no definition of the Shafarevich–Tate
+group, of the Weil–Châtelet group, or of the Selmer group of an elliptic curve.
+(`Mathlib/RingTheory/DedekindDomain/SelmerGroup.lean` defines the `S`-Selmer group
+`K(S,n)` of a fraction field, a different object; `Mathlib/RingTheory/Polynomial/Selmer.lean`
+is about the polynomials `X^n − X − 1`.) Continuous-group cohomology has begun to
+land — `Mathlib/RepresentationTheory/Homological/ContCohomology/` — and there is an
+abstract-measure framework at `Mathlib/NumberTheory/Padics/Measure/`, but neither
+reaches the objects this paper works with.
 
-Formalizing all of that from first principles would not, moreover, be formalizing
-*this paper*: it would be formalizing a large slab of twentieth-century algebraic
-number theory that the paper legitimately treats as known background, citable by
-theorem number. What is actually new — the thing a referee needs to check with real
-scrutiny — is the paper's own chain of deductions: the horizontal-rigidity argument,
-the reduction of the Ш-vanishing corollaries to a single numerical unit condition on
-a second Taylor coefficient, and the arithmetic that turns two digit-expansion
-computations into unconditional statements about Ш(E/ℚ)[5^∞] and Ш(E/ℚ)[13^∞].
+Formalising all of that would not be formalising *this paper*; it would be
+formalising a large part of twentieth-century algebraic number theory that the
+paper treats as known background, citable by theorem number. What is new — and
+what a referee needs to scrutinise — is the paper's own chain of deductions.
 
-The design adopted therefore **treats every universally-accepted classical theorem
-the paper cites (Rubin, Mazur, Greenberg, Mazur–Tate–Teitelbaum, Bannai–Kobayashi,
-de Shalit, Schneider/Perrin-Riou, Hasse, …) as an explicit, human-refereeable
-assumption** — a Lean structure field with a docstring naming the exact theorem, the
-paper, and the page/theorem number — and asks Lean's kernel to certify only what the
-paper's *own* argument deduces from those inputs. This is not a weaker form of
-verification; it is the only form of verification whose *scope* matches the paper's
-actual mathematical content, and it makes the classical dependencies of the paper's
-"unconditional" claims *more* explicit than the paper itself, not less (§1.4, §2).
+The design therefore treats every classical theorem the paper cites (Rubin,
+Mazur, Greenberg, Washington, Mazur–Tate–Teitelbaum, Bannai–Kobayashi, de Shalit,
+Schneider, Perrin-Riou, Hasse, …) as an explicit assumption — a Lean structure
+field with a docstring naming the theorem, the paper, and the page or theorem
+number — and asks the kernel to certify only what the paper's own argument deduces
+from those inputs. This makes the classical dependencies of the paper's claims more
+explicit than the paper itself does (§1.4, §2).
 
-### 1.4 The epistemic three-way split
+### 1.4 The epistemic split
 
-Every fact this formalization consumes falls into exactly one of three categories,
-and the category is visible in the Lean source by construction, not by convention
-alone:
+Every fact the formalisation consumes falls into one of two categories in the
+imported tree, and the category is visible in the source by construction.
 
 1. **`ClassicalInputs`** (`FinShaRank2/Interface/Global.lean`) — the aggregate
-   structure of citable, published theorems (Rubin's main conjecture, Mazur's control
-   theorem, the MTT interpolation formula, the Bannai–Kobayashi comparison theorem,
-   the Schneider/Perrin-Riou leading-term theorem, the Hasse bound, …), each a
-   structure field with a `SOURCE: … PAPER: … STATUS: …` docstring pinning it to a
-   specific citation and to the specific paper label and proof step that uses it.
-   Consumed as an ordinary hypothesis `H : ClassicalInputs` by every headline theorem.
-2. **`Certificates H`** (`FinShaRank2/Interface/Certificates.lean`) — this project's
-   *own* machine-verified numerics: the traces of Frobenius `a_5 = -2`, `a_13 = -6`,
-   and the leading p-adic digit expansions of the second Taylor coefficient
-   `c₂(p) = coeff 2 L_p` at `p = 5, 13`. Kept in a **separate** structure from
-   `ClassicalInputs` specifically so a referee can see at a glance which facts are
-   citable literature and which are this project's own computation (§3).
-3. **Conjectural hypotheses** — exactly two: `hyp:sinnott` (the Lean structure
-   `SinnottHyp`) and `conj:EK` (the Lean proposition `H.deltaE ≠ 0`). These are the
-   only genuinely open items the paper's argument depends on for its *general*
-   reduction theorem, and they occur **only in hypothesis position of one
-   declaration**, `thm_reduction` — never as a field of any structure that could be
-   *instantiated*. `SinnottHyp` is a `Prop`-valued structure, not a `ClassicalInputs`
-   field; grepping `FinShaRank2/Main/` and `FinShaRank2/Statements.lean` for
-   `SinnottHyp` and `H.deltaE ≠ 0` confirms both occur in exactly one file
-   (`Main/Reduction.lean`) and nowhere else.
+   structure of citable published theorems, each a field with a
+   `SOURCE: … PAPER: … STATUS: …` docstring pinning it to a citation and to the
+   paper label and proof step that uses it. Consumed as an ordinary hypothesis
+   `H : ClassicalInputs` by every headline theorem. It has six fields: the
+   excluded set `S` of `eq:Sexc`, the Eisenstein–Kronecker package `ek`, the
+   rational factor `torsSqOverTam` with its defining equation, the per-prime
+   bundle `dataAt`, and the non-anomality clause `notAnomalous`. `dataAt` supplies
+   a `PrimeData` at every split `p ∉ S`, which aggregates five layers:
+   `AnalyticData`, `SelmerData`, `IwasawaData`, `HeightData`, `KatzData`.
+2. **Conjectural hypotheses** — exactly two: `hyp:sinnott` (the Lean structure
+   `SinnottHyp`, `Interface/Katz.lean`) and `conj:EK` (the Lean proposition
+   `ConjEK`, `Statements.lean`). Both occur only in hypothesis position, and only
+   in `FinShaRank2/Main/Reduction.lean`. Neither is a field of any structure that
+   can be instantiated. `SinnottHyp` occurs as a code term at its own declaration
+   and at `Main/Reduction.lean` alone; `ConjEK` occurs at its own declaration and
+   at `thm_reduction_of_conjEK` alone. Both are checkable by grep.
 
-The load-bearing consequence: **`cor_sha5` and `cor_sha13` — the two theorems that
-Ш(E/ℚ)[5^∞] = 0 and Ш(E/ℚ)[13^∞] = 0 — use neither conjectural item.** This was not
-just eyeballed; a metaprogram walked the full transitive closure of constants each
-corollary's proof term depends on (~2610 constants each) and searched for the two
-conjectural markers, finding none. The two anchor corollaries rest on `ClassicalInputs`
-(citable literature) plus `Certificates` (this project's own numerics) and nothing
-else. `thm_reduction`, by contrast, is the one place the paper's *general* conjectural
-reduction is rendered — and it is honestly conditional, exactly as the paper presents
-it.
+A third category, `Certificates H`, held this project's own machine-verified
+numerics — the traces of Frobenius `a_5 = -2`, `a_13 = -6`, and the leading
+p-adic digit expansions of `c₂(p)` at `p = 5, 13`. It was retired on 2026-08-29
+together with the two anchor corollaries it served, because Coates–Liang–Sujatha
+had already proved their conclusions. The declarations went to
+`legacy/Anchors.lean`, which is gitignored and so is not in the repository a
+referee clones; §3 is the record of what they were.
+No declaration in the imported tree consumes a certificate. One numerical datum
+survives in the imported tree — the seven 5-adic digits of `c₂(5)`, inside
+`toySha_fails_c2_5_certificate` — and §3.6 says what its status is.
 
-### 1.5 Non-vacuity, proved rather than asserted
+The consequence for a referee: **`prop_consequence`, `prop_dictionary` and
+`cor_horizontal` use no conjectural item beyond `cor_horizontal`'s own hypothesis
+`ConjWeak`, which is the hypothesis the paper's Theorem A also assumes.** This is
+checked mechanically in §6.6, not by eye: a metaprogram walks the transitive
+closure of constants each declaration's type and proof term depend on and reports
+which of them are Katz- or Sinnott- or `δ_E`-flavoured. `thm_reduction` is the one
+place the general conjectural reduction is rendered, and it is conditional exactly
+as the paper presents it.
 
-A structure with enough fields can always be vacuous — self-contradictory, so that
-every theorem "proved" from it is proved from a false premise and worth nothing. This
-formalization does not leave that to inspection: `FinShaRank2.ToyTrivial` is a fully
-worked, sorry-free instance of `ClassicalInputs` in a simplified ("toy") algebraic
-world, proving the assumption bundle is *consistent*. Its complement,
-`FinShaRank2.ToySha`, is a second fully worked instance satisfying every interface
-field exactly as frozen but in which Ш is **not** trivial — proving that the interface
-does not smuggle in its own conclusion. Both are explained for a non-Lean reader in
-§4; both are part of the mechanical audit (§6).
+### 1.5 Translation and design conventions
 
-### 1.6 What "formally verified" does *not* mean here
+These conventions govern how a paper statement becomes a Lean statement. They are
+binding on the Lean sources, whose docstrings cite them; this section is their
+public statement.
 
-To be scrupulously honest about scope, matching this document's own governing rule:
+**Dual side.** The formalisation works with Pontryagin duals as finitely generated
+`ℤ_[p]`- or `Λ`-modules, because that is where mathlib is strong; divisible
+discrete modules and their coranks are not. The translations are:
 
-* It does **not** mean the cited classical theorems (Rubin, Mazur, MTT,
-  Bannai–Kobayashi, Schneider/Perrin-Riou, …) have themselves been formally verified.
-  They are trusted the way a human referee trusts a citation: by checking that the
-  cited statement is real, correctly attributed, and correctly used. Every citation
-  in this project is pinned to a specific paper, theorem number, and (where relevant)
-  page, precisely so a referee can perform that check quickly (§2).
-* It does **not** mean the *paper's* informal exposition, background survey (§3 of
-  `main.tex`), computational scan (§6), or forward-looking discussion (§9) have been
-  checked in any formal sense — they were never claims requiring proof, and §5 below
-  records this explicitly rather than leaving it implicit.
-* It does **not** mean the Lean statements are self-evidently the right rendering of
-  the paper's mathematics — that is exactly the second thing (§1.1, item 2) a referee
-  must check by reading, and §2 is built to make that check as fast as possible.
-* It does **not** extend to two conjectural inputs (`hyp:sinnott`, `conj:EK`), which
-  remain exactly as open as the paper says they are — see §1.4.
+| paper | Lean |
+|---|---|
+| `Ш(E/ℚ)[p^∞] = 0` | `Subsingleton (…).selmer.ShaDual` |
+| `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2` | `Module.finrank ℤ_[p] (…).selmer.SelDual = 2` |
+| `X := Sel_{p^∞}(E/ℚ_∞)^∨` | the `Λ`-module `IwasawaData.X` |
+| `c̃₂(p) ∈ ℤ_p^×` | `IsPUnit (…).c2tilde` (the norm-one predicate on `ℚ_[p]`, `Defs.lean`) |
+| `v_𝔭(x) ≥ 0` | `H.ek.v p x ≤ 1` |
+| `v_𝔭(x) = 0`, i.e. `𝔭 ∤ x` | `H.ek.v p x = 1` |
+| split prime | the binder `hsplit : p % 4 = 1` (throughout, `K = ℚ(i)`) |
+
+The valuation direction reverses because mathlib's `Valuation` is multiplicative:
+it is a monoid-with-zero homomorphism into a linearly ordered commutative monoid
+with zero. `AddValuation` would preserve the paper's direction but has no product
+lemma at this pin, and `δ_E(c)` is a product, so the multiplicative encoding is
+used. The same dictionary is stated in the module docstrings of
+`Interface/EK.lean`, `Interface/Katz.lean` and `Kernel/Resultant.lean`.
+
+**Junk values, and the `MuZero`/`lambdaAn` pairing.** `c2tilde : ℚ_[p]` is a total
+function: it divides by `(1 − α_p⁻¹)²`, which is zero at an anomalous prime, so at
+an anomalous prime its value is junk. Every statement about `c2tilde` therefore
+carries non-anomality, either as a hypothesis or — as now — through
+`ClassicalInputs.notAnomalous`. Likewise `lambdaAn` is a `sInf` over the set of
+indices with unit coefficient, which is junk (namely `0`) when that set is empty.
+`lambdaAn` is meaningful only under `MuZero`, so the two are kept adjacent in every
+statement that reports either. `thm_reduction` and `prop_consequence` both report
+`MuZero` alongside `lambdaAn = 2`, where the paper's display names only
+`λ_an(𝔭) = 2`.
+
+**No conclusion vocabulary in assumptions.** No interface field may mention
+`Subsingleton ShaDual`, `IsUnit (coeff 2 Lp)` or `finrank SelDual`. An assumption
+that named the conclusion would make the headline theorems restatements. There is
+one sanctioned exception and one sanctioned proxy-meaning assignment:
+
+* `HeightData.spr_nondeg : IsPUnit c2norm ↔ (heightNondeg ∧ IsPUnit Reg_γ ∧ IsPUnit shaOrd)`
+  is the exception. The cited theorem (Schneider; Perrin-Riou; packaged as
+  Stein–Wuthrich Thm. 6.1) genuinely has that shape. It is phrased over
+  `HeightData`'s own proxies `c2norm`, `shaOrd`, never over `IsUnit (coeff 2 Lp)`
+  or `Subsingleton ShaDual` directly.
+* `PrimeData.shaOrd_tie : IsPUnit height.shaOrd ↔ Subsingleton selmer.ShaDual`
+  is the proxy-meaning assignment: it fixes what the proxy `shaOrd` means, rather
+  than assuming a theorem about it. `shaOrd` is the order `#Ш(E/ℚ)[p^∞]`, a power
+  of `p`, cast to `ℚ_[p]`; it is a unit iff it is `1` iff Ш`[p^∞] = 0`.
+
+The tripwire for both is `ToySha` (§4.3): a world satisfying every interface field
+in which the conclusion is false. It stays constructible — a non-unit `shaOrd`
+paired with a nontrivial `ShaDual` satisfies the iff — and if a future edit
+strengthened a field until it entailed the conclusion, `Toy/ShaTrivial.lean` would
+stop compiling.
+
+**Data equations rather than bare propositions.** Where possible a field is an
+equation between data, so that downstream facts are derived rather than assumed.
+The MTT interpolation formula is the field
+`interp : ((constantCoeff Lp : ℤ_[p]) : ℚ_[p]) = (1 − α⁻¹)² * (modularSymbol0 : ℚ_[p])`,
+with a separate field `msymb_zero : modularSymbol0 = 0`; then `c₀ = 0` is a theorem
+(`c0_eq_zero`, half of `lem:c0c1`), not an assumption. Likewise
+`torsSqOverTam_eq : torsSqOverTam = 1` keeps the normalisation value a checkable
+datum rather than a constant baked into a definition.
+
+**Docstring discipline.** Every interface field carries
+```
+SOURCE: [pinpoint citation]
+PAPER:  [tex label + step]
+STATUS: classical | consequence-form | data
+```
+`consequence-form` means the field states the consequence the paper's proof
+extracts from the cited theorem, quoted in the docstring, rather than the cited
+theorem in its published generality. `data` means an opaque datum whose truth is
+not asserted.
+
+**Paper labels, not printed numbers.** Docstrings and blueprint nodes key on tex
+labels (`lem:c0c1`, `prop:consequence`, …), since printed numbers move between
+drafts.
+
+**No `native_decide`.** No audited file uses it; `decide` and `norm_num` only. The
+axiom gate would catch a violation, since `native_decide` introduces
+`Lean.ofReduceBool`.
+
+*Residual problem.* The Lean docstrings cite `TASK_BOARD.md` in 37 places, and
+`NOTES/MathlibAudit.md` in 5. `NOTES/` is part of this repository, so those
+citations resolve. `TASK_BOARD.md` is not: it lives in the authors' private
+working directory. Every *convention* those citations refer to is stated in this
+section, and the epistemic split they refer to is §1.4; what remains unresolvable
+is the internal task numbering (`T11`, `T24`, `R1β`, …), which records which agent
+built what and carries no mathematical content.
+
+### 1.6 Non-vacuity, proved rather than asserted
+
+A structure with enough fields can be vacuous — self-contradictory, so that every
+theorem proved from it is proved from a false premise. This formalisation does not
+leave that to inspection. `FinShaRank2.ToyTrivial` is a complete, sorry-free
+instance of `ClassicalInputs` in a simplified algebraic world, which proves the
+assumption bundle is consistent. `FinShaRank2.ToySha` is a second complete
+instance, satisfying every interface field as written, in which Ш is not trivial,
+which proves the interface does not contain its own conclusion. Both are explained
+for a non-Lean reader in §4; both are audited (§6).
+
+### 1.7 What "formally verified" does *not* mean here
+
+* It does **not** mean the cited classical theorems have themselves been formally
+  verified. They are trusted the way a referee trusts a citation: by checking that
+  the cited statement is real, correctly attributed and correctly used. Every
+  citation is pinned to a paper, a theorem number and, where relevant, a page, so
+  that check is quick (§2).
+* It does **not** mean the paper's exposition, its background survey, its
+  computational scan, or its outlook section have been checked in any formal
+  sense. They were not claims requiring proof; §5 records this item by item.
+* It does **not** mean the Lean statements are self-evidently the right rendering
+  of the paper's mathematics. That is the second check of §1.1, and §2 exists to
+  make it fast.
+* It does **not** extend to `hyp:sinnott` and `conj:EK`, which remain as open as
+  the paper says they are (§1.4).
 
 ---
 
 ## 2. Statement-by-statement table
 
-Every declaration name below was checked against the Lean source (file paths given).
-The **status** column uses five values:
+Labels are those of paper v2. Every declaration name below was checked against
+the Lean source on 2026-08-29; the file paths are given, and a referee can confirm
+a name exists with `grep -rn '<name>' FinShaRank2/`. The **status** column takes
+six values:
 
-* **kernel-proved** — a Lean `theorem`, sorry-free, proved from the interface/kernel
-  layer, checked by `AxiomAudit.lean`.
-* **interface field + citation** — a field of an interface structure, carrying a
-  `SOURCE`/`PAPER`/`STATUS` docstring pinning it to the cited theorem; not itself
-  proved in Lean (it *is* the assumption).
-* **certificate** — a field of `Certificates H`, this project's own numerical
-  computation (§3).
-* **conjectural hypothesis** — occurs only in hypothesis position of `thm_reduction`.
-* **descoped** — not formalized; documented in prose here (§5).
+* **kernel-proved** — a Lean `theorem`, sorry-free, proved from the interface and
+  kernel layers, and covered by `AxiomAudit.lean`.
+* **formal def** — a Lean `def` rendering a paper definition or conjecture as a
+  proposition. A `def` asserts nothing; what is asserted is whatever consumes it.
+* **interface field + citation** — a field of an interface structure carrying a
+  `SOURCE`/`PAPER`/`STATUS` docstring. Not proved in Lean: it *is* the assumption.
+* **data field** — a field that is opaque data, not a proposition.
+* **conjectural hypothesis** — occurs only in hypothesis position, only in
+  `Main/Reduction.lean`.
+* **no counterpart** — not formalised. §5 says why, item by item.
 
-| Paper label | Lean declaration(s) | File | Status | Faithfulness notes |
+| Paper label | Lean declaration(s) | File | Status | Notes |
 |---|---|---|---|---|
-| `def:horizontal` | `HorizontalVanishing` | `Statements.lean` | formal `def` | Standalone predicate on a set of primes `P` and an abstract triviality predicate; deliberately general, matches "holds for all but finitely many `p ∈ 𝒫`" verbatim as finiteness of the failure set. |
-| `lem:c0c1` | `c0_eq_zero`, `c1_eq_zero` | `Main/Lemma41.lean` | **kernel-proved** | Stated over a bare `AnalyticData p hsplit` (minimal-hypothesis form), not over `ClassicalInputs`; `prop_consequence` applies it downstream. `c₀ = 0` derived from `interp` + certificate `msymb_zero`; `c₁ = 0` derived from `funct_eq` via the kernel lemma `coeff_one_Lp_eq_zero`. |
-| `def:c2tilde` | `c2tilde` (`Defs.lean`), `PrimeData.c2tilde` (`Statements.lean`) | `Defs.lean`, `Statements.lean` | formal `def` | Total function (junk value at anomalous primes, documented — §2 conv. 5 of the board); the rational factor `(#tors)²/∏c_v` is pinned `= 1` for the testbed curve by `ClassicalInputs.torsSqOverTam_eq`, a checkable datum rather than a baked-in constant. |
-| `rmk:normalisation`(i) | `isPUnit_c2tilde_iff_of_split` | `Kernel/Normalization.lean` | **kernel-proved** | `IsPUnit c̃₂(p) ↔ IsUnit (coeff 2 L_p)` at every split `p`, folding in the non-anomality input (`noAnomalous`, `h5`) internally rather than assuming it. Parts (ii) and (iii) of the same remark need no separate row: (ii) restates `eq:padicbsd` (already `HeightData.spr_padicBSD`/`spr_nondeg` above); (iii) integrality of `c₂(p)` is automatic from the Lean type `AnalyticData.Lp : Λ p := PowerSeries ℤ_[p]` (`Defs.lean`) and is asserted by no separate field — see §5.9. |
-| `conj:strong` / `conj:weak` | `ConjStrong H`, `ConjWeak H` | `Statements.lean` | formal `def` | Renderings of the paper's two conjectures as Lean propositions. Not proved as standalone conjectures (that is exactly the paper's open question); `ConjStrong H` is what `thm_reduction` *derives* from `hyp:sinnott` + `conj:EK`. |
-| `lem:comparison` | `KatzData.comparison` | `Interface/Katz.lean` | **interface field + citation** | SOURCE: Bannai–Kobayashi, Duke Math. J. 153 (2010), Cor. 3.12, + de Shalit, *Iwasawa theory of elliptic curves with CM*, Perspectives in Math. 3, II §4. Consequence-form: the comparison constant `c` and series unit `u` are taken already as units in `Wˣ`/`(W⟦T⟧)ˣ`, which bakes in "`v_p(c_p) = 0` for `p ∉ S`" — documented in-file as a deliberate consequence-form, not a strengthening hidden from the reader. |
-| `prop:consequence` | `prop_consequence` | `Main/Consequence.lean` | **kernel-proved** | Drops the paper's "Assume `conj:weak`" (the paper quotes it only to *produce* the unit hypothesis at all-but-finitely-many primes; the Lean statement takes the unit condition directly at one prime, so it mentions no conjecture at all) and drops "non-anomalous" (proved unconditionally for split `p ≥ 13` by `lem:noanomalous`/T24, leaving only the certificate-grade residual hypothesis `h5 : p = 5 → a_p = -2`). **Both deviations run in the safe direction: fewer hypotheses, not weaker conclusions.** |
-| `rmk:nofinitesub` | — | — | **descoped** (prose) | Consequence of `IwasawaData.no_finite_submodule`'s docstring, not a separate lemma; see §5. |
-| `prop:dictionary` | `prop_dictionary` | `Main/Dictionary.lean` | **kernel-proved** | Carries **no** non-anomality hypothesis at all — a genuine strengthening over the paper's statement, which restricts to non-anomalous `p`. Both directions available from the Schneider/Perrin-Riou consequence-forms (`c2norm_tie`, `spr_nondeg`, `shaOrd_tie`) with no anomality-sensitive step. Route-finding note: the board's alternative valuation-arithmetic route (`spr_padicBSD` + integrality) was checked and **cannot** prove this statement as frozen — it recovers the regulator and Ш conjuncts but has no handle on `heightNondeg` — so the tie-equation route is necessary, not merely convenient. |
-| `cav:failure`, `rmk:KL`, `rmk:fq`, `rmk:modesnow`, `rmk:correlation` | — | — | **descoped** (prose) | Remarks/caveats about the scope and interpretation of the results; documented in §5. |
-| `lem:noanomalous` | `noAnomalous` (+ `ap_ne_one_of_hasse`, `isPUnit_one_sub_alphaInv_iff`, `two_dvd_ap`) | `Kernel/Anomalous.lean` | **kernel-proved** | Proved unconditionally for `K = ℚ(i)`, `13 ≤ p`, from the `AnalyticData` fields `hasse` and `ap_from_CM` (Hasse-bound squeeze + CM evenness of `a_p`). At `p = 5` the residual case is closed by the single certified value `a_5 = -2` (`decide`, `neg_two_ne_one_zmod_five`), fed downstream from `Certificates.a5`. Conclusion delivered as `IsPUnit (1 − α_p⁻¹)` (norm-one), not the weaker bare `IsUnit` in the field `ℚ_[p]` — a deliberate contract strengthening flagged in the T24 report and honored by T26/T31. |
-| `eq:padicbsd` | `HeightData.spr_padicBSD`, `HeightData.spr_nondeg` | `Interface/Heights.lean` | **interface field + citation** | SOURCE: Schneider, Invent. Math. 79 (1985), Thms 2, 2′; Perrin-Riou, Invent. Math. 109 (1992), §§3.4.2–3.4.3; packaged as Stein–Wuthrich, Math. Comp. 82 (2013), Thm 6.1. `spr_nondeg` is the **one sanctioned exception** to the "no conclusion vocabulary in assumptions" rule (board convention 4): the cited theorem genuinely has iff shape. It is phrased over `HeightData`'s own proxies `c2norm`, `shaOrd` — never over `IsUnit (coeff 2 Lp)` or `Subsingleton ShaDual` directly — which is exactly what keeps `ToySha` (§4) constructible. |
-| `cor:sha5` | `cor_sha5` | `Main/Corollaries.lean` | **kernel-proved** | Carries **all five** of the paper's conclusions (Selmer corank = 2, Ш = 0, μ = 0, λ = 2, height pairing nondegenerate); conjunct order permuted relative to the board's original sketch, immaterial in a conjunction. Uses `H : ClassicalInputs` and `C : Certificates H` and **provably nothing else** (§1.4); the specific `Certificates` fields consumed at `p = 5` are `C.five_notin`, `C.a5`, `C.c2_5` (§3.2) — `C.thirteen_notin`, `C.a13`, `C.c2_13` play no role in this proof. |
-| `cor:sha13` | `cor_sha13` | `Main/Corollaries.lean` | **kernel-proved** | As `cor_sha5`, at `p = 13`. The `c2_13` certificate was pre-registered before the confirming computation existed (§3) — the strongest single credibility argument available for this result. The specific `Certificates` fields consumed are `C.thirteen_notin`, `C.c2_13` (§3.2); unlike `cor_sha5`, `C.a13` is *not* needed for the residual non-anomality hypothesis (vacuous at `p = 13`, since `13 ≠ 5`), though it is still recorded in `Certificates` as a referee-facing datum. |
-| `prop:jetformula` | `KatzData.grading_congr` (docstring) | `Interface/Katz.lean` | **interface field** (partial) | The field records only the *resulting algebraic congruence* `p²·(κ₀·c₂(L^K) − m2core) ∈ (p³)`; the Eisenstein–Kronecker second-moment bookkeeping that derives this congruence (`c₂(L^K) = ½∫m² dμ_ψ`, the divided-congruence calculus of Bannai–Kobayashi §§2–3) is **not** carried into Lean. Abstract skeleton form is stretch task T61, not attempted. See §5. |
-| `prop:grading` | part (2): `isUnit_iff_residue_ne_zero_of_grading_congr`; part (1): `KatzData.grading_congr`, `KatzData.m2core` | `Kernel/GradingValuation.lean`; `Interface/Katz.lean` | part (2) **kernel-proved**; part (1) **interface field** | Part (2) (the valuation-theoretic unit ⟺ nonzero-residue equivalence in a general local domain) is a clean, ring-generic, kernel-proved lemma. Part (1) (the congruence itself, from the moment calculus) is assumed as data, per `prop:jetformula` above; `m2core : W` (the `p⁻²`-lift of the grade-two moment sum) is the opaque datum `grading_congr` and `SinnottHyp.presentation` both refer to, `STATUS: data`. |
-| `lem:decoupling` | `coeff_two_mul`, `isUnit_coeff_two_of_comparison`, et al. | `Kernel/Decoupling.lean` | **kernel-proved** | Ring-generic (arbitrary commutative ring, no project-specific data): the three-term coefficient-of-product formula and its unit-transfer corollary along an injective local ring map. |
-| `def:deltaE` | `KatzData.deltaE_local`, `KatzData.resultant_link` | `Interface/Katz.lean` | data field + **interface field + citation** | `deltaE_local : ℚ` is opaque data (the resultant-norm invariant); `resultant_link` is the classical resultant-norm property (`δ_E ≠ 0 ∧ 𝔭∤δ_E → NonvanishingOnDE`), itself citation-grade but not tied to a single external paper beyond the definition. Welded to the global `ClassicalInputs.deltaE` by `PrimeData.deltaE_tie`. `NonvanishingOnDE : Prop` (`KatzData`) is the opaque predicate this codomain names — "the fixed grade-two combination of `𝓡_E` is nonzero on `D_E mod 𝔭`" — asserted nowhere, only the target type of `resultant_link` and the antecedent of `hyp:sinnott`(ii) below. |
-| `hyp:sinnott` | `SinnottHyp` | `Interface/Katz.lean` | **conjectural hypothesis** | `Prop`-valued structure, two fields (`presentation`, `nonvanishing`); occurs **only** as a hypothesis `h86` of `thm_reduction`. Never a field of any instantiable structure — confirmed by grep across `Main/` and `Statements.lean`. Both fields quantify over `KatzData.traceClass : IsLocalRing.ResidueField W`, the opaque mod-`𝔭` Sinnott trace (`STATUS: opaque data`) that `presentation` equates with the criterion class and `nonvanishing` requires nonzero. |
-| `conj:EK` | `H.deltaE ≠ 0` | hypothesis `h87` of `thm_reduction`, `Main/Reduction.lean` | **conjectural hypothesis** | The nonvanishing of the candidate invariant `δ_E`; occurs only as `thm_reduction`'s hypothesis `h87`, never asserted or assumed elsewhere. |
-| `thm:reduction` | `thm_reduction` | `Main/Reduction.lean` | **kernel-proved** (conditional) | The **only** declaration in the project that mentions conjectural input, and it does so purely in hypothesis position (`h86 = hyp:sinnott`, `h87 = conj:EK`, plus the certificate-grade residual `h5` at `p = 5`, same role as in `prop_consequence`). Conclusion reports `MuZero` alongside `lambdaAn = 2` (paired per the junk-value convention, §1). The full novel deduction chain — `resultant_link` → `SinnottHyp` → grading-valuation kernel → decoupling → normalization — is proved end-to-end with **no interface change**, closing what was tracked as the project's top residual risk. |
-| §3 (`thm:gillard`, BK1–3) | — | — | **descoped** (prose) | Expository background theorems the paper surveys but does not re-prove; not formalized. See §5. |
-| §6 scan, §9 outlook | — | — | **descoped** (prose) | Computational scan across many primes and forward-looking discussion; not formalized, not part of the two anchor corollaries. See §5. |
+| `def:horizontal` | `HorizontalControl` | `Statements.lean` | formal def | A predicate on a set of primes `P` and a per-prime triviality predicate: the set of `p ∈ P` at which the predicate fails is finite. That is "for all but finitely many `p ∈ 𝒫`" verbatim. Deliberately standalone, as in the paper, where the definition precedes all data. |
+| `lem:c0c1` | `c0_eq_zero`, `c1_eq_zero` | `Main/Lemma41.lean` | **kernel-proved** | Stated over a bare `AnalyticData p hsplit`, not over `ClassicalInputs`; `prop_consequence` applies them downstream. `c₀ = 0` follows from `interp` together with `msymb_zero`; `c₁ = 0` follows from `funct_eq` through the kernel lemma `coeff_one_Lp_eq_zero`. |
+| `def:c2tilde` | `c2tilde`; `PrimeData.c2tilde` | `Defs.lean`; `Statements.lean` | formal def | `c2tilde c₂ α⁻¹ t = c₂ · (1 − α⁻¹)⁻² · t`, a total function with a junk value at anomalous primes (§1.5). `PrimeData.c2tilde` instantiates it at a bundle's own analytic data. The factor `(#tors)²/∏c_v` is the field `ClassicalInputs.torsSqOverTam`, pinned `= 1` by `torsSqOverTam_eq` — a checkable datum rather than a constant baked in. |
+| `prop:normalisation` | `isPUnit_c2tilde_iff`; `isPUnit_c2tilde_iff_of_split`; `ClassicalInputs.isPUnit_one_sub_alphaInv` | `Kernel/Normalization.lean`; `Main/Consequence.lean` | **kernel-proved** | `IsPUnit c̃₂(p) ↔ IsUnit (coeff 2 Lp)`, given that `1 − α_p⁻¹` is a `p`-adic unit and that the rational factor is `1`. `ClassicalInputs.isPUnit_one_sub_alphaInv` supplies the first hypothesis from `notAnomalous`, so no residual `p = 5` hypothesis is carried. `isPUnit_c2tilde_iff_of_split` derives the same conclusion from the raw `AnalyticData` fields plus `p = 5 → a_p = -2`; it is no longer on the route the headline theorems take and is kept because it bounds what `notAnomalous` assumes beyond the proved `lem:noanomalous`(2). |
+| `rmk:integrality` | — | — | **no counterpart** (automatic) | Integrality of `c₂(p)` needs no field: `AnalyticData.Lp : Λ p` with `Λ p := PowerSeries ℤ_[p]` (`Defs.lean`), so every coefficient is an element of `ℤ_[p]` by construction. The remark's own content — that integrality follows from integrality of modular symbols, citing Greenberg–Vatsal Prop. 3.7 and Stein–Wuthrich Prop. 3.7, with reducibility of `ρ̄_{E,p}` excluded for all but finitely many `p` by Mazur — is not rendered, and nothing in the Lean tree needs it. See §5.12. |
+| `conj:strong` | `ConjStrong` | `Statements.lean` | formal def | An existential, as the conjecture is: `∃ (δ : H.ek.L) (Sig : Finset ℕ), δ ≠ 0 ∧ ∀ split p ∉ H.S ∪ Sig with H.ek.v p δ = 1, IsPUnit (…).c2tilde`. The paper's `Σ` is `H.S ∪ Sig`. `thm_reduction` witnesses it with `δ := H.ek.deltaE c` and `Sig := H.ek.supp c`. The integrality clause of `conj:strong` is not part of the predicate; by `rmk:integrality` it is classical and, in the paper's words, not the substance of the conjecture. Until 2026-08-29 this predicate pinned `δ` and `Σ` to data carried by `ClassicalInputs`, which discharged the existential by fiat. |
+| `conj:weak` | `ConjWeak` | `Statements.lean` | formal def | `∃ T : Finset ℕ, ∀ split p ∉ H.S with p ∉ T, IsPUnit (…).c2tilde`. This is the `∃ finite T, ∀ p ∉ T` form of "for all but finitely many split primes", which is the form `cor_horizontal` consumes. |
+| `conj:EK` | `ConjEK` | `Statements.lean` | formal def (conjectural) | `∀ c : Fin 6 → H.ek.K, c ≠ 0 → H.ek.deltaE c ≠ 0`. Occurs in hypothesis position of `thm_reduction_of_conjEK` and nowhere else. The hypothesis `#Cl_𝔣(K) ≥ 6` is **not** rendered; dropping it widens what `ConjEK` asserts, so `ConjEK H` renders `conj:EK` only for those `H` whose package meets the paper's hypothesis. See §5.6. |
+| `lem:comparison` | `KatzData.comparison` | `Interface/Katz.lean` | **interface field + citation** | SOURCE: Bannai–Kobayashi, Duke Math. J. 153 (2010), Cor. 3.12, with de Shalit, *Iwasawa theory of elliptic curves with CM*, Perspectives in Math. 3, II §4, for the local terms. Consequence-form: the constant `c_p` and the series `u(T)` are taken already as units in `Wˣ` and `(W⟦T⟧)ˣ`, which folds in the lemma's own conclusion `v_p(c_p) = 0` for `p ∉ S_cmp`, `S_cmp` being one of the five membership reasons of `eq:Sexc`. Flagged in-file as consequence-form rather than as a strengthening. |
+| `prop:consequence` (= **Theorem B**) | `prop_consequence` | `Main/Consequence.lean` | **kernel-proved** | Hypotheses: `H : ClassicalInputs`, `hsplit : p % 4 = 1`, `hpS : p ∉ H.S`, `hc2 : IsPUnit (…).c2tilde`. Conclusions in the order `MuZero`, `lambdaAn = 2`, `finrank ℤ_[p] SelDual = 2`, `Subsingleton ShaDual` — the paper's (1), (2), (3) with the μ/λ pair split and kept adjacent (§1.5). No conjectural hypothesis appears. "Non-anomalous" is not assumed: it is `H.notAnomalous` at `p`, a clause of the definition of `S`. |
+| `cor:horizontal` (= **Theorem A**) | `cor_horizontal` | `Main/Horizontal.lean` | **kernel-proved** (conditional on `conj:weak`) | `HorizontalControl {p | p.Prime ∧ p % 4 = 1} (fun p ↦ … Subsingleton (…).selmer.ShaDual)` from `hweak : ConjWeak H`. Three differences from the paper, all recorded in the file: (a) the per-prime predicate supplied is `Ш[p^∞] = 0`, where `def:horizontal` asks for `Ш[p] = 0`, so what is proved implies what is stated; (b) the paper's hypothesis "finitely many anomalous split primes", and the step of its proof that uses it to make `S_E` finite, have no counterpart — `ClassicalInputs.S : Finset ℕ` is finite by construction and `notAnomalous` puts every anomalous split prime inside `S`, which is a simplification the encoding makes rather than something proved; (c) the curve-level hypotheses are carried by `H`. |
+| `prop:dictionary` | `prop_dictionary` | `Main/Dictionary.lean` | **kernel-proved** | `IsPUnit (…).c2tilde ↔ (heightNondeg ∧ IsPUnit Reg_γ ∧ Subsingleton ShaDual)`. Carries no non-anomality hypothesis, where the paper states the dictionary at non-anomalous `p`: against the frozen interface both directions come from `c2norm_tie`, `spr_nondeg` and `shaOrd_tie`, and no anomality-sensitive step is needed. That is a strengthening, not a weakening. The proof is three rewrites. |
+| `lem:noanomalous` | part (2): `anomalous_iff_five`, `noAnomalous`, `ap_ne_one_of_hasse`, `isPUnit_one_sub_alphaInv_iff`, `two_dvd_ap`, `eq_five_or_thirteen_le`; part (1): — | `Kernel/Anomalous.lean` | part (2) **kernel-proved**; part (1) **no counterpart** | Part (2) is proved in the strengthened form the paper states: for `p ≡ 1 (mod 4)` and `a` even with `a² ≤ 4p`, `a ≡ 1 (mod p)` iff `p = 5` and `a = -4`. The conclusion is delivered as `IsPUnit (1 − α_p⁻¹)` (norm one), not the weaker bare `IsUnit` in `ℚ_[p]`. Part (1) — `p ≢ 1 (mod 4)` implies `p ∣ a_p` — reduces to Deuring's reduction criterion, which mathlib does not have; see §5.5. |
+| `eq:Sexc` | `ClassicalInputs.S`, `ClassicalInputs.notAnomalous` | `Interface/Global.lean` | data field + **interface field** | `S : Finset ℕ` is opaque data; its five membership reasons (`S_bad`, `S_an`, `S_red`, `S_cmp`, `S_cl`) are recorded in the field's docstring. Only `S_an` has formal content downstream, and it is carried by `notAnomalous : ∀ split p ∉ S, ¬ ((a_p : ZMod p) = 1)`. Adding this field removed the residual hypothesis `h5 : p = 5 → a_p = -2` from every headline theorem. What it assumes beyond the proved `anomalous_iff_five` is a single numerical value, `a₅ ≠ -4`. |
+| `eq:padicbsd` | `HeightData.spr_padicBSD`, `HeightData.spr_nondeg` | `Interface/Heights.lean` | **interface field + citation** | SOURCE: Schneider, Invent. Math. 79 (1985), Thms. 2, 2′; Perrin-Riou, Invent. Math. 109 (1992), §§3.4.2–3.4.3; packaged as Stein–Wuthrich, Math. Comp. 82 (2013), Thm. 6.1. `spr_nondeg` is the one sanctioned exception to the no-conclusion-vocabulary rule (§1.5): the cited theorem genuinely has iff shape. It is phrased over `HeightData`'s own proxies, which is what keeps `ToySha` constructible. |
+| `prop:jetformula` | `KatzData.grading_congr` (docstring only) | `Interface/Katz.lean` | **interface field** (partial) | The field records only the resulting algebraic congruence `∃ κ₀ : Wˣ, p²·(κ₀·coeff 2 LKatz − m2core) ∈ (p³)`. The Eisenstein–Kronecker second-moment bookkeeping that derives it is not carried into Lean, and the field's docstring says so. See §5.2. |
+| `prop:grading` | part (2): `isUnit_iff_residue_ne_zero_of_grading_congr`; part (1): `KatzData.grading_congr`, `KatzData.m2core`, `KatzData.criterionClass` | `Kernel/GradingValuation.lean`; `Interface/Katz.lean` | part (2) **kernel-proved**; part (1) **interface field** | Part (2) is a ring-generic lemma in a local domain: unit iff nonzero residue, given the congruence. Part (1), the congruence itself, is assumed as data. `m2core : W` is the `p^{-2}` lift of the grade-two moment sum; `criterionClass` is a **def**, not a field: `IsLocalRing.residue K.W K.m2core`. |
+| `lem:decoupling` | `Decoupling.coeff_two_mul`, `coeff_two_mul_of_snd_low`, `coeff_two_mul_of_fst_low`, `coeff_smul_eq_mul`, `coeff_eq_zero_of_map_eq_zero`, `isUnit_coeff_two_map_iff`, `isUnit_coeff_two_of_comparison` | `Kernel/Decoupling.lean` | **kernel-proved** | Ring-generic — an arbitrary commutative ring, no project data: the three-term coefficient-of-product formula and its unit-transfer corollary along an injective local ring homomorphism. |
+| `lem:orbit` | `Orbit.prod_mem_range_algebraMap` (part 1), `Orbit.forall_eq_zero_of_exists_eq_zero` (part 2) | `Kernel/Orbit.lean` | **kernel-proved** | Both parts are proved in full generality, for a Galois extension `L/K` and a finite set `D` with a `Gal(L/K)`-action. Part (2) uses neither finiteness of `D` nor the Galois hypothesis. What is *assumed* is the equivariance `F(σt) = σ(F(t))` for the package, which the paper also assumes rather than proves; §5.7. `thm_reduction` does not use `lem:orbit`. |
+| `eq:DEdef` | `EKPackage.ι`, `EKPackage.D`, `EKPackage.D_nonempty` | `Interface/EK.lean` | data fields | The divisor `D_E = Cl_𝔣(K)` as an abstract finite set of points with a nonemptiness proof. The class-group structure and the simply transitive Galois action are not rendered; the consequences are §5.6 and §5.7. |
+| `eq:jetpackage` | `EKPackage.r`; `jetIndex`, `jetIndex_image`, `jetIndex_injective` | `Interface/EK.lean` | data field + **kernel-proved** | `r : Fin 6 → ι → L` is the package `𝓡_E` as data. `jetIndex` records which of the six slots is which pair `(a,b)`; `jetIndex_image` proves the enumeration is exactly the index set `{(a,b) : b ≥ 1, a + b ≤ 3}` and `jetIndex_injective` that the six slots are distinct. Both by `decide`. |
+| `def:deltaE` | `EKPackage.Fc`, `EKPackage.deltaE`, `deltaE_def`, `Fc_def`, `deltaE_ne_zero_iff`, `deltaE_singleton` | `Interface/EK.lean` | formal def + **kernel-proved** | `δ_E(c) := ∏_{t ∈ D_E} F_c(t)` with `F_c(t) = ∑ᵢ cᵢ • rᵢ(t)`, a definition rather than a datum. `deltaE_ne_zero_iff` proves the sentence following the paper's definition — `δ_E(c) ≠ 0` exactly when `F_c` vanishes nowhere on `D_E` — by unfolding. `δ_E(c)` lands in `P.L`, the paper's `Q̄`, and is **not** proved rational: that is `lem:orbit`(1), which needs the equivariance input (§5.7), and `thm_reduction` does not use it. The structure this replaced carried `δ_E` as an opaque rational `ClassicalInputs.deltaE : ℚ` welded to a `KatzData` field `deltaE_local`, together with an assumed implication `resultant_link`; all three are gone. |
+| `hyp:sinnott` | `SinnottHyp` (fields `integral`, `presentation`, `nonvanishing`) | `Interface/Katz.lean` | **conjectural hypothesis** | A `Prop`-valued structure over a `KatzData`, an `EKPackage` and a coefficient vector. `integral` is the `𝔭`-integrality clause of (i), `∀ t ∈ D_E, v_𝔭(F_c(t)) ≤ 1`; `presentation` is the presentation clause of (i); `nonvanishing` is (ii). It is a field of no instantiable structure. Until 2026-08-29 the integrality clause was baked into the `KatzData` field `resultant_link`, an unproved implication carried on the instantiable assumption surface under `STATUS: classical`; it is now in hypothesis position, where the paper puts it, and the step it fed is the proved `Resultant.forall_eq_one_of_prod_eq_one`. |
+| `thm:reduction` (= **Theorem C**) | `thm_reduction`; `thm_reduction_of_conjEK`; `Resultant.forall_eq_one_of_prod_eq_one`, `Resultant.prod_ne_zero_of_prod_eq_one` | `Main/Reduction.lean`; `Kernel/Resultant.lean` | **kernel-proved** (conditional) | The only declarations that mention conjectural input, and they do so in hypothesis position: `hEK : H.ek.deltaE c ≠ 0` and `hsin`, the `SinnottHyp` quantified over split `p ∉ H.S ∪ supp(c)`. `thm_reduction_of_conjEK` takes `ConjEK H` and a nonzero `c` in place of `hEK`. The conclusion is the per-prime statement conjoined with `ConjStrong H`, which `thm_reduction` now *proves* rather than receiving from the interface. The paper's condition "if `S_E` is finite" disappears: `H.S : Finset ℕ` is finite by construction. The deduction chain is `hsin.integral` + `𝔭 ∤ δ_E(c)` → `Resultant.forall_eq_one_of_prod_eq_one` → `hsin.nonvanishing` → `hsin.presentation` → grading-valuation kernel → `comparison` + decoupling → `prop:normalisation` → `prop_consequence`. |
+| `thm:padicbsdunits` | — | — | **no counterpart** | New in paper v2. It states that `v_𝔭(c̃₂(p)) = v_p(Reg_γ) + v_p(#Ш(E/ℚ)[p^∞])` under finiteness of Ш and nondegeneracy of the height pairing, combining Rubin's main conjecture with Schneider's leading-term theorem. Nothing in the Lean tree renders it. Its Lean-side content is absorbed by the interface fields `HeightData.spr_padicBSD` and `spr_nondeg`, which are the packaged Schneider/Perrin-Riou consequence-forms, and by `IwasawaData.rubin_structure`. |
+| `lem:msdmtt` | — | — | **no counterpart** | New in paper v2. It identifies the ideal generated by the Mazur–Swinnerton-Dyer `p`-adic `L`-series with `(L_p(E,T))`, which is what lets Rubin's theorem be applied to the MTT normalisation. In the Lean encoding the identification is not needed and is not stated: `IwasawaData.rubin_structure` is the fused consequence-form `car_Λ(X) = (∏ᵢ fᵢ) = (L_p)`, already expressed in terms of the `AnalyticData` field `Lp`, so the normalisation comparison is inside the citation rather than in front of it. |
 
-Two rows deserve a further remark, since they are the ones most likely to draw a
-skeptical referee's attention:
+Three points belong with the table.
 
-* **The paper calls `cor:sha5`/`cor:sha13` "unconditional"; the Lean statements are
-  conditional on `H : ClassicalInputs` and `C : Certificates H`.** This is not a
-  weakening — it is the entire point of this formalization's design (§1.3–§1.4). The
-  paper's own proof already *depends* on Rubin's main conjecture, Mazur's control
-  theorem, the MTT interpolation formula, and half a dozen other classical results;
-  calling the corollary "unconditional" means unconditional *given those accepted
-  theorems*, exactly as any paper in this area does. The Lean rendering simply makes
-  that implicit dependency into an explicit, typed hypothesis `H`, so a referee can
-  see and check every one of those dependencies in one place (§1.4, §2 above) instead
-  of having to reconstruct them from the paper's citation trail.
-* **`prop_consequence`, `prop_dictionary`, and `thm_reduction` each drop a hypothesis
-  the paper states** (`conj:weak`, "non-anomalous"). In every case the Lean statement
-  was checked against `main.tex` side by side (the paper's own PM faithfulness audit,
-  2026-08-18) and the deviation runs in the safe direction: either the hypothesis is
-  *proved* elsewhere in the project and therefore redundant to assume (non-anomality,
-  proved by `lem:noanomalous`/T24), or the paper only invokes it to derive a weaker
-  form of a hypothesis the Lean statement already takes directly (`conj:weak`). No
-  deviation found anywhere weakens a conclusion or smuggles in an unproved hypothesis.
-
-One further point belongs here, not because this table makes any false claim
-of completeness — its own column header ('Paper label | Lean declaration(s)
-| …') shows plainly that it is organized by paper label, not by interface
-field — but because enumerating every field of
-`ClassicalInputs`'s constituent structures and checking each against a
-paper-label row is exactly the audit a careful referee will perform, and five
-fields will not turn up by name anywhere in this table:
-`AnalyticData.alpha_root`, `AnalyticData.modularSymbol0`,
-`IwasawaData.mw_sha_exact`, `KatzData.algInj`, `KatzData.maxIdeal_eq_p`. Each
-is a genuine interface field with its own `SOURCE`/`PAPER`/`STATUS` docstring
-in its home file (`Interface/Analytic.lean`, `Interface/Iwasawa.lean`,
-`Interface/Katz.lean` respectively). What makes them safe to leave
-undiscussed here, checked mechanically rather than by inspection — the same
-transitive-constant closure scan of §6.6, run with these five names as
-markers — is that **no headline theorem's closure touches any of them**:
-```
-cor_sha5:         undocumented-field deps = []
-cor_sha13:        undocumented-field deps = []
-prop_consequence: undocumented-field deps = []
-thm_reduction:    undocumented-field deps = []
-```
-These five fields are carried by the interface but consumed by no proved
-result. The direction of this is unambiguously safe: an unused field can only
-make `ClassicalInputs` *harder* to satisfy — one more proof obligation
-`ToyTrivial`/`ToySha` (§4) had to discharge to witness consistency and
-non-vacuity — never easier, and it cannot smuggle anything into a conclusion
-it plays no role in deriving. A referee running the field-by-field audit this
-paragraph anticipates should read these five names as accounted for, not
-overlooked.
+* **The paper's Theorems A, B, C are stated for a curve; the Lean statements are
+  conditional on `H : ClassicalInputs`.** That is the design of §1.3, not a
+  weakening. The paper's own proofs depend on Rubin's main conjecture, Mazur's
+  control theorem, the MTT interpolation formula and half a dozen further
+  classical results; the Lean rendering makes those dependencies explicit typed
+  hypotheses, so a referee sees them in one place instead of reconstructing them
+  from a citation trail.
+* **`prop_consequence` and `prop_dictionary` each drop a hypothesis the paper
+  states.** `prop_consequence` does not assume non-anomality, which
+  `ClassicalInputs.notAnomalous` supplies; `prop_dictionary` does not assume it
+  either, because its proof does not need it. Both deviations run in the safe
+  direction — fewer hypotheses, the same conclusions. `cor_horizontal` drops the
+  paper's hypothesis on anomalous primes for the reason given in its row, which is
+  an encoding simplification rather than a strengthening, and the row says so.
+* **Six interface fields are carried but consumed by no proof in the imported
+  tree.** They are `AnalyticData.ap_from_CM`, `AnalyticData.hasse`,
+  `HeightData.reg_integral`, `HeightData.sha_integral`, `HeightData.spr_padicBSD`
+  and `EKPackage.D_nonempty`. A referee auditing the interface field by field
+  should read these six as accounted for rather than overlooked; each has its own
+  `SOURCE`/`PAPER`/`STATUS` docstring in its home file. The
+  check is `grep -rn '\.<field>' FinShaRank2/` with `Interface/`, `Toy/` and
+  `Scratch/` excluded: for these six the result is empty apart from one docstring
+  mention of `reg_integral` in `Main/Dictionary.lean`. `hasse` and `ap_from_CM`
+  are the Hasse bound and CM evenness of `a_p`; the kernel lemmas `noAnomalous`,
+  `anomalous_iff_five` and `isPUnit_c2tilde_iff_of_split` prove statements of
+  exactly their shape and are audited, but the route the headline theorems now
+  take runs through `ClassicalInputs.notAnomalous` instead, so the fields
+  themselves are not projected. `spr_padicBSD` is the norm identity
+  `‖c2norm‖ = ‖Reg_γ‖·‖shaOrd‖`, and `reg_integral`, `sha_integral` its two
+  integrality companions; `prop_dictionary` reaches its conclusion through the
+  tie-equations and `spr_nondeg` and needs none of the three. `D_nonempty` records
+  that `D_E` is nonempty, which no step uses. An unused field can only make
+  `ClassicalInputs` harder to satisfy — one more obligation `ToyTrivial` and
+  `ToySha` had to discharge — never easier, and it cannot contribute to a
+  conclusion it plays no part in deriving. Two further fields,
+  `AnalyticData.modularSymbol0` and `HeightData.shaOrd`, are not projected either,
+  but their content is consumed through the types of fields that are: `interp` and
+  `msymb_zero` for the first, `shaOrd_tie` for the second.
 
 ---
 
 ## 3. Certificate provenance
 
-### 3.1 What a "certificate" is here, and why it is a separate structure
+### 3.1 What the certificates were
 
-`Certificates H` (`FinShaRank2/Interface/Certificates.lean`) packages exactly six
-facts about the testbed curve `E : y² = x³ − 56x` at the two anchor primes
-`p = 5, 13` — the project's *own* numerical computations, kept in a structure
-separate from `ClassicalInputs` precisely so a referee can tell at a glance which
-facts are citable published mathematics and which are this project's arithmetic
-(§1.4). Note this repository is rooted at `formal/`: the parent project's `data/`
-and `scripts/` directories (which independently *produced* these numbers via
-PARI/GP and Sage) are **not** part of this repository. What follows records the
-certificate values and their provenance inline, directly from the docstrings of
-`Interface/Certificates.lean`, so that this document is self-contained for a
-referee who has only this repository.
+`Certificates H` packaged six facts about the testbed curve `E : y² = x³ − 56x` at
+the two anchor primes `p = 5, 13`: this project's own numerical computations, kept
+in a structure separate from `ClassicalInputs` so that a referee could tell at a
+glance which facts were citable published mathematics and which were this project's
+arithmetic. Two theorems consumed them, `cor_sha5` and `cor_sha13`, which concluded
+Ш(E/ℚ)[5^∞] = 0 and Ш(E/ℚ)[13^∞] = 0.
+
+**Both corollaries and the `Certificates` structure were retired on 2026-08-29**
+into `legacy/Anchors.lean`. §3.5 gives the reason. That file is outside Lake's
+build, outside the audit, and — since `legacy/` is ignored by the repository's
+`.gitignore` — outside the shipped repository: a referee cloning this repository
+will not have it. **This section is therefore the whole of the record.** The
+computations were correct and their provenance is worth keeping, whatever the
+status of the conclusions they were used to reach.
+
+The computer algebra that produced the numbers — the PARI/GP and SageMath scripts
+and the output of every run — is in `../code`; see `../code/README.md`. What
+follows records the certificate values and their provenance inline, so that a
+referee holding only this repository has the record.
 
 ### 3.2 The six fields, verbatim
+
+Reproduced from `legacy/Anchors.lean`, with the `Fact` and membership arguments
+elided:
 
 ```lean
 structure Certificates (H : ClassicalInputs) where
@@ -341,7 +441,7 @@ structure Certificates (H : ClassicalInputs) where
             = ((1 + 11*13 + 13^2 + 13^3 + 10*13^4 : ℤ) : ZMod (13^5))
 ```
 
-**Frobenius traces (`a5`, `a13`).** For the testbed curve, verified against PARI/GP
+**Frobenius traces (`a5`, `a13`).** Verified against PARI/GP
 (`ellinit([0,0,0,-56,0])`):
 ```
 $ echo 'ellap(ellinit([0,0,0,-56,0]),5)'  | gp -q
@@ -349,72 +449,109 @@ $ echo 'ellap(ellinit([0,0,0,-56,0]),5)'  | gp -q
 $ echo 'ellap(ellinit([0,0,0,-56,0]),13)' | gp -q
 -6
 ```
-So `a_5 = -2` and `a_13 = -6`, matching `main.tex` (§`sec:anchor`: "`a_5 = -2`";
-`cor:sha13`: "`a_{13} = -6`, so `#Ẽ(𝔽₁₃) = 20`"). Both are even, as CM evenness of
-`a_p` (`AnalyticData.ap_from_CM`) requires. `a_13` feeds `lem:noanomalous`'s
-unconditional branch (`13 ≤ p`, no certificate needed there beyond `hasse` +
-`ap_from_CM`); `a_5` feeds the one residual case `lem:noanomalous` cannot close
-unconditionally (§2, `lem:noanomalous` row).
+So `a_5 = -2` and `a_13 = -6`. Both are even, as CM evenness of `a_p` requires.
+`a_5` closed the one residual case `lem:noanomalous` could not close
+unconditionally; that role is now played by `ClassicalInputs.notAnomalous`, and
+what it assumes beyond the proved `anomalous_iff_five` is the single value
+`a₅ ≠ -4`.
 
-**Digit congruences (`c2_5`, `c2_13`).** These are the numerical heart of the two
-anchor corollaries. Each states that the second Taylor coefficient of the MTT
-p-adic L-function, `c₂(p) = coeff 2 L_p ∈ ℤ_[p]`, reduces mod `p^k` to an explicit
-digit sum whose *leading* digit is `1` — hence the value is not divisible by `p`,
-hence `coeff 2 L_p` is a `p`-adic unit. This is exactly `eq:match5` and `eq:pred13`
-of `main.tex`:
+**Digit congruences (`c2_5`, `c2_13`).** Each states that the second Taylor
+coefficient `c₂(p) = coeff 2 Lp ∈ ℤ_[p]` reduces mod `p^k` to an explicit digit
+sum whose leading digit is `1` — so the value is not divisible by `p`, so
+`coeff 2 Lp` is a `p`-adic unit:
 
-* `c2_5` (`eq:match5`): `c₂(5) ≡ 1 + 4·5 + 3·5² + 5³ + 5⁵ + 5⁶  (mod 5⁷)` — seven
-  5-adic digits.
-* `c2_13` (`eq:pred13`): `c₂(13) ≡ 1 + 11·13 + 13² + 13³ + 10·13⁴  (mod 13⁵)` —
-  five 13-adic digits.
+* `c₂(5) ≡ 1 + 4·5 + 3·5² + 5³ + 5⁵ + 5⁶ (mod 5⁷)`, seven 5-adic digits;
+* `c₂(13) ≡ 1 + 11·13 + 13² + 13³ + 10·13⁴ (mod 13⁵)`, five 13-adic digits.
 
-The certificate shape is deliberately a *congruence* (an equality of
-`PadicInt.toZModPow k` images in `ZMod (p^k)`), not a bare `IsUnit` assertion (board
-convention 3: data-equations over bare Props) — so a referee can check the digit
-string against an independent computation rather than trusting an opaque Boolean.
-The extraction from congruence to unit (`Kernel/Normalization.lean`:
-`isUnit_of_toZModPow_cert`, specialised to `isUnit_of_cert_five` /
-`isUnit_of_cert_thirteen`) reduces the digit sum further along
-`ZMod.castHom → ZMod p`, observes the leading digit `1` survives (so `p ∤` the
-value), and concludes `IsUnit (coeff 2 L_p)` via
-`PadicInt.isUnit_iff`/`ker_toZMod = maximalIdeal`.
+The shape was deliberately a congruence — an equality of `PadicInt.toZModPow k`
+images in `ZMod (p^k)` — rather than a bare `IsUnit` assertion, so that a referee
+could check the digit string against an independent computation instead of
+trusting an opaque Boolean. The extraction from congruence to unit
+(`isUnit_of_toZModPow_cert`, specialised to `isUnit_of_cert_five` and
+`isUnit_of_cert_thirteen`; all three now in `legacy/Anchors.lean`) reduced the
+digit sum further along `ZMod.castHom → ZMod p`, observed that the leading digit
+`1` survives, and concluded via `PadicInt.isUnit_iff`.
+
+In paper v1 these two displays were labelled `eq:match5` and `eq:pred13`. Neither
+label exists in paper v2.
 
 ### 3.3 Two independent implementations
 
-`c2_5` was produced by **two independent computational routes that agree
-digit-for-digit**: a PARI computation of the p-adic sigma-height side, and an
-independent Sage computation of modular symbols on the L-function side. Agreement
-of two independently-implemented computations on a seven-digit p-adic expansion is
-itself informative — a coding error in either implementation would need to produce
-the same wrong answer in both to survive this check.
+`c2_5` was produced by two independent computational routes that agree
+digit-for-digit: a PARI computation of the p-adic sigma-height side, and a Sage
+computation of modular symbols on the L-function side. A coding error in either
+implementation would have had to produce the same wrong seven-digit expansion in
+both to survive the check.
 
 ### 3.4 The p = 13 certificate: a prediction, not a fit
 
-This is the single strongest credibility argument this project can offer for
-`cor:sha13`, and it deserves to be stated plainly with its dates:
-
-* **2026-06-12** — the full 13-adic digit expansion `c2_13` was **pre-registered**:
-  computed and recorded from the height side (the p-adic sigma-height computation)
-  *before* any modular-symbol computation of `L_13(E,T)` existed.
+* **2026-06-12** — the full 13-adic digit expansion `c2_13` was pre-registered:
+  computed and recorded from the height side, before any modular-symbol
+  computation of `L_13(E,T)` existed.
 * **2026-07-02** — an independent modular-symbol computation of `L_13(E,T)` at
-  level `12544` was carried out, and **every computed digit agreed** with the
+  level `12544` was carried out, and every computed digit agreed with the
   pre-registered prediction.
 
-This is what makes `cor:sha13` a genuine *prediction*, confirmed after the fact by
-an independent method, rather than a numerical coincidence found by searching until
-something matched. A referee who wants a check with essentially no room for
-after-the-fact curve-fitting should look here first. Both digit strings (`c2_5`,
-`c2_13`) were additionally cross-checked against `main.tex`'s own statements of
-`eq:match5`/`eq:pred13` before the T15 statement freeze.
+The `p = 13` digits were therefore a prediction confirmed after the fact by an
+independent method, not a coincidence found by searching until something matched.
+That remains true of the computation whether or not the corollary it served is
+subsumed, which is why the record is kept here rather than deleted with the
+declarations.
 
-### 3.5 The `Fact` instances
+### 3.5 Why the corollaries and the certificate structure were retired
 
-`Interface/Certificates.lean` declares local instances `Fact (Nat.Prime 5)` and
-`Fact (Nat.Prime 13)` so the `ℤ_[5]`/`ℤ_[13]` and `PadicInt.toZModPow`/`ZMod`
-machinery in the digit fields type-checks. `Fact` is `Prop`-valued, so by proof
-irrelevance these are definitionally equal to the `Fact.mk hp` instances embedded
-in `ClassicalInputs.dataAt`'s output type — there is no instance mismatch to worry
-about, and this is a bookkeeping detail rather than a mathematical assumption.
+Coates, Liang and Sujatha proved Ш(E₁/ℚ)[p^∞] = 0 at every split prime
+p < 30,000 for the curve E₁ : y² = x³ + 14x (J. Algebra 322 (2009) 657–674; Milan
+J. Math. 78 (2010) 395–416, Thm. 1.3). Paper v2 states this as `thm:cls` and
+credits Wuthrich alongside them; the transfer across the isogeny is its
+`lem:isogeny` and the resulting statement about the testbed curve is
+`cor:shavanishing`. E₁ is 2-isogenous to the testbed curve
+E : y² = x³ − 56x, and the odd-primary part of Ш is invariant under a 2-isogeny,
+so their result gives Ш(E/ℚ)[5^∞] = 0 and Ш(E/ℚ)[13^∞] = 0 — the conclusions of
+`cor_sha5` and `cor_sha13` — fifteen years earlier and over a far larger range of
+primes.
+
+Paper v2 therefore withdrew both corollaries and the displays `eq:match5` and
+`eq:pred13`. The labels no longer exist in the manuscript, so the formalisation
+must not present the corollaries as its own results either. The declarations were
+moved rather than deleted: `legacy/Anchors.lean` holds the `Certificates`
+structure, the two `Fact` instances, the four digit-extraction lemmas
+(`isUnit_of_toZModPow_cert` and its primed variant, `isUnit_of_cert_five`,
+`isUnit_of_cert_thirteen`), the two corollaries, and the toy-model fact
+`isEmpty_certificates_toySha`. That file is unmaintained and unshipped: `legacy/`
+is in the repository's `.gitignore`, so it exists in the authors' working tree
+only. It was written against mathlib `v4.32.0` and the bump to `v4.33.1` may have
+broken it; it can be checked with `lake env lean legacy/Anchors.lean`, but nothing
+in the audit does so, and a referee should not expect to find it.
+
+What stayed in the imported tree: `Kernel/Normalization.lean` keeps
+`isPUnit_c2tilde_iff`, `eq_five_or_thirteen_le`, `isPUnit_one_sub_alphaInv_of_split`
+and `isPUnit_c2tilde_iff_of_split`, which feed surviving results;
+`Toy/ShaTrivial.lean` keeps the anti-vacuity argument, now carried by the
+certificate-free `toySha_fails_c2_5_certificate` (§4.3).
+
+### 3.6 The one surviving use of the `c₂(5)` digits
+
+`toySha_fails_c2_5_certificate` (`Toy/ShaTrivial.lean`) is now the only place in
+the imported tree where the seven 5-adic digits of `c₂(5)` appear. It states that
+the seven-digit congruence fails for the anti-vacuity world, where
+`coeff 2 (shaLp 5) = 5`, and its role is to identify the datum that excludes that
+world (§4.3).
+
+**A referee will find no cross-reference for those digits in the paper.** The
+display went out of paper v2 with `eq:match5`. The digits are this project's own
+computation, and the lemma's docstring says so explicitly (`PAPER: none`). This
+section is their citable home: the value, the two independent implementations that
+produced it (§3.3), and the date.
+
+*Recommendation.* Keep the digits in the lemma, and treat §3.2–§3.3 of this
+document as the reference for them. The alternative — restating the lemma against
+the weaker datum `¬ IsUnit (coeff 2 (shaLp 5))` — would compile and would still
+witness that `ToySha` fails a numerical condition, but it would lose the point the
+lemma exists to make: that it is *exactly* the computed `c₂` digit string, and not
+some vaguer weakness of the interface, that rules this world out. If the paper's
+section `sec:formalisation` is written, the display belongs there, and the lemma's
+docstring should then cite it instead of this document.
 
 ---
 
@@ -422,125 +559,118 @@ about, and this is a bookkeeping detail rather than a mathematical assumption.
 
 ### 4.1 The question this section answers
 
-`ClassicalInputs` is a large structure — roughly two dozen fields spread across four
-per-prime layers. A skeptical referee should ask two sharp questions about any large
-assumption bundle before trusting theorems proved from it:
+`ClassicalInputs` is large: six top-level fields, one of which supplies at every
+split prime a five-layer bundle with about forty fields between the layers. Two
+questions should be asked of any such assumption bundle before theorems proved
+from it are trusted.
 
-* **(Consistency) Could the bundle be self-contradictory?** If so, *every* theorem
-  "proved" from it — including the headline results — would be proved from a false
-  premise, hence worth nothing (in classical logic, anything follows from a
-  contradiction).
-* **(Non-question-begging) Does the bundle already contain its own conclusion in
-  disguise?** If some interface field secretly forces Ш = 0 as a side effect of
-  looking innocuous, then `cor_sha5`/`cor_sha13` would be reporting a *definition*,
-  not a *theorem*.
+* **Consistency.** Could the bundle be self-contradictory? If so, every theorem
+  proved from it is proved from a false premise and worth nothing.
+* **Question-begging.** Does the bundle already contain its own conclusion? If
+  some field forces Ш = 0 as a side effect of looking innocuous, then the
+  conclusions are definitions rather than theorems.
 
-Both questions are answered here not by argument but by **construction**: two
-fully worked, Lean-kernel-checked example worlds.
+Both are answered by construction: two complete, kernel-checked example worlds.
 
 ### 4.2 `ToyTrivial` — the assumption bundle is consistent
 
-`FinShaRank2.ToyTrivial : ClassicalInputs` (`FinShaRank2/Toy/Trivial.lean`, built
-from the layer files `Toy/Analytic.lean`, `Toy/Iwasawa.lean`, `Toy/Heights.lean`,
-`Toy/Katz.lean`) is a complete instance of `ClassicalInputs` in a deliberately
-simplified algebraic world — **not** the testbed curve `E`, and no claim is made
-that it models `E` in any way. Its only job is to witness that the assumption
-bundle can be satisfied at all, with every single field genuinely proved (no
-`sorry`, no shortcuts):
+`FinShaRank2.ToyTrivial : ClassicalInputs` (`Toy/Trivial.lean`, built from
+`Toy/Analytic.lean`, `Toy/EK.lean`, `Toy/Iwasawa.lean`, `Toy/Heights.lean`,
+`Toy/Katz.lean`) is a complete instance of `ClassicalInputs` in a simplified
+algebraic world. It is not the testbed curve and no claim is made that it models
+one. Its job is to witness that the assumption bundle can be satisfied at all,
+with every field proved:
 
 | Interface datum | Toy value |
 |---|---|
 | excluded set `S` | `∅` (every split prime carries data) |
-| `δ_E`, `(#tors)²/∏c_v` | `1`, `1` |
-| p-adic L-function `L_p` | `X²` (literally the power series `T²`) |
-| `a_p`, unit root `α` | `a_p = 2a` from a two-squares decomposition `p = a² + b²`, `α` the Hensel root |
+| `(#tors)²/∏c_v` | `1` |
+| `ek` (`D_E`, `𝓡_E`, `v_𝔭`, `supp`) | one point over `ℚ`, all six sections constantly `1`, trivial valuation, empty support |
+| p-adic L-function `L_p` | `X²` |
+| `a_p`, unit root `α` | `a_p = 2a` from a two-squares decomposition `p = a² + b²`; `α` the Hensel root |
 | Iwasawa module `X` | `(Λ/(X))²` |
-| Selmer/Ш duals | `SelDual = ℤ_[p]²`, `ShaDual = PUnit` (the one-point group) |
+| Selmer and Ш duals | `SelDual = ℤ_[p]²`, `ShaDual = PUnit` |
 | regulator, Ш-order proxy, height nondegeneracy | `1`, `1`, `True` |
 | Katz coefficient ring, `L^{Katz}`, grade-two core | `ℤ_[p]`, `X²`, `1` |
 
-Two points from the construction are worth relaying to a referee rather than taking
-on faith: (1) `no_finite_submodule` was not free — it needed genuine
-ℤ_[p]-torsion-freeness of `(Λ/(X))²`, actually proved rather than assumed away;
-(2) the height-side proxy `c2norm` is *forced* (by the mandatory tie-equation
-`c2norm_tie`) to equal `(1 − α⁻¹)⁻²` — it cannot be chosen freely to make the height
-fields trivially satisfiable, and the construction had to show the forced value
-still satisfies `spr_padicBSD`/`spr_nondeg`. Nothing in the toy world was chosen by
-weakening a field's stated content.
+Three points from the construction are worth relaying rather than taking on
+faith. `no_finite_submodule` was not free: it needed `ℤ_[p]`-torsion-freeness of
+`(Λ/(X))²`, proved rather than assumed away. The height-side proxy `c2norm` is
+*forced* by the mandatory tie-equation `c2norm_tie` to equal `(1 − α⁻¹)⁻²`; it
+cannot be chosen to make the height fields trivially satisfiable, and the
+construction had to show the forced value still satisfies `spr_padicBSD` and
+`spr_nondeg`. And `notAnomalous` is discharged from the toy arithmetic itself
+(`Toy.Setup.ap_ne_one`): `a_p = 2a` with `1 ≤ a` and `2a < p`, so `2a ≢ 1 (mod p)`.
 
-**Verdict:** `example : ClassicalInputs := ToyTrivial` compiles, sorry-free, and
-`#print axioms ToyTrivial` shows only the three standard axioms. The assumption
+`ToyTrivial` is declared as `noncomputable def ToyTrivial : ClassicalInputs where
+…`, so its type is checked at the definition and every field obligation is
+discharged there; the audit reports
+`ToyTrivial uses only [propext, Classical.choice, Quot.sound]`. The assumption
 surface is consistent.
 
 ### 4.3 `ToySha` — the assumption bundle does not beg the question
 
-`FinShaRank2.ToySha : ClassicalInputs` (`FinShaRank2/Toy/ShaTrivial.lean`, layers in
+`FinShaRank2.ToySha : ClassicalInputs` (`Toy/ShaTrivial.lean`, layers in
 `Toy/ShaAnalytic.lean`, `Toy/ShaIwasawa.lean`, `Toy/ShaHeights.lean`,
-`Toy/ShaKatz.lean`) is a **second** complete, fully proved instance of
-`ClassicalInputs` — every field satisfied exactly as frozen, no field weakened or
-reinterpreted — but built so that the headline conclusion **fails**:
+`Toy/ShaKatz.lean`, sharing `Toy/EK.lean`) is a second complete instance — every
+field satisfied as written, none weakened — built so that the conclusion fails:
 
-| Interface datum | ToySha value | Contrast with `ToyTrivial` |
+| Interface datum | `ToySha` value | `ToyTrivial` value |
 |---|---|---|
-| p-adic L-function `L_p` | `C p · X²` (so `coeff 2 L_p = p`, a **non-unit**) | was `X²` (`coeff 2 = 1`, a unit) |
-| Iwasawa module `X` | `Λ/(X) × Λ/(X) × Λ/(C p)` | was `(Λ/(X))²` |
-| Selmer/Ш duals | `SelDual = ℤ_[p]² × ℤ_[p]/(p)`, `ShaDual = ℤ_[p]/(p)` (**nontrivial**) | was `ℤ_[p]²`, `PUnit` |
-| Ш-order proxy | `p` (a non-unit) | was `1` (a unit) |
-| grade-two core `m2core` | `p` | was `1` |
+| p-adic L-function `L_p` | `C p · X²`, so `coeff 2 L_p = p`, a non-unit | `X²`, `coeff 2 = 1`, a unit |
+| Iwasawa module `X` | `Λ/(X) × Λ/(X) × Λ/(C p)` | `(Λ/(X))²` |
+| Selmer and Ш duals | `ℤ_[p]² × ℤ_[p]/(p)`, `ℤ_[p]/(p)` (nontrivial) | `ℤ_[p]²`, `PUnit` |
+| Ш-order proxy `shaOrd` | `p`, a non-unit | `1`, a unit |
+| grade-two core `m2core` | `p` | `1` |
 
-Everything else — `S = ∅`, `δ_E = 1`, the regulator, `heightNondeg`, and every
-citation-grade interface field — is satisfied identically to `ToyTrivial`. The point
-is that **nothing forces this world to be excluded by the assumption bundle alone**:
-three formal results make this precise.
+Everything else — `S = ∅`, the Eisenstein–Kronecker package, the regulator,
+`heightNondeg`, and every citation-grade field — is satisfied as in `ToyTrivial`.
+The values above are forced rather than chosen, and the file says how: `shaOrd_tie`
+forces `shaOrd` to be a non-unit once `ShaDual` is nontrivial; `spr_padicBSD` and
+`c2norm_tie` then force `coeff 2 L_p` to be a non-unit at the toy prime; and
+`rubin_structure` forces the elementary divisors of `X` to multiply to `L_p`,
+which with `π_surj` (rank two) and a nontrivial `ShaDual` pins the multiset to
+`(X, X, C p)`. The anti-vacuity witness is therefore close to the only way to
+falsify the conclusion while honouring every interface field.
 
-* **`FinShaRank2.interface_does_not_force_sha_trivial`** — there is *no* proof, from
-  `H : ClassicalInputs` and splitness alone, that `Subsingleton ShaDual` (i.e.
-  Ш`[p^∞] = 0`) at every split prime. Witnessed directly by `ToySha`.
-* **`FinShaRank2.toySha_conclusions_fail`** — stronger: **three of the five**
-  headline conclusions fail at **every** split prime of the `ToySha` world
-  simultaneously — Ш is not trivial, `MuZero` fails, and `lambdaAn ≠ 2`. This is not
-  a single cherry-picked counterexample prime; it is a systematic failure across the
-  whole toy world.
-* **`FinShaRank2.isEmpty_certificates_toySha`** — and here is the sharpest point of
-  the whole non-vacuity/anti-vacuity pair: `Certificates ToySha` is **provably
-  empty**. There is no way to instantiate the numerical-certificate structure over
-  `ToySha`, because its proof would require `coeff 2 L_p` to have leading 5-adic
-  digit `1` (per `c2_5`), but in the `ToySha` world `coeff 2 L_p = 5` — leading digit
-  `0`. **The Lean proof of `isEmpty_certificates_toySha` runs through the certificate
-  field `c2_5` specifically**, reducing both sides mod `5⁷` and closing by `decide`
-  on the resulting numeral disequality. In plain terms: it is not that the interface
-  happens to be too weak in some vague sense to pin down Ш — it is *exactly* the
-  numerical `c₂` digit certificate that would be needed to rule this world out, and
-  that certificate genuinely fails for it. This is about as direct a formal
-  demonstration as is available that the certificates in §3 are load-bearing
-  mathematics, not decoration: swap in a world where the certificate is false, and
-  the certificate structure itself becomes uninhabitable, exactly tracking the
-  headline conclusion's failure.
+Three declarations make the point precise.
+
+* **`interface_does_not_force_sha_trivial`** — there is no proof, from
+  `H : ClassicalInputs` and splitness alone, that `Subsingleton ShaDual` at every
+  split prime. Witnessed by `ToySha` at `p = 5`.
+* **`toySha_conclusions_fail`** — stronger: three of the conclusions fail at
+  *every* split prime of the `ToySha` world at once. Ш is not trivial, `MuZero`
+  fails, and `lambdaAn ≠ 2`. This is a systematic failure, not one cherry-picked
+  prime.
+* **`toySha_fails_c2_5_certificate`** — the numerical datum that excludes the
+  world. Its proof reduces `coeff 2 (shaLp 5) = 5` mod `5⁷` and closes by `decide`
+  against the seven computed 5-adic digits of `c₂(5)`, whose leading digit is `1`
+  where the toy value's is `0`. So it is not that the interface is too weak in some
+  vague sense to pin down Ш; it is the computed `c₂` digit string that rules this
+  world out, and that string genuinely fails for it.
+
+The third of these replaced `isEmpty_certificates_toySha`, which proved
+`IsEmpty (Certificates ToySha)` and went to `legacy/Anchors.lean` with the
+structure it mentions. The replacement carries the same content without the
+retired structure. The provenance of the digits it uses, and their status now that
+paper v2 no longer displays them, are §3.2–§3.3 and §3.6.
 
 ### 4.4 Why a referee should care about both halves
 
-Together, `ToyTrivial` and `ToySha` bracket the design from both sides:
+`ToyTrivial` excludes "this structure is quietly unsatisfiable, so the headline
+theorems are vacuously true". It has a model.
 
-* `ToyTrivial` rules out the concern "maybe this elaborate structure is quietly
-  unsatisfiable, and the headline theorems are vacuously true." It is not — it has a
-  genuine model.
-* `ToySha` rules out the opposite concern, the more common failure mode in an
-  interface-first formalization built under time pressure: "maybe some field was
-  worded just strongly enough to make the proof go through, secretly assuming the
-  conclusion." It does not — there is a genuine model of the *interface* in which the
-  *conclusion* is false, so the interface is logically weaker than its conclusion,
-  as an assumption bundle should be.
+`ToySha` excludes the opposite concern, which is the more common failure mode of
+an interface-first formalisation: "some field was worded just strongly enough to
+make the proof go through, and assumes the conclusion". There is a model of the
+interface in which the conclusion is false, so the interface is logically weaker
+than its conclusion, as an assumption bundle should be.
 
-A rigidity finding worth relaying to a referee interested in how tight the interface
-actually is: in the `ToySha` construction, the combination of `rubin_structure`
-(the Rubin/Washington structure theorem field), `SelmerData.π_surj` (surjectivity
-onto the rank-2 Mordell–Weil part), and a nontrivial `ShaDual` together **pin the
-elementary-divisor multiset of the Iwasawa module `X` to exactly `(X, X, C p)`** —
-every algebraically consistent alternative multiset was checked by the constructing
-agent and shown to fail one of the interface constraints. The anti-vacuity witness is
-therefore not a lucky accident of a loosely-constrained construction; it is close to
-the unique way to falsify the conclusion while honoring every interface field as
-written.
+Both instances are in `AxiomAudit.auditedDecls` layer by layer — `toyAnalytic`,
+`toySelmer`, `toyIwasawa`, `toyHeight`, `toyKatz`, `toyEK`, `Setup.ap_ne_one`,
+`toyPrimeData`, `ToyTrivial`; and `shaAnalytic`, `shaSelmer`, `shaIwasawa`,
+`shaHeight`, `shaKatz`, `shaPrimeData`, `ToySha` — so a regression in either
+pinpoints its layer (§6.4).
 
 ---
 
@@ -548,395 +678,335 @@ written.
 
 ### 5.1 How to read this section
 
-The disposition table in `TASK_BOARD.md` §4 marks a handful of paper items
-**not formalized (documented)** or **commentary → docstrings**, and §2 above
-tags the corresponding table rows **descoped**. This section is the answer a
-referee should not have to extract by cross-referencing three documents: for
-every such item, what it is, why an interface-first formalization does not
-attempt it, and — the part that actually bears on trust — exactly which
-theorem(s) are affected by its absence and which are not.
+§2 tags some rows **no counterpart**. This section says, for each such item, what
+it is, why an interface-first formalisation does not attempt it, and which
+theorems are affected by its absence and which are not.
 
-The governing fact, stated once here rather than repeated nine times below, and
-stated precisely because §6.6 hands a referee the tool to check it exactly as
-written: **`KatzData`, `D_E`, and all Eisenstein–Kronecker content are absent
-outright from the transitive-constant closures of `prop_consequence`,
-`prop_dictionary`, `cor_sha5`, and `cor_sha13` — the kernel-proved,
-unconditional results.** The one apparent exception, `ClassicalInputs.deltaE`,
-is not really one: it occurs in the *type* of `cor_sha5`/`cor_sha13` and in the
-*type* of `ClassicalInputs.dataAt` — never in the *value* (proof term) of
-anything in either corollary's closure, and under no hypothesis. The reason is
-structural and inert, not a hidden dependency: `dataAt`'s signature threads
-`δ_E` as a type-level parameter of `PrimeData` (`Interface/Global.lean:229`,
-`∀ p hp hsplit, p ∉ S → @PrimeData p _ hsplit deltaE torsSqOverTam`) purely so
-`deltaE_tie` can weld the local Katz avatar to the global datum for
-`thm_reduction`'s benefit; the anchor corollaries inherit `δ_E` only as an
-index on a type they mention in passing (via `H.dataAt`), never as a
-hypothesis they assume or a value their proof inspects. This was verified
-mechanically, not by inspection — §6.6 below reproduces the exact check. The
-asymmetry is exactly what §1.4 claims: `thm_reduction`'s closure genuinely
-contains `KatzData`, `ConjStrong`, and `SinnottHyp`; the two anchor
-corollaries' closures do not. Every descope in §5.2–§5.3 below therefore lands,
-at most, on `thm_reduction` — the one declaration the project has always
-presented as conditional — and not on the two anchor corollaries a referee is
-likeliest to scrutinise first. Where a descope instead touches material the
-anchor corollaries *do* use (§5.4, the heights analytics), this section says
-so explicitly and names the citation that absorbs the trust.
+The governing fact, stated once here rather than repeated: **`KatzData`,
+`SinnottHyp`, `ConjStrong`, `ConjEK` and `EKPackage.deltaE` are absent from the
+transitive-constant closures of `prop_consequence` and `prop_dictionary`, and
+`cor_horizontal`'s closure contains none of them either — its only conjectural
+entry is its own hypothesis `ConjWeak`, which is what the paper's Theorem A also
+assumes.** §6.6 reproduces the check and states its limits.
 
-Three categories recur below, and each item is labelled with one on
-introduction: **(exposition)** — prose with no proposition to formalize;
-**(citation)** — the content is real mathematics but is exactly what
-`ClassicalInputs`/`Certificates` already exist to absorb as a named, sourced
-assumption, so "not formalized" means "assumed, visibly, per §1.3" rather than
-"missing"; **(open)** — content the paper itself does not claim to have proved.
+Three categories recur, and each item is labelled with one on introduction:
+**(exposition)** — prose with no proposition to formalise; **(citation)** — real
+mathematics, but exactly what the interface exists to absorb as a named sourced
+assumption, so "not formalised" means "assumed, visibly, per §1.3" rather than
+"missing"; **(open)** — content the paper does not claim to have proved.
 
 ### 5.2 The integral content of `prop:jetformula` (and the bookkeeping behind `hyp:sinnott`(i))
 
-**(citation, honestly flagged as such by the paper itself)**
+**(citation, flagged as such by the paper itself)**
 
-`prop:jetformula` (`main.tex` §`ssec:jetformula`) proves an exact identity:
+`prop:jetformula` proves the identity
 `c₂(L^K) = (1/2 log_p(1+p)²) ∫ ℓ(g)² dμ_ψ(g)`, obtained by expanding
-`(1+T)^{m(g)}` in binomial coefficients of a `ℤ_p`-valued exponent and
-integrating termwise against the Katz measure `μ_ψ`. `prop:grading`(1) then
-reduces this integral, coset by coset, to the grade-two moment sum `M₂(𝔭)`, and
-`§ssec:moments` further identifies `M₂(𝔭)` with an explicit unit-linear
-combination of Eisenstein–Kronecker numbers via the Bannai–Kobayashi
-interpolation property (BK3).
+`(1+T)^{m(g)}` in binomial coefficients of a `ℤ_p`-valued exponent and integrating
+termwise against the Katz measure. `prop:grading`(1) reduces the integral, coset by
+coset, to the grade-two moment sum `M₂(𝔭)`, and §`ssec:moments` identifies `M₂(𝔭)`
+with an explicit unit-linear combination of Eisenstein–Kronecker numbers through
+the Bannai–Kobayashi interpolation property.
 
-None of this — the construction of the Katz measure from elliptic units, its
-integration theory, the Amice–Mahler correspondence, the binomial-coefficient
-calculus of a `ℤ_p`-valued exponent, or the Fourier/Kummer-congruence
-bookkeeping that turns polynomial moments into Eisenstein–Kronecker numbers —
-exists in mathlib or in this project. Building it would mean formalizing a
-working theory of `p`-adic measures on profinite groups and their Amice
-transforms from scratch: a project on the scale of task T61 (scoped, in the
-board's stretch phase, as an "abstract jet/binomial skeleton" covering only the
-*elementary* combinatorial fragment `c₂ = ½∫m² − ½∫m`, explicitly **not**
-attempted) times several, once the actual Eisenstein–Kronecker calculus is
-included.
+None of that exists in mathlib or in this project: not the construction of the
+Katz measure from elliptic units, not its integration theory, not the
+Amice–Mahler correspondence, not the Fourier and Kummer-congruence bookkeeping
+that turns polynomial moments into Eisenstein–Kronecker numbers. mathlib at this
+pin does have an abstract-measure framework
+(`Mathlib/NumberTheory/Padics/Measure/`, defining an `R`-valued measure on `X` as
+a continuous `R`-linear functional on `C(X,R)`), which is where a formalisation of
+the Iwasawa algebra would start; it does not reach the Katz measure or elliptic
+units.
 
-What is formalized instead is only the **resulting algebraic congruence**:
-`KatzData.grading_congr : ∃ κ₀ : Wˣ, p² · (κ₀ · coeff 2 LKatz − m2core) ∈ (p³)`
-— an interface field with `SOURCE: Bannai–Kobayashi Prop. 3.3 / Thm. 3.7 (Duke
-Math. J. 153 (2010)) + de Shalit II §4`, `STATUS: consequence-form`. Its
-docstring is explicit about the boundary: *"the Eisenstein–Kronecker bookkeeping
-identifying `M₂(𝔭)`/`m2core` 'to the last constant' is **not** carried in
-Lean. This field records only the resulting algebraic congruence."* That
-sentence is this project's own honest admission, not a claim of a citation this
-formalization does not have — and it is exactly the same admission the paper
-makes about `hyp:sinnott`(i) ("Bannai–Kobayashi calculus bookkeeping … we expect
-it to be provable by those methods; we state it as part of the hypothesis
-because we have not carried out the bookkeeping to the last constant"). The
-Lean rendering does not paper over this: `grading_congr` is a `KatzData` field
-consumed exactly like a citation, with the caveat visible in-file.
+What is formalised instead is the resulting algebraic congruence:
+`KatzData.grading_congr : ∃ κ₀ : Wˣ, p²·(κ₀·coeff 2 LKatz − m2core) ∈ (p³)`, an
+interface field with `SOURCE: Bannai–Kobayashi Prop. 3.3 / Thm. 3.7 (Duke Math. J.
+153 (2010)) + de Shalit II §4`, `STATUS: consequence-form`. Its docstring is
+explicit about the boundary: the bookkeeping identifying `M₂(𝔭)` with `m2core` "to
+the last constant" is not carried in Lean, and the field records only the
+congruence. That is the same admission the paper makes about `hyp:sinnott`(i),
+which it states as a hypothesis for exactly this reason.
 
-**Effect on the headline results.** `KatzData` — hence `grading_congr`, hence
-this entire descope — is touched by exactly one declaration: `thm_reduction`,
-which the project has always presented as conditional on `hyp:sinnott` and
-`conj:EK` (§1.4, §2). `prop_consequence`, `prop_dictionary`, `cor_sha5`, and
-`cor_sha13` never destructure `.katz` from a `PrimeData` at all (§5.1). So this
-descope shifts trust onto a citation (Bannai–Kobayashi's second-moment
-calculus) *inside a declaration that was already conditional*; it changes
-nothing about the status of the two anchor corollaries.
+**Effect.** `KatzData`, hence `grading_congr`, is destructured by exactly one
+declaration, `thm_reduction` (checkable: `grep -rn '\.katz' FinShaRank2/Main/`
+returns `Main/Reduction.lean` only). `thm_reduction` has always been conditional on
+`hyp:sinnott` and `conj:EK`. So this descope shifts trust onto a citation inside a
+declaration that was already conditional.
 
-### 5.3 The geometry of `D_E` and the definition of `δ_E`
+### 5.3 The geometry of `D_E` and the values of the package
 
-**(citation for the definitional shape; `δ_E ≠ 0` itself is `conj:EK`, an open conjecture)**
+**(citation for the definitional shape; `δ_E(c) ≠ 0` itself is `conj:EK`, open)**
 
-`def:deltaE` (`main.tex` §`ssec:reduction`) constructs `D_E` as the divisor of
-definition of the fixed theta-jet package `𝓡_E` on a zero-dimensional
-`Q̄`-scheme (the `𝔣`-torsion translates of the central parameter), and `δ_E` as
-the resultant-norm `Nm_{/ℚ} Res(…)` of the grade-two combination of `𝓡_E`
-prescribed by `M₂`. The paper is explicit that the recipe is "algorithmic for
-any given curve" — theta-quotient expressions in `℘, ℘′, ζ` and the quasi-period
-`s₂` of the CM lattice, evaluated at `56`-division values of the lemniscatic
-lattice for the testbed — but also explicit that carrying it out is **future
-work**: `rmk:correlation` names "computing `δ_E` for the testbed … the decisive
-experiment" as "phase two of this programme," not something the paper itself
-has done.
+`eq:DEdef` constructs `D_E` as the ray class group `Cl_𝔣(K) = (𝒪_K/𝔣)^×/μ_K`, on
+which `Gal(K(𝔣)/K)` acts simply transitively through the Artin map. `eq:jetpackage`
+constructs the six functions `r_{a,b}([g]) = ε(g)^{-(a+b)} e^*_{a,b}(t_g,0)/A(Γ)^a`
+as the grade-≤2 jet of the reduced theta function along the `𝔣`-division values;
+in coordinates these are expressions in `E₁^*`, `℘`, `℘′` and the quasi-period
+`s₂`. `def:deltaE` then sets `δ_E(c) = ∏_{t ∈ D_E} F_c(t)`.
 
-Formalizing `D_E` would require the algebraic theta-function machinery (the
-Kronecker theta function, Weierstrass `℘/℘′/ζ` at division values, CM
-quasi-periods), a formal resultant over a number field, and `Nm_{/ℚ}` — none of
-it existing in mathlib, and none of it computed even informally for the
-testbed curve yet. There is, at present, no concrete numerical object to
-formalize a construction of.
+The Lean rendering keeps the resultant and abstracts the geometry:
+`EKPackage` carries `ι` (a type of points), `D : Finset ι`, `r : Fin 6 → ι → L`
+and `v : ℕ → Valuation L Γ` as data, and `δ_E(c)` is then the definition
+`EKPackage.deltaE`, computed rather than assumed. What is *not* rendered is
+everything that makes `D_E` a ray class group and `r` a jet of a theta function:
+the class-group structure, the Galois action, the equivariance, the algebraic
+theta machinery, and the Weierstrass and quasi-period expressions. mathlib has none
+of it, and the paper does not carry out the evaluation for the testbed curve either
+— `rmk:correlation` and §`sec:deltaEnumerics` treat computing the invariant as the
+next step of the programme.
 
-The Lean rendering matches this precisely rather than fabricating a
-construction: `KatzData.deltaE_local : ℚ` is **opaque data** — a bare rational
-number, `SOURCE: def:deltaE (resultant-norm of the fixed algebraic expression);
-Bannai–Kobayashi (BK2) algebraicity`, `STATUS: data` — and `resultant_link :
-deltaE_local ≠ 0 → padicValRat p deltaE_local = 0 → NonvanishingOnDE` records
-only the abstract resultant-norm property (a classical fact about resultants,
-`STATUS: classical`), not a derivation from an actual theta-jet computation.
-`δ_E ≠ 0` itself is `conj:EK`, one of the paper's two named open conjectures
-(§1.4); the Lean formalization does not assert it anywhere, only receives it as
-hypothesis `h87` of `thm_reduction`.
+Two specific consequences of this abstraction are §5.6 and §5.7; they are the two
+places where the abstraction is not conservative, and each says which way it cuts.
 
-**Effect on the headline results.** As in §5.2: `δ_E`, `D_E`, and
-`NonvanishingOnDE`/`resultant_link` are consumed only by `thm_reduction`. The
-two anchor corollaries never construct or reference `D_E`; their unconditional
-status is untouched. What this descope *does* mean honestly: a referee should
-not expect the Lean repository to contain any evidence, numerical or formal,
-that `δ_E ≠ 0` for the testbed curve — the paper does not claim to have that
-evidence yet either, and `thm_reduction`'s conditional status already signals
-this at the type level.
+**Effect.** `EKPackage`, `δ_E(c)` and `supp` are consumed only by `thm_reduction`
+and `thm_reduction_of_conjEK`. A referee should not expect the Lean repository to
+contain evidence, numerical or formal, that `δ_E(c) ≠ 0` for the testbed curve; the
+paper does not claim to have that evidence either, and `thm_reduction`'s
+conditional status signals this at the type level.
 
 ### 5.4 The heights analytics: what `Reg_γ` does and does not carry into the kernel
 
-**(citation — and the one descope in this section that a referee should read
-most carefully, because it *does* touch the anchor corollaries)**
+**(citation — the one descope in this section that `prop_dictionary` depends on)**
 
-`main.tex` §`sec:anchor` computes the cyclotomic `p`-adic regulator `Reg_p` of
-the fixed basis `{P₁, P₂}` via the `p`-adic sigma function (Mazur–Stein–Tate),
-by two independent implementations (PARI's `ellpadicregulator`, Sage's
-`padic_regulator`) that agree digit for digit, e.g.
-`Reg_5 = 5² + 3·5³ + 3·5⁴ + … (mod 5^13)`. This computation is **not**
-reproduced or re-verified anywhere in this repository, and — this is the point
-worth stating precisely — **it does not need to be**, for a reason specific to
-how `prop_dictionary` is proved.
+The paper computes the cyclotomic `p`-adic regulator of the fixed basis
+`{P₁, P₂}` through the `p`-adic sigma function of Mazur–Stein–Tate, by two
+independent implementations (PARI's `ellpadicregulator`, Sage's `padic_regulator`)
+that agree digit for digit. That computation is not reproduced or re-verified
+anywhere in this repository.
 
-`HeightData.Reg_γ : ℚ_[p]` is opaque data (no sigma-function construction
-behind it in Lean); `spr_padicBSD` and `spr_nondeg` are citation-grade fields
-(`SOURCE: Schneider, Invent. Math. 79 (1985); Perrin-Riou, Invent. Math. 109
-(1992); packaged as Stein–Wuthrich Thm 6.1`). `spr_nondeg` states an **iff**:
-`IsPUnit c2norm ↔ (heightNondeg ∧ IsPUnit Reg_γ ∧ IsPUnit shaOrd)`. The fifth
-conclusion of `cor_sha5`/`cor_sha13` (height-pairing nondegeneracy) is derived
-— via `prop_dictionary`, whose entire proof is the three rewrites
-`c2norm_tie.symm → spr_nondeg → shaOrd_tie` (T32 board report) — by reading
-this iff in the **forward** direction from `IsPUnit c2norm`, which the
-certificates `c2_5`/`c2_13` already establish independently on the
-*L-function* side. The proof never needs to know `Reg_γ`'s numeric value, its
-digit expansion, or even that a specific PARI/Sage computation produced it —
-only that *some* element of `ℚ_[p]` exists satisfying the cited tie-equations.
-`reg_integral` and `sha_integral` (the ‖·‖ ≤ 1 integrality facts) are, per the
-same T32 report, **unused** by the proof that lands in `cor_sha5`/`cor_sha13`.
+`HeightData.Reg_γ : ℚ_[p]` is opaque data: there is no sigma-function
+construction behind it in Lean. `spr_padicBSD` and `spr_nondeg` are
+citation-grade fields (SOURCE: Schneider, Invent. Math. 79 (1985); Perrin-Riou,
+Invent. Math. 109 (1992); packaged as Stein–Wuthrich Thm. 6.1). `prop_dictionary`
+is proved by three rewrites: `c2norm_tie` identifies the height-side proxy with
+the normalised jet, `spr_nondeg` is read as an iff, `shaOrd_tie` converts the
+Ш-order proxy. The proof never needs `Reg_γ`'s numeric value or its digit
+expansion — only that some element of `ℚ_[p]` exists satisfying the cited
+equations.
 
-Put plainly: **the specific digit strings `Reg_5`, `Reg_13` displayed in
-`main.tex` play no role in the Lean proof of `cor_sha5`/`cor_sha13` at all.**
-In the paper they serve a real epistemic purpose — an independent numerical
-route to the same `eq:match5`/`eq:pred13` identity that the L-function side
-already certifies, strengthening the reader's confidence that the identity is
-not a bookkeeping artefact — but that purpose is narrative corroboration
-external to the Lean chain, not a premise the kernel checks. The Lean proof's
-entire numerical content, at both anchor primes, runs through the certificates
-`c2_5`/`c2_13` of §3 (the L-function side only); the height side enters solely
-as the *citation* `spr_padicBSD`/`spr_nondeg`, exactly as any other classical
-theorem in `ClassicalInputs` does. A referee auditing what the kernel actually
-checked should not come away thinking two independent numerical computations
-were verified — only one was (§3.3–§3.4), and the other is real, corroborating,
-externally-reproducible mathematics that this formalization is honest about
-not having touched.
+So the digit strings displayed in the paper play no part in any Lean proof. In the
+paper they serve a real purpose, as an independent numerical route to the same
+conclusion; that purpose is external to the Lean chain. The height side enters the
+formalisation solely as the citation `spr_padicBSD`/`spr_nondeg`, exactly as any
+other classical theorem in `ClassicalInputs` does.
 
-### 5.5 §3 background: the Sinnott–Gillard mechanism and (BK1)–(BK3)
+### 5.5 `lem:noanomalous`(1): Deuring's reduction criterion
 
-**(exposition, with two partial exceptions that are already citations elsewhere)**
+**(citation)**
 
-`main.tex` §`sec:gillard` is explicitly labelled expository by the paper itself
-("This section is expository"): it recalls the Katz measure's construction
-from elliptic units, states Gillard's theorem (`thm:gillard`, the vanishing of
-the `μ`-invariant of every branch of the Katz measure — the "zeroth jet"
-analogue of the paper's own second-jet question), sketches the shape of
-Sinnott's proof, and states the three Bannai–Kobayashi structural theorems
-(BK1)–(BK3) (generating function, algebraicity, `p`-adic interpolation) that
-package the Katz measure's moments as Eisenstein–Kronecker numbers. None of it
-is presented as new — every result is attributed (Katz, Sinnott, Gillard,
-Bannai–Kobayashi, de Shalit) — and its purpose in the paper is motivational:
-explaining *why* one might hope the paper's second-jet question is horizontally
-rigid, by exhibiting the zeroth-jet case as an established instance.
+Part (2) of `lem:noanomalous` is kernel-proved, in the strengthened form the paper
+states (§2). Part (1) — if `p ≢ 1 (mod 4)` then `p ∣ a_p`, so `p` is not anomalous
+— is not formalised. Its proof reduces to Deuring's reduction criterion: a prime
+inert or ramified in the CM field has supersingular reduction, and supersingular
+reduction means `p ∣ a_p`. mathlib has neither Deuring's criterion nor the
+reduction of an elliptic curve with complex multiplication at a non-split prime, so
+formalising part (1) means formalising the reduction theory of CM elliptic curves.
 
-**`thm:gillard` itself is not needed anywhere in the Lean interface** — checked
-directly: no interface field cites Gillard's theorem as a `SOURCE`. The
-Iwasawa-module structure the formalization actually needs
-(`IwasawaData.rubin_structure`) cites Washington GTM 83 Thm. 13.12 fused with
-Rubin's cyclotomic main conjecture (Invent. Math. 103 (1991), Thm. 12.3), a
-different, two-variable-to-cyclotomic-line result; the zeroth-jet vanishing
-that Gillard's theorem supplies is simply not a hypothesis of any theorem in
-this project. **(BK1)–(BK3)** fare slightly differently: they are the informal
-justification behind two citation-grade interface fields already logged in
-§2 — `lem:comparison` (`KatzData.comparison`, `SOURCE: Bannai–Kobayashi
-Cor. 3.12`) and `grading_congr`/`hyp:sinnott` (`SOURCE: Bannai–Kobayashi
-Prop. 3.3/Thm. 3.7`, `§§2–3 calculus`) — but the *general* structural theorems
-(BK1)–(BK3), stated for an arbitrary CM lattice and arbitrary torsion
-parameters, are not themselves rendered as Lean propositions; only their
-specific consequences for this curve are, as the two fields just named. This
-is the same descope already accounted for in §5.2 under a different name, not
-an additional one.
+**Effect.** None on any declaration in the tree. Every statement in the
+formalisation quantifies over split primes, `hsplit : p % 4 = 1`, so part (1) is
+never in the antecedent of anything the kernel checks. Its role in the paper is to
+support the hypothesis of Theorem A that only finitely many split primes are
+anomalous, which the Lean encoding obtains differently (§2, `cor:horizontal` row).
 
-**Effect on the headline results.** None whatsoever, on two independent
-grounds: (1) `thm:gillard` is not cited by any interface field in the project,
-kernel-proved or otherwise; (2) the two BK-derived fields it partially
-motivates (`comparison`, `grading_congr`) live in `KatzData`, which — per
-§5.1 — is untouched by `prop_consequence`, `prop_dictionary`, `cor_sha5`, and
-`cor_sha13`. §`sec:gillard` could be deleted from `main.tex` entirely without
-changing a single Lean declaration.
+### 5.6 `conj:EK`: the hypothesis `#Cl_𝔣(K) ≥ 6` is not rendered
 
-### 5.6 §6: the 508-prime horizontal regulator scan
+**(descope that widens the rendered statement — read this one carefully)**
 
-**(exposition — an experiment, not a claim with a proof obligation)**
+`conj:EK` in the paper assumes `#Cl_𝔣(K) ≥ 6`, and the paper explains that the
+hypothesis is forced: the equivariant functions on the torsor `D_E` form a
+`K`-space of dimension `#Cl_𝔣(K)`, so with fewer classes than sections some
+combination of the six sections vanishes identically on `D_E`, and `δ_E(c) = 0` for
+that `c`.
 
-`main.tex` §`sec:scan` computes `v_𝔭(Reg_𝔭)` at 508 split primes in four
-contiguous windows (up to `p = 16889`), all via PARI's `ellpadicregulator`,
-finding the generic value `2` at every one, with zero escalations under the
-paper's own precision-margin protocol. By `prop:dictionary`, a clean scan
-result is *necessary* (not sufficient — it tests only the regulator half of
-the unit-condition conjunction, not the Ш half) for the strong conjecture to
-survive as a falsification test; an abundance of exceptions would refute it
-outright.
+`ConjEK H` does not carry the hypothesis, because in this encoding there is
+nothing to attach it to: `EKPackage.D` is an abstract `Finset ι` with no class
+group and no equivariance. Dropping a hypothesis from a conjecture **widens** what
+the conjecture asserts. A package with `#D < 6` makes `ConjEK` false, and nothing
+in the encoding rules such a package out. So `ConjEK H` renders `conj:EK` only for
+those `H` whose package meets the paper's hypothesis.
 
-This is a numerical experiment, not a theorem: it has no proof obligation to
-discharge, and "not formalized" here means exactly what it says — the 508
-individual PARI computations are not reproduced in Lean, and there is no
-`Certificates`-style structure recording them. Formalizing even a handful of
-them would require generalizing the `Certificates` design (currently exactly
-two primes, `p = 5, 13`) to a scan-scale structure, at a cost proportional to
-the number of primes and with zero return in kernel-checked content beyond
-what the two anchor primes already deliver — because, as noted in §5.5's
-counterpart discussion, the scan's algebraic meaning (`rmk:correlation`) is
-tied to `thm_reduction`, the conditional theorem, not to `cor_sha5`/`cor_sha13`.
+This is recorded in `ConjEK`'s own docstring in `Statements.lean`, in the same
+terms. Elsewhere in the formalisation a dropped hypothesis is safe, because the
+Lean proof establishes the stronger statement (`prop_consequence`,
+`prop_dictionary`, §2). Here nothing is proved: a conjecture is stated in a wider
+form than the paper states it. A referee should treat `thm_reduction_of_conjEK` as
+conditional on `ConjEK H` for a package satisfying `#D ≥ 6`, which is a hypothesis
+about `H` that the Lean statement does not itself express.
 
-**Effect on the headline results.** None: `cor_sha5` and `cor_sha13` are
-proved at exactly the two primes `p = 5, 13`, via `Certificates`, independently
-of anything the scan measures at the other 506 primes. A referee evaluating
-*only* the two anchor corollaries can disregard §`sec:scan` entirely. A
-referee evaluating the paper's broader case for `conj:strong` (the conjecture,
-not the theorems) should read the scan exactly as the paper presents it: real,
-independently-reproducible PARI computation, offered as evidence for a stated
-conjecture, and not claimed by the paper — or by this document — to be a
-proof of anything.
+`thm_reduction` is unaffected: it takes the single instance
+`hEK : H.ek.deltaE c ≠ 0` rather than the conjecture.
 
-### 5.7 §9: the outlook section
+### 5.7 `lem:orbit`: proved, but on an input the paper assumes
 
-**(exposition — forward-looking discussion, no propositions to check)**
+**(citation, with the assumption on the paper's side)**
 
-`main.tex` §`sec:outlook` discusses the inert-prime analogue of the paper's
-question (supersingular reduction, no unit root, no classical Katz measure —
-citing Burungale–Kobayashi–Ota's proof of Rubin's local-units conjecture and
-Pollack–Rubin's supersingular CM main conjecture as the relevant foundations,
-while noting the correct formulation of generic `±`-regulator valuation at
-rank two is "not in the literature"), poses "Bertrand for determinants" as an
-open problem (nonvanishing of the determinant of the height pairing matrix at
-almost all split primes for a rank-two curve — no case known, for any curve),
-and discusses what a proof of the weak conjecture would and would not deliver.
+Both parts of `lem:orbit` are kernel-proved in `Kernel/Orbit.lean`, in full
+generality: for a Galois extension `L/K` and a finite set `D` with a
+`Gal(L/K)`-action, an equivariant `F : D → L` has `∏_{t ∈ D} F(t) ∈ K`, and if the
+action is transitive then `F` vanishes either everywhere on `D` or nowhere.
 
-None of this states a proposition about the paper's own results that a Lean
-proof could discharge; it is explicitly a discussion of what is *not yet
-known*, posed as open problems for future work. There is nothing here with a
-truth value to formalize.
+What the lemma needs, and what neither the paper nor the formalisation proves, is
+that its hypotheses hold for `D_E` and the package: the equivariance
+`r_{a,b}(σt) = σ(r_{a,b}(t))`. The paper says so — it grants the equivariance as an
+input, citing Bannai–Kobayashi Thm. 2.9 and Cor. 2.11 for the algebraicity of the
+section values and the simply transitive action of `Gal(K(𝔣)/K)` on
+`D_E = Cl_𝔣(K)`, but it does not verify the equivariance itself. The Lean encoding
+inherits this: `EKPackage` carries no group action, so `lem:orbit` cannot be
+applied to a package at all.
 
-**Effect on the headline results.** None: §`sec:outlook` makes no claim about
-`E : y² = x³ − 56x` or about `cor:sha5`/`cor:sha13` that the formalization
-could either support or undermine. Its only connection to the rest of this
-document is that "Bertrand for determinants," if proved for the testbed curve
-at almost all split primes, would settle the height-nondegeneracy half of
-`conj:weak` unconditionally — a fact the paper states about a hypothetical
-future proof, not about anything proved here.
+**Effect.** The visible consequence is that `δ_E(c)` is **not** proved to lie in
+`K`. `EKPackage.deltaE` lands in `P.L`, the paper's `Q̄`, and the divisibility
+condition `𝔭 ∤ δ_E(c)` is therefore not symmetric in `𝔭` and `𝔭̄`. The structure
+this replaced tested that condition with `padicValRat`, which asserted a
+rationality that is not available. `thm_reduction` does not use `lem:orbit`, and it
+does not need to: its side condition is the valuation statement
+`H.ek.v p (H.ek.deltaE c) = 1` at the fixed prime `𝔭` of the embedding.
 
-### 5.8 The five prose remarks: `cav:failure`, `rmk:KL`, `rmk:fq`, `rmk:modesnow`, `rmk:correlation`
+### 5.8 §3 background: the Sinnott–Gillard mechanism and (BK1)–(BK3)
 
-**(exposition, in every case — but each is worth a sentence on *why* it has no proof obligation)**
+**(exposition, with two partial exceptions already accounted for as citations)**
 
-* **`cav:failure`** names two failure modes for `conj:strong`: (A) irreducible
-  `𝔭`-dependence of the cyclotomic-direction jet, and (B) a Wieferich-type
-  collapse of `δ_E`. This is a risk taxonomy for a conjecture, not a
-  proposition; its mathematical content is exactly what §1.4's epistemic split
-  already renders formally, by isolating `hyp:sinnott` (mode A) and `conj:EK`
-  (a necessary condition against mode B) as the project's only two conjectural
-  hypotheses. Formalizing the taxonomy itself would mean formalizing a
-  classification of *ways a conjecture could fail* — not a mathematical claim.
-* **`rmk:KL`** is a comparative discussion of the Kubota–Leopoldt setting
-  (Ferrero–Washington rigidity of the `μ`-invariant vs. Iwasawa-invariant
-  irregularity governed by wandering Bernoulli numbers) offered as an analogy
-  and a cautionary precedent for failure mode (B). It is folklore from a
-  different, classical body of Iwasawa theory, cited but not used in any proof
-  step of this paper; formalizing it would mean formalizing Kubota–Leopoldt
-  `p`-adic `L`-functions and Ferrero–Washington's theorem, an unrelated project.
-* **`rmk:fq`** explains *why* `lem:decoupling` matters: at a double zero, the
-  product rule kills first-order (Fermat-quotient-carrying) contributions from
-  the comparison and Euler factors. The mathematical content of this remark
-  is `lem:decoupling` itself, which **is** kernel-proved
-  (`Kernel/Decoupling.lean`, ring-generic — §2 above). The remark is framing
-  around an already-formalized lemma; there is no separate proposition beyond
-  the lemma's own statement.
-* **`rmk:modesnow`** identifies mode (A) with the failure of `hyp:sinnott` and
-  explains that mode (B) would have to act through the trace itself, since
-  `lem:decoupling` (again, kernel-proved) already rules it out of the two
-  visible channels. This is commentary connecting two pieces already present
-  in the formalization — the hypothesis-position status of `SinnottHyp`
-  (§1.4) and the proof of `lem:decoupling` — not new content.
-* **`rmk:correlation`** explains how the 508-prime scan (§5.6) acquires
-  "algebraic meaning" through `thm:reduction`, and flags that computing `δ_E`
-  for the testbed curve is "phase two of this programme" — i.e., explicitly
-  future work, not yet done even informally. Its content is the D_E/`δ_E`
-  descope of §5.3, restated in interpretive terms; nothing further to add.
+The paper's background section is labelled expository by the paper itself. It
+recalls the Katz measure's construction from elliptic units, states Gillard's
+theorem (`thm:gillard`: the vanishing of the `μ`-invariant of every branch of the
+Katz measure — the zeroth-jet analogue of the paper's second-jet question),
+sketches Sinnott's proof, and states the three Bannai–Kobayashi structural theorems
+that package the Katz measure's moments as Eisenstein–Kronecker numbers. Nothing in
+it is presented as new; its role is to explain why one might expect the second-jet
+question to be horizontally rigid.
 
-**Effect on the headline results.** None of these five items states a
-mathematical proposition that feeds into any proof step of
-`prop_consequence`, `prop_dictionary`, `thm_reduction`, `cor_sha5`, or
-`cor_sha13`. This is exactly why `TASK_BOARD.md` §4 dispositions all five as
-"prose → FORMALIZATION.md" rather than assigning any of them a proof task:
-they were never claims requiring proof, only commentary a referee should be
-able to read once, here, rather than reconstruct from the paper.
+`thm:gillard` is not needed anywhere in the Lean interface: no field cites
+Gillard's theorem as a `SOURCE`. The Iwasawa-module structure the formalisation
+needs is `IwasawaData.rubin_structure`, which cites Washington GTM 83 Thm. 13.12
+fused with Rubin, Invent. Math. 103 (1991), Thm. 12.3 (via Yager) — a different
+result. The Bannai–Kobayashi structural theorems fare differently: they are the
+justification behind two citation-grade fields already logged in §2,
+`KatzData.comparison` and `KatzData.grading_congr`, but the general structural
+theorems, stated for an arbitrary CM lattice, are not themselves rendered. That is
+§5.2's descope under another name, not an additional one.
 
-### 5.9 Two loose ends closed: `rmk:nofinitesub` and `rmk:normalisation`(ii)–(iii)
+**Effect.** None. `thm:gillard` is cited by no field; the two Bannai–Kobayashi
+fields live in `KatzData`, which only `thm_reduction` destructures.
 
-§2's table tags `rmk:nofinitesub` **descoped (prose)** with a pointer back to
-this section; unlike the seven items above, its underlying mathematical
-content is *not* actually absent from the formalization, so it deserves a
-one-paragraph correction rather than a fresh entry in the ledger of §5.10.
+### 5.9 The evidence part: the scan, and the Coates–Liang–Sujatha input
 
-`rmk:nofinitesub` is a remark about *proof strategy*: it observes that the
-paper's proof of `prop:consequence` avoids the `p`-adic leading-term formalism
-at Step 3–4 by using the elementary structure argument "no finite submodule +
-rank forcing `M = 0`" instead. The fact this remark discusses,
-`IwasawaData.no_finite_submodule` (`SOURCE: Greenberg, LNM 1716, Prop. 4.14`),
-**is** a genuine interface field, and it **is** consumed by the kernel-proved
-`prop_consequence` (Step 3, per its own `PAPER` docstring pointer). So only the
-remark's own English commentary — "the proof deliberately avoids the leading-
-term formalism" — has no separate Lean rendering; the mathematics it is
-commenting on is already visible in §2's `prop:consequence` row via
-`no_finite_submodule`'s citation. Zero trust shift here: a referee checking
-`no_finite_submodule` against Greenberg's Prop. 4.14 has already checked
-everything `rmk:nofinitesub` refers to.
+**(exposition — computations and citations, not claims with proof obligations)**
 
-`rmk:normalisation` has three parts; §2 names only part (i) as a kernel-proved
-lemma (`isPUnit_c2tilde_iff_of_split`). Parts (ii) and (iii) need no separate
-row: (ii) is a restatement, in words, of exactly the identity `eq:padicbsd`
-already states and that `HeightData.spr_padicBSD`/`spr_nondeg` already carry
-as citation-grade fields (§2, §5.4) — it adds no content beyond framing. Part
-(iii) — integrality of `c₂(p)` — needs no interface field at all, because it
-is **automatically true by the Lean type**: `AnalyticData.Lp : Λ p` where
-`Λ p := PowerSeries ℤ_[p]` (`Defs.lean`), so every coefficient of `Lp`,
-including `coeff 2 Lp`, is by construction already an honest element of
-`ℤ_[p]` — there is no separate "integrality" hypothesis to assume or prove,
-exactly matching the paper's own assessment that "the integrality assertion
-… is therefore not the substance of the conjecture; the unit assertion is."
+Paper v2's evidence part computes `v_𝔭(Reg_𝔭)` at 508 split primes in four
+segments, up to `p = 16889`, through PARI's `ellpadicregulator`, finding the
+generic value `2` at every one, with zero exceptions and zero escalations under the
+paper's precision protocol. It also states the Coates–Liang–Sujatha input
+(`thm:cls`), the isogeny transfer (`lem:isogeny`), the resulting vanishing
+`cor:shavanishing` — Ш(E/ℚ)[p^∞] = 0 at every split `p < 30,000` for the testbed
+curve — and `prop:scaneq`, which says that below 30,000 the unit condition reduces
+to a condition on the regulator alone.
 
-### 5.10 Summary: where the trust actually sits
+None of this is formalised, and none of it has a proof obligation the kernel could
+discharge. The 508 PARI computations are not reproduced in Lean; formalising even a
+few would need a scan-scale certificate structure, at a cost proportional to the
+number of primes. `thm:cls`, `lem:isogeny` and `cor:shavanishing` are citations and
+a transfer argument about a specific curve; `prop:scaneq` combines them with
+`prop:dictionary`, whose Lean counterpart is `prop_dictionary`.
 
-| Item | Category | Trust lands on | Touches anchor corollaries? |
+**Effect.** None on any Lean declaration. A referee evaluating the formalisation
+can disregard the evidence part; a referee evaluating the paper's case for
+`conj:strong` should read the scan as the paper presents it — reproducible PARI
+computation offered as evidence for a stated conjecture, not claimed as a proof.
+The scripts and data are in `../code`.
+
+### 5.10 The outlook section
+
+**(exposition — open problems, nothing with a truth value to formalise)**
+
+The outlook discusses the inert-prime analogue (supersingular reduction, no unit
+root, no classical Katz measure), citing Burungale–Kobayashi–Ota and
+Pollack–Rubin as the relevant foundations and noting that the correct formulation
+of generic `±`-regulator valuation at rank two is not in the literature; it poses
+the nonvanishing of the determinant of the height pairing matrix at almost all
+split primes as an open problem, for which no case is known for any curve; and it
+discusses what a proof of the weak conjecture would and would not give.
+
+**Effect.** None. The section states no proposition about the paper's own results
+that the formalisation could support or undermine.
+
+### 5.11 The prose remarks
+
+**(exposition in every case)**
+
+* **`ssec:failuremodes`** classifies two ways `conj:strong` could fail: irreducible
+  `𝔭`-dependence of the cyclotomic-direction jet, and a Wieferich-type collapse of
+  `δ_E`. A taxonomy of ways a conjecture could fail is not a proposition. Its
+  content is what §1.4's split already renders, by isolating `hyp:sinnott` and
+  `conj:EK` as the only two conjectural hypotheses.
+* **`rmk:fq`** explains what the decoupling excludes: at a double zero the product
+  rule kills the first-order contributions of the comparison and Euler factors. Its
+  mathematical content is `lem:decoupling` itself, which is kernel-proved and
+  ring-generic (`Kernel/Decoupling.lean`). The remark is framing around a
+  formalised lemma.
+* **`rmk:modesnow`** identifies the two failure modes with the two named inputs of
+  `thm:reduction`. This is commentary connecting the hypothesis-position status of
+  `SinnottHyp` (§1.4) with the proof of `lem:decoupling`; no new content.
+* **`rmk:correlation`** explains how the scan acquires an algebraic reading through
+  `thm:reduction`. Its content is §5.3 and §5.9 restated in interpretive terms.
+* **`cav:deltaEscope`** separates what the numerical work on `δ_E(c)` settles from
+  what it does not, beginning with the fact that it does not identify the vector —
+  which is `hyp:sinnott`(i), the conjectural hypothesis. It is a scope statement
+  about evidence, with no proposition to discharge.
+
+**Effect.** None of these states a proposition feeding any proof step of
+`prop_consequence`, `prop_dictionary`, `cor_horizontal` or `thm_reduction`.
+
+### 5.12 Two loose ends: `rmk:nofinitesub` and `rmk:integrality`
+
+`rmk:nofinitesub` is a remark about proof strategy: the proof of
+`prop:consequence` avoids the `p`-adic leading-term formalism by using "no finite
+`Λ`-submodule, then rank forcing `M = 0`" instead. The fact it discusses,
+`IwasawaData.no_finite_submodule` (SOURCE: Greenberg, LNM 1716, Prop. 4.14), is a
+genuine interface field and is consumed by `prop_consequence` at step 6. Only the
+remark's English commentary has no Lean rendering. A referee who has checked
+`no_finite_submodule` against Greenberg's Prop. 4.14 has checked everything the
+remark refers to.
+
+`rmk:integrality` asserts integrality of `c₂(p)` for all split `p` outside an
+explicit finite set, deriving it from integrality of the modular symbols of `E`
+(Greenberg–Vatsal Prop. 3.7; the elliptic-curve form is Stein–Wuthrich Prop. 3.7),
+together with the fact that `ρ̄_{E,p}` is reducible for only finitely many `p`
+(Mazur 1978). In the Lean encoding integrality is not a hypothesis anywhere,
+because it is automatic: `AnalyticData.Lp : Λ p` with `Λ p := PowerSeries ℤ_[p]`,
+so `coeff 2 Lp ∈ ℤ_[p]` by construction. The remark's citations are therefore not
+carried in the tree — nothing needs them. This is a genuine difference of shape
+rather than a shared claim: the paper must prove integrality because its `c₂(p)` is
+a priori a `p`-adic number, and the formalisation gets it from the type of `Lp`, at
+the cost of building integrality into the interface rather than deriving it. The
+same remark is why `ConjStrong` omits the integrality clause of `conj:strong`; the
+paper's own assessment is that the integrality assertion is not the conjecture's
+substance, the unit assertion is.
+
+### 5.13 Summary: where the trust sits
+
+| Item | Category | Trust lands on | Affects `prop_consequence`, `prop_dictionary` or `cor_horizontal`? |
 |---|---|---|---|
-| `prop:jetformula` integral content (§5.2) | citation, self-flagged | Bannai–Kobayashi §§2–3 calculus, via `grading_congr` | No — `thm_reduction` only |
-| `D_E` geometry / `δ_E` (§5.3) | citation (shape) + open (nonvanishing) | resultant-norm classical fact; `conj:EK` itself is open | No — `thm_reduction` only |
-| Heights analytics, `Reg_γ`'s digit expansion (§5.4) | citation | Schneider/Perrin-Riou via Stein–Wuthrich Thm 6.1 (`spr_nondeg`) | **Yes, via the citation** — but not via the digit expansion itself |
-| §3 background, `thm:gillard`/(BK1)–(BK3) (§5.5) | exposition (+ overlaps §5.2's citation) | nothing beyond §5.2's citation | No |
-| §6 the 508-prime scan (§5.6) | exposition | nothing — an experiment, not a claim | No |
-| §9 outlook (§5.7) | exposition | nothing — open problems | No |
-| Five prose remarks (§5.8) | exposition | nothing beyond already-logged citations/lemmas | No |
-| `rmk:nofinitesub` (§5.9) | already formalized, mislabelled by nothing but its own prose | `no_finite_submodule` (Greenberg LNM 1716) | Yes — but via a row already in §2 |
-| `rmk:normalisation`(ii)–(iii) (§5.9) | (ii) restates `eq:padicbsd`; (iii) automatic by type | nothing new | Yes — but via rows already in §2 |
+| `prop:jetformula` integral content (§5.2) | citation, self-flagged | Bannai–Kobayashi §§2–3, via `grading_congr` | No — `thm_reduction` only |
+| `D_E` geometry and the package (§5.3) | citation (shape) + open (nonvanishing) | the paper's own construction; `conj:EK` is open | No — `thm_reduction` only |
+| Heights analytics, `Reg_γ` (§5.4) | citation | Schneider/Perrin-Riou via Stein–Wuthrich Thm. 6.1 | **Yes**, for `prop_dictionary`, through the citation — not through the digit expansion |
+| `lem:noanomalous`(1) (§5.5) | citation | Deuring's criterion, absent from mathlib | No — every statement quantifies over split primes |
+| `conj:EK`'s hypothesis `#Cl_𝔣(K) ≥ 6` (§5.6) | descope that widens | the reader, who must supply the hypothesis about `H` | No — `thm_reduction_of_conjEK` only |
+| `lem:orbit`'s equivariance input (§5.7) | assumption on the paper's side | Bannai–Kobayashi Thm. 2.9, Cor. 2.11, plus an unverified equivariance | No — `lem:orbit` is proved and unused by `thm_reduction` |
+| Background: `thm:gillard`, (BK1)–(BK3) (§5.8) | exposition (overlaps §5.2) | nothing beyond §5.2 | No |
+| The scan and the CLS input (§5.9) | exposition + citation | PARI, and Coates–Liang–Sujatha for `cor:shavanishing` | No |
+| The outlook (§5.10) | exposition | nothing — open problems | No |
+| The prose remarks (§5.11) | exposition | nothing beyond already-logged citations and lemmas | No |
+| `rmk:nofinitesub` (§5.12) | already formalised | `no_finite_submodule` (Greenberg LNM 1716) | Yes — through a row already in §2 |
+| `rmk:integrality` (§5.12) | different shape in Lean | the type `Λ p := PowerSeries ℤ_[p]` | Yes — but nothing is assumed |
 
-The pattern is deliberate, not coincidental: every descope that reaches the two
-unconditional anchor corollaries (`cor_sha5`, `cor_sha13`) does so **only**
-through material already carried as a named, sourced field of
-`ClassicalInputs` — never through an unexamined gap. The descopes that involve
-a genuinely open question (`conj:EK`'s nonvanishing, and by extension
-`hyp:sinnott`) are confined to `thm_reduction`, exactly where the paper itself
-places them. Nothing in this section should be read as "harmless because
-unimportant" — §5.4 in particular is load-bearing mathematics that this
-project chose to trust as a citation rather than reconstruct; "harmless" here
-means specifically *harmless to the unconditional status of `cor_sha5` and
-`cor_sha13`*, which is the claim §1–§4 make and the claim this section has now
-checked, item by item, rather than asserted.
+Every descope that reaches `prop_consequence`, `prop_dictionary` or
+`cor_horizontal` does so through material carried as a named, sourced field of
+`ClassicalInputs`. The descopes involving a genuinely open question are confined
+to `thm_reduction` and `thm_reduction_of_conjEK`, which is where the paper places
+them. "Harmless" here means harmless to the status of the theorems that carry no
+conjectural hypothesis. It does not mean unimportant: §5.4 is mathematics
+`prop_dictionary` depends on and this project trusts as a citation rather than
+reconstructs, and §5.6 states a conjecture in a wider form than the paper does.
+Each says so.
 
 ---
 
@@ -944,33 +1014,27 @@ checked, item by item, rather than asserted.
 
 ### 6.1 Toolchain and dependencies
 
-All commands below are run from the `formal/` directory — the root of this
-repository (§3.1: the parent project's `main.tex`, `data/`, and top-level
-`scripts/` are **not** part of this repository and are not needed to run the
-audit).
+All commands below are run from `formalisation/`, the root of this Lake project.
+The manuscript is not part of this repository, and the computer algebra behind
+the paper's evidence part is in `../code`; neither is needed to run the audit.
 
-* **Lean toolchain**: pinned by `formal/lean-toolchain`, which reads
+* **Lean toolchain**: pinned by `lean-toolchain`, which reads
   ```
   leanprover/lean4:v4.33.1
   ```
-  `elan` (the standard Lean version manager) reads this file automatically on
-  `lake build`/`lake exe`; a referee with `elan` installed does not need to set
-  anything by hand.
-* **Mathlib**: pinned by `formal/lake-manifest.json`, whose `mathlib` entry
-  records
+  `elan` reads this file automatically on `lake build` and `lake exe`; a referee
+  with `elan` installed need set nothing by hand.
+* **Mathlib**: pinned by `lake-manifest.json`, whose `mathlib` entry records
   ```
   "rev": "0df444a360eaa60ab8c11dca51a86af692955474"
   ```
-  (`inputRev: "v4.33.1"`). This is the exact commit every one of the 74 audited
-  declarations was checked against (§1.2). **Do not run `lake update`** —
-  it re-resolves the manifest and can move this pin; the project has an open
-  PM decision (`TASK_BOARD.md`, carried forward) to leave `lake update`
-  untouched precisely to avoid disturbing it. Re-cloning or checking out this
-  repository fresh reproduces the pin automatically, since `lake-manifest.json`
-  is tracked.
+  with `"inputRev": "v4.33.1"`. This is the commit all 82 audited declarations
+  were checked against. **Do not run `lake update`**: it re-resolves the manifest
+  and can move the pin. A fresh clone or checkout reproduces the pin
+  automatically, since `lake-manifest.json` is tracked.
 
-With those two files in place, the three commands below are all a referee
-needs to run, in order, from `formal/`.
+With those two files in place, the three commands below are all a referee needs to
+run, in order.
 
 ### 6.2 `lake exe cache get`
 
@@ -982,58 +1046,42 @@ No files to download
 Already decompressed 8690 file(s)
 ```
 
-This downloads precompiled `.olean` files for mathlib (and its own
-dependencies) at the pinned revision from the mathlib community's public
-cache, so a referee does not have to compile all of mathlib from source —
-compiling mathlib itself, rather than just this project's own files, is the
-dominant cost of a genuinely cold build and can take on the order of an hour
-or more on ordinary hardware if the cache step is skipped or unavailable.
-**On a cold clone**, this step downloads and decompresses several thousand
-`.olean` files (a multi-gigabyte transfer); its wall time is therefore
-dominated by network bandwidth, not CPU, and is not something this run can
-honestly report a number for. **The run quoted above is warm** — this
-project's `.lake` directory already had every mathlib file decompressed from
-earlier work in this session, so `cache get` correctly reports "No files to
-download" and finishes in about ten seconds, all of it local decompression
-bookkeeping. A referee starting from a fresh clone should expect a real
-download here; everyone after that first run gets the fast path shown above.
+This downloads precompiled `.olean` files for mathlib at the pinned revision from
+the mathlib community's public cache, so that a referee does not compile mathlib
+from source. On a cold clone it downloads and decompresses several thousand files,
+a multi-gigabyte transfer whose wall time is dominated by network bandwidth; this
+document reports no number for that. **The run above is warm** — this tree already
+had every mathlib file decompressed — so `cache get` correctly reports "No files
+to download" and finishes in about nine seconds of local bookkeeping.
 
 ### 6.3 `lake build`
 
 ```
 $ lake build
-Build completed successfully (8736 jobs).
+Build completed successfully (8741 jobs).
 ```
-(Observed wall time: 4.5s.)
+Observed wall time 4.4s. The build emits no warnings.
 
-**Honesty note, as instructed:** this repository's tree was already fully
-built when this command was run — `formal/.lake/build` already held every
-`.olean` from this project's own files (`FinShaRank2/`) as well as mathlib's,
-left over from earlier work in this session. `lake build` therefore did no
-compilation at all here; it walked the dependency graph, found all 8736 jobs
-(mathlib's plus this project's own) already up to date, and reported success
-immediately. This is a **warm no-op**, not a from-scratch timing, and this
-document does not claim otherwise. A referee running this on a genuinely cold
-`.lake` (after `cache get` has restored mathlib's precompiled `.olean`s, as
-in §6.2) will see `lake build` actually compile this project's own files —
-`FinShaRank2/` is not a large library by mathlib standards, so with mathlib
-already cached this step should be substantially faster than the mathlib
-download itself, but this document reports no specific cold number for it,
-since producing one would require clearing `.lake` — an operation this task
-was explicitly instructed not to perform, to avoid disturbing the pinned
-mathlib build. If `lake build` is ever run before `lake exe cache get` on a
-cold clone, expect it to instead compile mathlib from source, which is the
-hour-plus cost §6.2 describes.
+**Honesty note.** This tree was already fully built when the command was run:
+`.lake/build` held every `.olean` from this project's own files as well as
+mathlib's. `lake build` therefore compiled nothing; it walked the dependency
+graph, found all 8741 jobs up to date, and reported success. That is a warm
+no-op, not a from-scratch timing, and this document does not claim otherwise. A
+referee running it on a cold `.lake` — after `lake exe cache get` has restored
+mathlib's `.olean` files, as in §6.2 — will see it compile this project's own
+files, which is a small library by mathlib's standards. If `lake build` is run
+*before* `lake exe cache get` on a cold clone, it will compile mathlib from
+source, which is the hour-plus cost §6.2 describes.
 
 ### 6.4 `./scripts/audit.sh`
 
-The full, unedited output of `./scripts/audit.sh` (run from `formal/`),
-observed wall time 19.1s (warm — see §6.3's caveat; step [1/3] alone is the
-`lake build` of §6.3):
+The full, unedited output of `./scripts/audit.sh`, run from `formalisation/` on
+2026-08-29 against commit `3b54e41`. Observed wall time 22.4s, of which step
+[1/3] is the `lake build` of §6.3.
 
 ```
 === [1/3] lake build ===
-Build completed successfully (8736 jobs).
+Build completed successfully (8741 jobs).
 [1/3] OK: lake build green
 
 === [2/3] sorry/admit scan (FinShaRank2/, excluding Scratch/) ===
@@ -1056,7 +1104,7 @@ AxiomAudit OK: FinShaRank2.Decoupling.coeff_smul_eq_mul uses only [propext, Clas
 AxiomAudit OK: FinShaRank2.Decoupling.coeff_eq_zero_of_map_eq_zero uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Decoupling.isUnit_coeff_two_map_iff uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Decoupling.isUnit_coeff_two_of_comparison uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.σR uses only [propext, Quot.sound]
+AxiomAudit OK: FinShaRank2.σR uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.constantCoeff_σR uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.coeff_one_σR uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.hasSubst_σR uses only [propext, Classical.choice, Quot.sound]
@@ -1071,10 +1119,6 @@ AxiomAudit OK: FinShaRank2.selmer_dual_structure uses only [propext, Classical.c
 AxiomAudit OK: FinShaRank2.quotient_collapse uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.rank_lower_bound uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.isPUnit_c2tilde_iff uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.isUnit_of_toZModPow_cert uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.isUnit_of_toZModPow_cert' uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.isUnit_of_cert_five uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.isUnit_of_cert_thirteen uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.eq_five_or_thirteen_le uses only [propext, Quot.sound]
 AxiomAudit OK: FinShaRank2.isPUnit_one_sub_alphaInv_of_split uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.isPUnit_c2tilde_iff_of_split uses only [propext, Classical.choice, Quot.sound]
@@ -1095,13 +1139,16 @@ AxiomAudit OK: FinShaRank2.c1_eq_zero uses only [propext, Classical.choice, Quot
 AxiomAudit OK: FinShaRank2.prop_consequence uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.prop_dictionary uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.thm_reduction uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.cor_sha5 uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.cor_sha13 uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.cor_horizontal uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.thm_reduction_of_conjEK uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.toyAnalytic uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.toySelmer uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.toyIwasawa uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.toyHeight uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.toyKatz uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.Toy.toyEK uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.Toy.Setup.ap_ne_one uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.toyPrimeData uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.shaAnalytic uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.Toy.shaSelmer uses only [propext, Classical.choice, Quot.sound]
@@ -1112,81 +1159,70 @@ AxiomAudit OK: FinShaRank2.Toy.shaPrimeData uses only [propext, Classical.choice
 AxiomAudit OK: FinShaRank2.ToySha uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.interface_does_not_force_sha_trivial uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.toySha_conclusions_fail uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit OK: FinShaRank2.isEmpty_certificates_toySha uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.toySha_fails_c2_5_certificate uses only [propext, Classical.choice, Quot.sound]
 AxiomAudit OK: FinShaRank2.ToyTrivial uses only [propext, Classical.choice, Quot.sound]
-AxiomAudit: all 74 audited declaration(s) clean
+AxiomAudit OK: FinShaRank2.Resultant.forall_eq_one_of_prod_eq_one uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.Resultant.prod_ne_zero_of_prod_eq_one uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.Orbit.prod_mem_range_algebraMap uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.Orbit.forall_eq_zero_of_exists_eq_zero uses only [propext, Quot.sound]
+AxiomAudit OK: FinShaRank2.anomalous_iff_five uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.jetIndex_image uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.jetIndex_injective uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.EKPackage.deltaE_ne_zero_iff uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit OK: FinShaRank2.EKPackage.deltaE_singleton uses only [propext, Classical.choice, Quot.sound]
+AxiomAudit: all 82 audited declaration(s) clean
 [3/3] OK: axiom whitelist holds for all audited decls
 
 AUDIT: PASS
 ```
 
-Reproduced verbatim from a run of `./scripts/audit.sh` on this session's tree,
-HEAD `f22e1bf`, on 2026-08-18.
-
 ### 6.5 Reading a PASS
 
-`scripts/audit.sh` runs three independent checks, in order, and each has to
-pass before the next runs meaningfully (the script exits immediately on a
-`[1/3]` failure; `[2/3]` and `[3/3]` both run and both must report `OK` for
-the final `AUDIT: PASS`):
+`scripts/audit.sh` runs three checks in order. It exits immediately on a `[1/3]`
+failure; `[2/3]` and `[3/3]` both run, and both must report `OK` for the final
+`AUDIT: PASS`.
 
-* **`[1/3] lake build`** — the whole project, including mathlib, must
-  typecheck with no errors. This is the ordinary Lean compiler; a failure here
-  means the code does not even parse/elaborate, and nothing downstream is
-  meaningful. `[1/3] OK: lake build green` is Lean's kernel having accepted
-  every declaration's *type*; it says nothing yet about `sorry` or axioms.
-* **`[2/3]` the no-incomplete-proof scan** — `grep -rnE '\b(sorry|admit)\b'`
-  over `FinShaRank2.lean` and `FinShaRank2/` (excluding the scratch directory
-  `FinShaRank2/Scratch/`, which is explicitly not part of the audited
-  library), with any match checked against `scripts/sorry-allowlist.txt`.
-  **That allowlist is currently empty** (19 lines, all comments — see the file
-  itself for the historical note explaining it was nonempty only during the
-  T15→T34 statement-freeze window and was emptied once every frozen signature
-  was proved). An empty allowlist means step `[2/3]` accepts **zero**
-  `sorry`/`admit` anywhere under `FinShaRank2/` outside `Scratch/` — this is
-  the single strongest, most literally-checkable claim in this whole document:
-  not "the headline theorems are sorry-free" (which the allowlist mechanism
-  could in principle hide exceptions from) but "nothing under active
-  development is sorry-free", full stop, because there is nothing left on the
-  allowlist to hide behind. `[2/3] OK: no disallowed sorry/admit` in the
-  transcript above is exactly this: the grep found nothing to flag.
+* **`[1/3] lake build`** — the whole project, mathlib included, must typecheck.
+  This is the ordinary Lean compiler. `[1/3] OK: lake build green` is the kernel
+  having accepted every declaration's type; it says nothing yet about incomplete
+  proofs or axioms.
+* **`[2/3]` the no-incomplete-proof scan** — `grep -rnE '\b(sorry|admit)\b'` over
+  `FinShaRank2.lean` and `FinShaRank2/`, excluding
+  `FinShaRank2/Scratch/`, with any match checked against
+  `scripts/sorry-allowlist.txt`. **That allowlist is empty**: 19 lines, all
+  comments or blank, carrying a note that it was non-empty only during the
+  statement-freeze window and was emptied once every frozen signature was proved.
+  An empty allowlist means step `[2/3]` accepts no incomplete proof anywhere under
+  `FinShaRank2/` outside `Scratch/`. This is the most literally checkable claim in
+  this document: not "the headline theorems are complete", which an allowlist could
+  hide exceptions from, but "nothing in the imported tree is incomplete", because
+  there is nothing on the allowlist to hide behind.
 * **`[3/3]` the axiom gate** — `lake env lean FinShaRank2/AxiomAudit.lean`
-  elaborates a small program that calls Lean's own `Lean.collectAxioms` on
-  each of the 74 names in `AxiomAudit.auditedDecls` (the five headline
-  theorems, both toy instances layer-by-layer, and every kernel lemma feeding
-  them — the full list is visible in the file, organized by task) and fails
-  elaboration — hence fails the whole script — if any declaration is missing
-  or transitively depends on an axiom outside `{propext, Classical.choice,
-  Quot.sound}`. This also catches `native_decide` (which would otherwise
-  silently introduce `Lean.ofReduceBool`, a form of trust this project
-  deliberately excludes). Each `AxiomAudit OK: … uses only […]` line in the
-  transcript is one declaration's individual result; the summary line
-  `AxiomAudit: all 74 audited declaration(s) clean` is what a referee should
-  actually look for — it is machine-generated from the same `auditedDecls`
-  list, so its count (`74`) is directly checkable against the file, not a
-  number this document could misreport without the two disagreeing.
+  elaborates a program that calls Lean's own `Lean.collectAxioms` on each of the
+  82 names in `AxiomAudit.auditedDecls` — the five headline theorems, both toy
+  instances layer by layer, and every kernel lemma feeding them — and fails
+  elaboration, hence the script, if any declaration is **missing** or transitively
+  depends on an axiom outside `{propext, Classical.choice, Quot.sound}`. Because
+  it fails on a missing declaration, the list doubles as a rename tripwire. It
+  also catches `native_decide`, which would introduce `Lean.ofReduceBool`. Each
+  `AxiomAudit OK: …` line is one declaration's result; the summary line
+  `AxiomAudit: all 82 audited declaration(s) clean` is what a referee should look
+  for. The count is machine-generated from `auditedDecls`, so this document cannot
+  misreport it without the two disagreeing.
 
-The final `AUDIT: PASS` on its own line is the conjunction of all three. A
-referee reproducing this document's claims needs to see exactly that line,
-together with the empty-allowlist fact and the `74` count, to have checked
-everything §1.2 asserts about this repository by mechanical means rather than
-by trusting this document's prose.
+The final `AUDIT: PASS` is the conjunction of the three. A referee reproducing
+this document's claims needs that line, the empty allowlist, and the count 82.
 
 ### 6.6 Checking the epistemic split mechanically: a transitive-constant scan
 
-`scripts/audit.sh` certifies *axiom-cleanliness* — that nothing outside the
-three standard axioms is used. It does not, by itself, certify the *narrower*
-and arguably more interesting claim of §1.4/§5.1: that the two anchor
-corollaries' proofs never touch the conjectural surface (`KatzData`, `δ_E`'s
-nonvanishing, `SinnottHyp`) at all, as opposed to touching it and happening to
-avoid the two named conjectural hypotheses specifically. That claim is
-checkable by walking the full transitive closure of constants each
-declaration's *type and proof term* depend on and testing which of them mention
-Katz/Sinnott/δ_E-flavoured names. The following program does exactly that; it
-is not part of the audited library (it imports `FinShaRank2` as a client, and
-belongs in a scratch file — e.g. `formal/Scratch/AxiomScan.lean` — never under
-`FinShaRank2/`, so it is not itself subject to `scripts/audit.sh`'s sorry scan
-or axiom gate):
+`scripts/audit.sh` certifies axiom-cleanliness. It does not by itself certify the
+narrower claim of §1.4 and §5.1: that the proofs of `prop_consequence`,
+`prop_dictionary` and `cor_horizontal` do not touch the conjectural surface at
+all, as opposed to touching it and happening to avoid the named conjectural
+hypotheses. That is checkable by walking the transitive closure of constants each
+declaration's type and proof term depend on. The program below does it. It is not
+part of the audited library — it imports `FinShaRank2` as a client — and belongs
+in a file outside `FinShaRank2/`, so that the scans of `audit.sh` do not see it:
 
 ```lean
 import FinShaRank2
@@ -1206,8 +1242,8 @@ partial def deps (env : Environment) (n : Name) : StateM NameSet Unit := do
 def has (s t : String) : Bool := ((s.splitOn t).length > 1)
 
 def markers : List String :=
-  ["KatzData", "deltaE", "SinnottHyp", "Sinnott", "NonvanishingOnDE",
-   "thm_reduction", "ConjStrong", "ConjWeak", "jetformula", "traceClass", "m2core"]
+  ["KatzData", "SinnottHyp", "ConjStrong", "ConjWeak", "ConjEK",
+   "EKPackage.deltaE", "traceClass", "m2core", "criterionClass"]
 
 open Lean Elab Command in
 elab "#scan " id:ident : command => do
@@ -1215,62 +1251,69 @@ elab "#scan " id:ident : command => do
   let n ← liftCoreM <| realizeGlobalConstNoOverload id
   let (_, s) := (deps env n).run {}
   let bad := s.toList.filter (fun m => markers.any (has m.toString))
-  logInfo m!"{n}: total deps = {s.size}, conjectural deps = {bad}"
+  logInfo m!"{n}: total deps = {s.size}, conjectural-surface deps = {bad}"
 
-#scan FinShaRank2.cor_sha5
-#scan FinShaRank2.cor_sha13
+#scan FinShaRank2.prop_consequence
+#scan FinShaRank2.prop_dictionary
+#scan FinShaRank2.cor_horizontal
 #scan FinShaRank2.thm_reduction
+#scan FinShaRank2.thm_reduction_of_conjEK
 ```
 
-Save this as, e.g., `Scratch/AxiomScan.lean` under `formal/` and run it as
-`lake env lean Scratch/AxiomScan.lean` from `formal/` (`lake env` sets up the
-environment for the current package; the file itself need not live under
-`FinShaRank2/`). Reproduced verbatim from a run on this session's tree, HEAD
-`f22e1bf`:
+Save it as, say, `Scratch/AxiomScan.lean` and run
+`lake env lean Scratch/AxiomScan.lean` from `formalisation/`. Reproduced verbatim
+from a run on 2026-08-29 against commit `3b54e41`:
 
 ```
-FinShaRank2.cor_sha5: total deps = 2609, conjectural deps = [FinShaRank2.ClassicalInputs.deltaE]
-FinShaRank2.cor_sha13: total deps = 2610, conjectural deps = [FinShaRank2.ClassicalInputs.deltaE]
-FinShaRank2.thm_reduction: total deps = 2024, conjectural deps = [FinShaRank2.KatzData,
+FinShaRank2.prop_consequence: total deps = 2591, conjectural-surface deps = []
+FinShaRank2.prop_dictionary: total deps = 1985, conjectural-surface deps = []
+FinShaRank2.cor_horizontal: total deps = 1983, conjectural-surface deps = [FinShaRank2.ConjStrong._proof_1,
+ FinShaRank2.ConjWeak]
+FinShaRank2.thm_reduction: total deps = 2093, conjectural-surface deps = [FinShaRank2.EKPackage.deltaE,
+ FinShaRank2.KatzData,
  FinShaRank2.ConjStrong,
  FinShaRank2.ConjStrong._proof_1,
- FinShaRank2.thm_reduction,
+ FinShaRank2.SinnottHyp]
+FinShaRank2.thm_reduction_of_conjEK: total deps = 2094, conjectural-surface deps = [FinShaRank2.EKPackage.deltaE,
+ FinShaRank2.KatzData,
+ FinShaRank2.ConjStrong,
+ FinShaRank2.ConjStrong._proof_1,
  FinShaRank2.SinnottHyp,
- FinShaRank2.ClassicalInputs.deltaE]
+ FinShaRank2.ConjEK]
 ```
 
-**How to read this.** `deps` is a plain worklist closure over
-`Expr.getUsedConstants`, applied to both a declaration's *type* and its
-*value* (proof term), recursively over everything it finds — so the `total
-deps` count (2609–2610 for the anchor corollaries, 2024 for `thm_reduction`,
-overwhelmingly mathlib) is the complete set of constants each declaration's
-statement-plus-proof rests on. `markers` is a coarse substring filter for
-anything Katz/Sinnott/δ_E-flavoured; `conjectural deps` is that filter applied
-to the closure. Two things to check in the output:
+**How to read this.** `deps` is a worklist closure over `Expr.getUsedConstants`,
+applied to a declaration's type and to its proof term, recursively. The total
+count — 1983 to 2591, overwhelmingly mathlib — is the set of constants each
+declaration's statement and proof rest on. `markers` is a substring filter for
+anything Katz-, Sinnott- or `δ_E`-flavoured. Three things to note in the output.
 
-1. **The asymmetry is exactly §1.4's claim, made mechanical.**
-   `thm_reduction`'s closure genuinely contains `KatzData`, `ConjStrong`
-   (twice, once for its `_proof_1` auto-generated companion), and `SinnottHyp`
-   — the real conjectural surface, present because `thm_reduction` really does
-   consume it. The two anchor corollaries' closures contain **none** of these;
-   their only hit is `ClassicalInputs.deltaE`, and it is not the same kind of
-   hit.
-2. **`ClassicalInputs.deltaE` in the anchor corollaries is an inert
-   type-level index, not an assumption.** Splitting the same closure by
-   *where* `deltaE` is found — in a node's type versus in a node's value —
-   shows it occurs only in the *type* of `cor_sha5` (its statement mentions
-   `H.dataAt 5 …`) and in the *type* of `ClassicalInputs.dataAt` (whose
-   signature is `∀ p hp hsplit, p ∉ S → @PrimeData p _ hsplit deltaE
-   torsSqOverTam`, `Interface/Global.lean:229` — `δ_E` threaded purely so
-   `deltaE_tie` can weld the Katz-layer local avatar to the global datum for
-   `thm_reduction`'s benefit). It occurs in the *value* — the actual proof
-   term — of **nothing** in `cor_sha5`'s closure: no hypothesis about `δ_E`
-   is assumed, and no proof step inspects it. A referee who wants to check
-   this split directly can adapt `#scan` to record, for each node in the
-   closure, whether the marker constant appears in `ci.type.getUsedConstants`
-   or in `ci.value?.getUsedConstants` separately, rather than merging both as
-   `deps` does above.
+1. **The asymmetry is §1.4's claim, made mechanical.** `thm_reduction`'s closure
+   contains `KatzData`, `SinnottHyp` and `ConjStrong`, and
+   `thm_reduction_of_conjEK`'s contains `ConjEK` as well; those are really
+   consumed. The closures of `prop_consequence` and `prop_dictionary` contain none
+   of them.
+2. **`cor_horizontal`'s two entries are not conjectural surface.** `ConjWeak` is
+   its own hypothesis, which is the hypothesis the paper's Theorem A also assumes.
+   `ConjStrong._proof_1` is an auto-generated auxiliary lemma,
+   `∀ p, Nat.Prime p → Fact (Nat.Prime p)`, elaborated first at `ConjStrong` and
+   reused by `ConjWeak`; it is named after `ConjStrong` and carries none of its
+   content. `#print FinShaRank2.ConjStrong._proof_1` shows this in one line.
+3. **The scan does not see structure projections, and cannot be used to argue
+   that an interface field is unused.** In Lean 4 a structure projection appears
+   in a proof term as an `Expr.proj` node rather than as a constant application,
+   so `getUsedConstants` does not report it. Running the same closure with
+   interface-field names as markers therefore reports almost every field as
+   absent, whether or not a proof uses it. The check for field usage is a source
+   grep, `grep -rn '\.<field>' FinShaRank2/` with `Interface/`, `Toy/` and
+   `Scratch/` excluded; that is how the six unused fields listed at the end of §2
+   were identified. What the closure scan does see, and what makes it useful here,
+   is structure *type* names and non-projection constants — `KatzData`,
+   `SinnottHyp`, `ConjStrong`, `ConjEK`, and the def `EKPackage.deltaE`.
 
-This is the check a referee should run if §1.4's three-way split is the one
-claim in this document they want mechanical evidence for, rather than a
-reading of `Main/Corollaries.lean` and `Interface/Global.lean` by eye.
+One name is deliberately absent from the marker list: `EKPackage` itself, which
+appears in all five closures, because `ClassicalInputs.ek : EKPackage` is a field
+and every statement about a `ClassicalInputs` mentions its type. Including it would
+report a hit for every declaration and distinguish nothing. The distinguishing
+marker is the def `EKPackage.deltaE`, which appears only in the two
+`thm_reduction` closures.
