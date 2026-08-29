@@ -29,7 +29,12 @@
 \input{macros/common}
 \input{macros/web}
 
-\home{}
+% \home is the blueprint's own address; \github and \dochome are left empty
+% deliberately.  The repository is private, so a \github link would 404 for a
+% reader of the public blueprint; \dochome needs doc-gen4 API documentation
+% published alongside, which needs doc-gen4 as a Lake dependency.  Fill both in
+% when those two things change.
+\home{https://barindersbanwait.com/rank2sha/}
 \github{}
 \dochome{}
 

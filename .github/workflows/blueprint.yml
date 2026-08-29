@@ -1,0 +1,86 @@
+name: Blueprint
+
+# Manual dispatch only, deliberately.
+#
+# The formalisation is under active development, and a workflow that fired on
+# every push would deploy the blueprint from whatever state the Lean tree
+# happened to be in, and would send a failed-run notification for every push
+# that did not build.  Change `on:` to include `push: {branches: [main]}` once
+# the blueprint content tracks the Lean declarations again.
+#
+# This builds the blueprint alone.  It does not build the Lean project and does
+# not produce API documentation, so the `\dochome` links in the blueprint
+# (`/find/#doc/FinShaRank2....`) stay unresolved.  Resolving them needs doc-gen4
+# as a Lake dependency, which means editing lakefile.toml and
+# lake-manifest.json; that is the formalisation's business, not the blueprint's.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; never cancel one midway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # latexmkrc selects xelatex, so texlive-xetex is required.  plasTeX
+      # renders images through an imager that shells out to LaTeX and
+      # ghostscript; dvisvgm gives it a vector imager rather than the raster
+      # fallback.
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended texlive-xetex \
+            latexmk ghostscript dvisvgm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install the blueprint tooling
+        run: python -m pip install --upgrade pip leanblueprint
+
+      # The two commands below are exactly what formalisation/blueprint/bp runs
+      # locally, so a green run here means a green run there and conversely.
+      - name: Build the PDF
+        working-directory: formalisation/blueprint/src
+        run: |
+          mkdir -p ../print
+          latexmk -output-directory=../print
+          if [ -f ../print/print.bbl ]; then cp ../print/print.bbl web.bbl; fi
+
+      - name: Build the web blueprint
+        working-directory: formalisation/blueprint/src
+        run: |
+          mkdir -p ../web
+          plastex -c plastex.cfg web.tex
+
+      - name: Put the PDF alongside the web pages
+        run: |
+          cp formalisation/blueprint/print/print.pdf \
+             formalisation/blueprint/web/blueprint.pdf || true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: formalisation/blueprint/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
