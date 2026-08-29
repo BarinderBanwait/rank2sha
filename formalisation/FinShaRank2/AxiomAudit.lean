@@ -124,7 +124,10 @@ def auditedDecls : List Name :=
    ``FinShaRank2.Orbit.prod_mem_range_algebraMap,
    ``FinShaRank2.Orbit.forall_eq_zero_of_exists_eq_zero,
   -- R1β — anomalous primes at split p (lem:noanomalous(2))
-   ``FinShaRank2.anomalous_iff_five]
+   ``FinShaRank2.anomalous_iff_five,
+  -- R1γ — the Eisenstein–Kronecker package (def:deltaE, eq:jetpackage)
+   ``FinShaRank2.jetIndex_image, ``FinShaRank2.jetIndex_injective,
+   ``FinShaRank2.EKPackage.deltaE_ne_zero_iff, ``FinShaRank2.EKPackage.deltaE_singleton]
 
 /-- Collect the axioms of every declaration in `auditedDecls` and throw
 (failing elaboration, so `lake env lean` exits nonzero) if any declaration is

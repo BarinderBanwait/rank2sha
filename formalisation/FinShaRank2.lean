@@ -3,6 +3,7 @@ import FinShaRank2.Interface.Analytic
 import FinShaRank2.Interface.Iwasawa
 import FinShaRank2.Interface.Heights
 import FinShaRank2.Interface.Katz
+import FinShaRank2.Interface.EK
 import FinShaRank2.Interface.Global
 import FinShaRank2.Kernel.Anomalous
 import FinShaRank2.Kernel.Decoupling
