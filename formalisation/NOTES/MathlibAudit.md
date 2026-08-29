@@ -1,7 +1,7 @@
 # T03 — Mathlib name audit
 
 **Date:** 2026-07-15 · **Agent:** W1-B ·
-**Audited against the project pin:** mathlib **v4.32.0**
+**Audited against the then-current project pin:** mathlib **v4.32.0**
 (rev `81a5d257c8e410db227a6665ed08f64fea08e997`), toolchain `leanprover/lean4:v4.32.0`
 (from `formal/lake-manifest.json` / `lean-toolchain`).
 Phase A cross-checked on mathlib master via loogle (2026-07-15); Phase B verified every
@@ -15,6 +15,12 @@ master-vs-pin.
 Two micro-gaps (§2), both *proved as workarounds inside NameCheck.lean* (3 lines + 2
 lines), owned by T23. No unowned gaps. Risks 1–2 of the board register are lower than
 budgeted (§4).
+
+**Re-verified 2026-08-29 against mathlib v4.33.1** (rev
+`0df444a360eaa60ab8c11dca51a86af692955474`, toolchain `leanprover/lean4:v4.33.1`), on
+task R0b. Every name in §1 still resolves; both §2 workarounds still compile verbatim;
+all eight §3 gotchas still hold. `FinShaRank2/Scratch/NameCheck.lean` compiles with 0
+errors against the new pin. Three items in the tree needed edits — see §3.9–§3.11.
 
 ---
 
@@ -90,7 +96,7 @@ resolve at A = ℤ_[p]** (NameCheck §3): `Polynomial.IsDistinguishedAt`,
 | f.g. + torsion-free ⟹ free | ✓(sig) | `Module.free_of_finite_type_torsion_free'` — now an **instance** keyed on `[Module.Finite R M] [Module.IsTorsionFree R M]`; constructor `Module.IsTorsionFree.of_smul_eq_zero` |
 | PID structure theorem | ✓ | `Module.equiv_free_prod_directSum` (`Mathlib.Algebra.Module.PID`) — available but T23 plan avoids it |
 | surjective endo ⟹ injective | ✓ | `OrzechProperty.injective_of_surjective_endomorphism` (CommRing ⟹ OrzechProperty); `IsNoetherian.injective_of_surjective_endomorphism` — **T27 preferred route** |
-| finrank additivity | ✓ | `Submodule.finrank_quotient_add_finrank` (RankNullity.lean:247) needs `[HasRankNullity R] [StrongRankCondition R] [Module.Finite R M]`; **`IsDomain.hasRankNullity`** + `commRing_strongRankCondition` ⟹ works **directly over ℤ_[p]** (NameCheck §6 example compiles) — base change not load-bearing |
+| finrank additivity | ✓ | `Submodule.finrank_quotient_add_finrank` (RankNullity.lean:248) needs `[HasRankNullity R] [StrongRankCondition R] [Module.Finite R M]`; **`IsDomain.hasRankNullity`** + `commRing_strongRankCondition` ⟹ works **directly over ℤ_[p]** (NameCheck §6 example compiles) — base change not load-bearing |
 | finrank via ℚ_[p] base change | ✓ | `Module.finrank_baseChange : finrank R (R ⊗[S] M') = finrank S M'` (`[Module.Free S M']`); NameCheck §6 proves `finrank ℚ_[p] (ℚ_[p] ⊗[ℤ_[p]] (Fin 2 → ℤ_[p])) = 2`; field rank-nullity `LinearMap.finrank_range_add_finrank_ker` |
 | `finrank_pi` / `finrank_fin_fun` | ✓(sig) | `Module.finrank_pi`, `Module.finrank_fin_fun` — **`R` is explicit**: write `Module.finrank_fin_fun ℤ_[p]` |
 | quotient API Λ ⧸ span {f} | ✓ | `Ideal.Quotient.mk/lift` (note new `[I.IsTwoSided]` instance arg — automatic in comm rings), `Ideal.mem_span_singleton (x ∈ span {y} ↔ y ∣ x)`, `Ideal.quotEquivOfEq`, `RingHom.quotientKerEquivOfSurjective`, `Submodule.liftQ/mapQ`; Λ-module structure on `Λ ⧸ span {f}` is found by TC inference (NameCheck §7) |
@@ -135,11 +141,12 @@ No other gaps. No fallback-ladder invocation needed on current evidence.
 
 ---
 
-## 3. Gotchas: board sketches vs actual v4.32.0 API
+## 3. Gotchas: board sketches vs actual API
 
-The board (§5 task specs) was drafted against older conventions. Master (2026-07-15)
-and the pin v4.32.0 **agree** on all of these; it is the *board text* that needs
-adapting when tasks are implemented:
+Items 1–8 record board sketches against the v4.32.0 API. The board (§5 task specs) was
+drafted against older conventions. Master (2026-07-15), the old pin v4.32.0 and the
+current pin v4.33.1 **agree** on all eight; it is the *board text* that needs adapting
+when tasks are implemented. Items 9–11 are v4.33.1 changes, recorded on task R0b.
 
 1. **`PowerSeries.coeff` / `constantCoeff` ring argument is implicit.** Board writes
    `PowerSeries.coeff ℤ_[p] n f` (T10, T12) — in v4.32.0 write `PowerSeries.coeff n f`
@@ -160,6 +167,24 @@ adapting when tasks are implemented:
    `[Module.IsTorsionFree R M]` — for T23(d), provide `Module.IsTorsionFree ℤ_[p] X`
    (e.g. via `of_smul_eq_zero` from the injection into `Fin 2 → ℤ_[p]`), then
    `Module.Free` is inferred.
+9. **`Prime.not_unit` → `Prime.not_isUnit`** (v4.33.1;
+   `Mathlib/Algebra/Prime/Defs.lean`, `@[deprecated (since := "2026-08-02")] alias`).
+   Statement unchanged. Fixed at `Kernel/LambdaModule.lean:72`.
+10. **`setOf` → `Set.ofPred`, so `Set.mem_setOf_eq` → `Set.mem_ofPred_eq`** (v4.33.1;
+    `Mathlib/Data/Set/Operations.lean:82`, `@[deprecated (since := "2026-07-09")]
+    alias`). Statement unchanged: `(x ∈ {y | p y}) = p x`, still `@[simp]`. Fixed at
+    `Kernel/TsqUnit.lean:130` and `Toy/ShaTrivial.lean:94`. The `{n | …}` set-builder
+    notation itself is unaffected.
+11. **New linter `linter.style.haveILetI`** (`Mathlib/Tactic/Linter/HaveILetI.lean`,
+    mathlib #41657; absent at v4.32.0, `defValue := true`). It flags `haveI`/`letI` in a
+    proof of a `Prop` and suggests `have`/`let`. Warning only. Thirteen sites in the tree
+    emit it — `Kernel/LambdaModule.lean` (151, 153, 155, 174, 175, 177),
+    `Main/Reduction.lean` (122, 147, 191), `Toy/Iwasawa.lean` (102, 128),
+    `Toy/ShaIwasawa.lean` (286, 323), `Toy/ShaTrivial.lean` (130, 179). Left as they
+    are: those files are on the R2a/R2b rewrite list.
+
+Nothing else in the tree needed a change. The v4.32.0 → v4.33.1 bump produced no
+compilation errors: the first `lake build` after repinning was green.
 
 ## 4. Risk read-out for Phase 2 kernel tasks
 

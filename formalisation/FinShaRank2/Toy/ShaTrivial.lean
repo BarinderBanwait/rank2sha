@@ -91,7 +91,7 @@ theorem not_muZero_shaLp : ¬ MuZero (shaLp p) := by
 theorem lambdaAn_shaLp : lambdaAn (shaLp p) = 0 := by
   have hempty : {n | IsUnit (PowerSeries.coeff n (shaLp p))} = (∅ : Set ℕ) := by
     ext n
-    simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+    simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
     intro hn
     rw [shaLp, coeff_C_mul] at hn
     exact mem_nonunits_iff.mp PadicInt.p_nonunit (isUnit_of_mul_isUnit_left hn)

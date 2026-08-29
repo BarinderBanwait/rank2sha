@@ -127,7 +127,7 @@ theorem lambdaAn_eq_two_of_factored {f : Λ p} (u : (Λ p)ˣ) (hf : f = (X : Λ 
   have hmem2 : 2 ∈ {n | IsUnit (coeff n f)} := hc2
   have key : ∀ m ∈ {n | IsUnit (coeff n f)}, 2 ≤ m := by
     intro m hm
-    simp only [Set.mem_setOf_eq] at hm
+    simp only [Set.mem_ofPred_eq] at hm
     rcases Nat.lt_or_ge m 2 with hlt | hge
     · interval_cases m
       · rw [hc0] at hm; exact absurd hm not_isUnit_zero

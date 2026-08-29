@@ -69,7 +69,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 /-- Divisibility of `X`-powers in `Λ` is monotone in the exponent. -/
 private lemma pow_X_dvd_le {a b : ℕ} (h : (X : Λ p) ^ a ∣ (X : Λ p) ^ b) : a ≤ b :=
-  (pow_dvd_pow_iff X_prime.ne_zero X_prime.not_unit).mp h
+  (pow_dvd_pow_iff X_prime.ne_zero X_prime.not_isUnit).mp h
 
 /-- `X`-powers in the domain `Λ` are exponent-injective up to associates. -/
 private lemma associated_X_pow_inj {a b : ℕ}

@@ -3,7 +3,7 @@
 *Companion to "Horizontal rigidity for second jets of Katz p-adic L-functions, with
 applications to the Tate–Shafarevich group in rank two" (`main.tex`). This document
 explains what has been machine-checked by Lean 4 (mathlib, pinned to release
-`v4.32.0`), what is assumed and why, and how to reproduce the verification from a
+`v4.33.1`), what is assumed and why, and how to reproduce the verification from a
 fresh clone of this repository.*
 
 Status: COMPLETE (all six sections). Last updated 2026-08-18 (task T52).
@@ -79,7 +79,7 @@ about what it does *not* buy.
 ### 1.2 What "formally verified" means concretely
 
 Every proof in this repository is checked by the Lean 4 kernel against mathlib
-(pinned to release `v4.32.0`, mathlib commit `81a5d257c8e410db227a6665ed08f64fea08e997`
+(pinned to release `v4.33.1`, mathlib commit `0df444a360eaa60ab8c11dca51a86af692955474`
 — see §6). Concretely:
 
 * **Zero global `axiom` declarations anywhere in the project.** Every assumed
@@ -951,7 +951,7 @@ audit).
 
 * **Lean toolchain**: pinned by `formal/lean-toolchain`, which reads
   ```
-  leanprover/lean4:v4.32.0
+  leanprover/lean4:v4.33.1
   ```
   `elan` (the standard Lean version manager) reads this file automatically on
   `lake build`/`lake exe`; a referee with `elan` installed does not need to set
@@ -959,9 +959,9 @@ audit).
 * **Mathlib**: pinned by `formal/lake-manifest.json`, whose `mathlib` entry
   records
   ```
-  "rev": "81a5d257c8e410db227a6665ed08f64fea08e997"
+  "rev": "0df444a360eaa60ab8c11dca51a86af692955474"
   ```
-  (`inputRev: "v4.32.0"`). This is the exact commit every one of the 74 audited
+  (`inputRev: "v4.33.1"`). This is the exact commit every one of the 74 audited
   declarations was checked against (§1.2). **Do not run `lake update`** —
   it re-resolves the manifest and can move this pin; the project has an open
   PM decision (`TASK_BOARD.md`, carried forward) to leave `lake update`
@@ -979,7 +979,7 @@ $ lake exe cache get
 Current branch: HEAD
 Using cache from origin: (some leanprover-community/mathlib4)
 No files to download
-Already decompressed 8639 file(s)
+Already decompressed 8690 file(s)
 ```
 
 This downloads precompiled `.olean` files for mathlib (and its own
@@ -1002,7 +1002,7 @@ download here; everyone after that first run gets the fast path shown above.
 
 ```
 $ lake build
-Build completed successfully (8687 jobs).
+Build completed successfully (8736 jobs).
 ```
 (Observed wall time: 4.5s.)
 
@@ -1010,7 +1010,7 @@ Build completed successfully (8687 jobs).
 built when this command was run — `formal/.lake/build` already held every
 `.olean` from this project's own files (`FinShaRank2/`) as well as mathlib's,
 left over from earlier work in this session. `lake build` therefore did no
-compilation at all here; it walked the dependency graph, found all 8687 jobs
+compilation at all here; it walked the dependency graph, found all 8736 jobs
 (mathlib's plus this project's own) already up to date, and reported success
 immediately. This is a **warm no-op**, not a from-scratch timing, and this
 document does not claim otherwise. A referee running this on a genuinely cold
@@ -1033,7 +1033,7 @@ observed wall time 19.1s (warm — see §6.3's caveat; step [1/3] alone is the
 
 ```
 === [1/3] lake build ===
-Build completed successfully (8687 jobs).
+Build completed successfully (8736 jobs).
 [1/3] OK: lake build green
 
 === [2/3] sorry/admit scan (FinShaRank2/, excluding Scratch/) ===
