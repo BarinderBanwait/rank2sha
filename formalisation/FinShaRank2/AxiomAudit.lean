@@ -21,7 +21,7 @@ per the trust story of `TASK_BOARD.md` §1.
 
 This file is *not* imported by the root module `FinShaRank2.lean`: it is the
 auditor, not part of the audited library. T42 points `auditedDecls` at the
-five headline declarations and both toy instances.
+headline declarations and both toy instances.
 -/
 
 open Lean
@@ -43,10 +43,17 @@ step [3/3] far weaker than the trust story of §1 implies; the gap was an artifa
 of deferring consolidation while four agents edited concurrently, not a decision.
 
 `Main/` is deliberately absent: it carries incomplete frozen signatures during the
-T15→T34 window, and `sorryAx` would (correctly) fail this gate. T42 adds the five
-headline declarations (`prop_consequence`, `prop_dictionary`, `thm_reduction`,
-`cor_sha5`, `cor_sha13`) plus `ToySha` once they are proved, and empties the
-allowlist consumed by step [2/3].
+T15→T34 window, and `sorryAx` would (correctly) fail this gate. T42 adds the
+headline declarations (`prop_consequence`, `prop_dictionary`, `thm_reduction`)
+plus `ToySha` once they are proved, and empties the allowlist consumed by
+step [2/3].
+
+**Amended 2026-08-29 (R0a).** The anchor corollaries `cor_sha5` and `cor_sha13`,
+the `Certificates` structure and the four digit-certificate extraction lemmas
+were retired to `legacy/Anchors.lean` after Coates–Liang–Sujatha subsumed the
+result, so their names are gone from the list below. The anti-vacuity block keeps
+its size: `isEmpty_certificates_toySha` is replaced by the certificate-free
+`toySha_fails_c2_5_certificate`, which carries the same content.
 
 (Note for editors: step [2/3] greps this tree for the bare word "s·o·r·r·y", so
 prose here must not spell it out — that is why the allowlist file is referred to
@@ -79,10 +86,8 @@ def auditedDecls : List Name :=
    ``FinShaRank2.selmer_dual_structure,
   -- T31 — promoted from the T15 chain test into the kernel (Wave 5)
    ``FinShaRank2.quotient_collapse, ``FinShaRank2.rank_lower_bound,
-  -- T26 — normalization + certificate extraction
-   ``FinShaRank2.isPUnit_c2tilde_iff, ``FinShaRank2.isUnit_of_toZModPow_cert,
-   ``FinShaRank2.isUnit_of_toZModPow_cert', ``FinShaRank2.isUnit_of_cert_five,
-   ``FinShaRank2.isUnit_of_cert_thirteen, ``FinShaRank2.eq_five_or_thirteen_le,
+  -- T26 — normalization
+   ``FinShaRank2.isPUnit_c2tilde_iff, ``FinShaRank2.eq_five_or_thirteen_le,
    ``FinShaRank2.isPUnit_one_sub_alphaInv_of_split, ``FinShaRank2.isPUnit_c2tilde_iff_of_split,
   -- T27 — Sha endgame (prop:consequence Step 5)
    ``FinShaRank2.sha_endgame, ``FinShaRank2.sha_endgame_of_nonempty,
@@ -92,10 +97,10 @@ def auditedDecls : List Name :=
    ``FinShaRank2.associated_X_sq_of_factored, ``FinShaRank2.order_eq_two_of_coeffs,
    ``FinShaRank2.muZero_of_coeffs, ``FinShaRank2.lambdaAn_eq_two_of_coeffs,
    ``FinShaRank2.associated_X_sq_of_coeffs, ``FinShaRank2.coeffs_X_sq,
-  -- T30/T31/T32/T33/T34 — THE FIVE HEADLINE THEOREMS (TASK_BOARD.md §0)
+  -- T30/T31/T32/T33 — THE HEADLINE THEOREMS (TASK_BOARD.md §0)
    ``FinShaRank2.c0_eq_zero, ``FinShaRank2.c1_eq_zero,
    ``FinShaRank2.prop_consequence, ``FinShaRank2.prop_dictionary,
-   ``FinShaRank2.thm_reduction, ``FinShaRank2.cor_sha5, ``FinShaRank2.cor_sha13,
+   ``FinShaRank2.thm_reduction,
   -- T40 — non-vacuity: ClassicalInputs is satisfiable, layer by layer
    ``FinShaRank2.Toy.toyAnalytic, ``FinShaRank2.Toy.toySelmer, ``FinShaRank2.Toy.toyIwasawa,
    ``FinShaRank2.Toy.toyHeight, ``FinShaRank2.Toy.toyKatz, ``FinShaRank2.Toy.toyPrimeData,
@@ -103,7 +108,7 @@ def auditedDecls : List Name :=
    ``FinShaRank2.Toy.shaAnalytic, ``FinShaRank2.Toy.shaSelmer, ``FinShaRank2.Toy.shaIwasawa,
    ``FinShaRank2.Toy.shaHeight, ``FinShaRank2.Toy.shaKatz, ``FinShaRank2.Toy.shaPrimeData,
    ``FinShaRank2.ToySha, ``FinShaRank2.interface_does_not_force_sha_trivial,
-   ``FinShaRank2.toySha_conclusions_fail, ``FinShaRank2.isEmpty_certificates_toySha,
+   ``FinShaRank2.toySha_conclusions_fail, ``FinShaRank2.toySha_fails_c2_5_certificate,
    ``FinShaRank2.ToyTrivial]
 
 /-- Collect the axioms of every declaration in `auditedDecls` and throw

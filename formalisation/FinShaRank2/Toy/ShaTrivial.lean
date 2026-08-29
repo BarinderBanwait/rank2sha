@@ -1,5 +1,4 @@
 import FinShaRank2.Interface.Global
-import FinShaRank2.Interface.Certificates
 import FinShaRank2.Toy.ShaAnalytic
 import FinShaRank2.Toy.ShaIwasawa
 import FinShaRank2.Toy.ShaHeights
@@ -18,10 +17,10 @@ leakage): it builds a **second** proved instance
 
 in which the headline conclusion **fails** — `ShaDual` is not subsingleton, the
 Iwasawa μ-invariant does not vanish, and `λ_an ≠ 2`. Hence no strengthening of
-the interface fields can be entailing those conclusions; the numerical
-certificates (`Certificates`) are genuinely load-bearing rather than decorative.
-If someone later strengthens an interface field so that it does entail the
-conclusion, this file stops compiling, which is exactly its job.
+the interface fields can be entailing those conclusions; the numerical `c₂`
+certificate is genuinely load-bearing rather than decorative. If someone later
+strengthens an interface field so that it does entail the conclusion, this file
+stops compiling, which is exactly its job.
 
 ## The anti-vacuity world, layer by layer
 
@@ -45,9 +44,9 @@ multiset to `(X, X, C p)`.
 
 This is a *toy* world: it is not the testbed curve, and no faithfulness claim is
 made about it. Its only job is to witness that the assumption bundle does not
-entail the conclusion. Consistently with the headline corollaries,
-`Certificates ToySha` is **empty** (`isEmpty_certificates_toySha`): it is exactly
-the numerical `c₂` certificates that exclude this world.
+entail the conclusion. What excludes this world is the numerical `c₂` datum:
+`toySha_fails_c2_5_certificate` shows the seven `5`-adic digits of `eq:match5`
+are not the digits of `coeff 2 (shaLp 5) = 5`.
 -/
 
 open PowerSeries
@@ -119,9 +118,9 @@ noncomputable def ToySha : ClassicalInputs where
   torsSqOverTam_eq := rfl
   dataAt := fun p hp hsplit _ => @Toy.shaPrimeData p (Fact.mk hp) hsplit
 
-/-- **`ToySha` fails the headline conclusion at every split prime.** Three of the
-five conclusions of `cor:sha5`/`cor:sha13` are false in this world: Ш is
-nontrivial, `μ ≠ 0`, and `λ_an ≠ 2`. -/
+/-- **`ToySha` fails the headline conclusion at every split prime.** Three
+conclusions are false in this world: Ш is nontrivial, `μ ≠ 0`, and
+`λ_an ≠ 2`. -/
 theorem toySha_conclusions_fail (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1)
     (hpS : p ∉ ToySha.S) :
     letI : Fact p.Prime := ⟨hp⟩
@@ -143,9 +142,8 @@ alone. Witnessed by `ToySha` (at `p = 5`, and in fact at every split prime, by
 
 Together with T40's `ToyTrivial` (which shows the same interface *is*
 satisfiable) this pins the epistemic status of the assumption surface: it is
-consistent, and it is not question-begging. The numerical certificates
-`Certificates` are what close the gap — indeed `Certificates ToySha` is empty
-(`isEmpty_certificates_toySha`).
+consistent, and it is not question-begging. What closes the gap is the numerical
+`c₂` datum, which `ToySha` fails (`toySha_fails_c2_5_certificate`).
 
 SOURCE: none — this is a construction, not an assumption.
 PAPER:  `TASK_BOARD.md` §1, §2 conv. 4.
@@ -158,29 +156,34 @@ theorem interface_does_not_force_sha_trivial :
   exact (toySha_conclusions_fail 5 (by norm_num) (by norm_num) (Finset.notMem_empty 5)).1
     (h ToySha 5 (by norm_num) (by norm_num) (Finset.notMem_empty 5))
 
-/-- **`Certificates ToySha` is empty.**
+/-- **`ToySha` fails the `5`-adic jet certificate of `eq:match5`.**
 
-There is therefore no conflict between `interface_does_not_force_sha_trivial` and
-the headline corollaries `cor_sha5` / `cor_sha13`, which take a `Certificates H`
-alongside `H`: it is exactly the numerical certificates that exclude the
-anti-vacuity world. The Lean proof uses the jet certificate `c2_5`
-(`eq:match5`): its leading `5`-adic digit is `1`, whereas
-`coeff 2 (C 5 · X²) = 5`, whose leading digit is `0`. (The Frobenius-trace
-certificate `a5 : a₅ = −2` fails here too, since the toy `a_p = 2a` is positive;
-only `c2_5` is used below.)
+The certificate is the seven-digit congruence
+`toZModPow 7 (coeff 2 Lp₅) = 1 + 4·5 + 3·5² + 5³ + 5⁵ + 5⁶ mod 5⁷`, whose leading
+`5`-adic digit is `1`. In the anti-vacuity world `coeff 2 (shaLp 5) = 5`, whose
+leading digit is `0`, so the congruence is false. This is what excludes `ToySha`,
+and hence what makes the numerical `c₂` datum load-bearing rather than
+decorative: `interface_does_not_force_sha_trivial` shows the interface alone does
+not give the conclusion, and this lemma identifies the datum that does.
+
+The Frobenius-trace datum `a₅ = −2` fails here too, since the toy `a_p = 2a` is
+positive; only the jet digits are used below.
 
 SOURCE: none — this is a computation about the toy instance.
-PAPER:  `TASK_BOARD.md` §1 (the certificates are load-bearing).
+PAPER:  `eq:match5`; `TASK_BOARD.md` §1 (the numerics are load-bearing).
 STATUS: theorem (toy model). -/
-theorem isEmpty_certificates_toySha : IsEmpty (Certificates ToySha) := by
-  refine ⟨fun C => ?_⟩
+theorem toySha_fails_c2_5_certificate :
+    letI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+    PadicInt.toZModPow 7 (PowerSeries.coeff 2 (Toy.shaLp 5))
+      ≠ ((1 + 4 * 5 + 3 * 5 ^ 2 + 5 ^ 3 + 5 ^ 5 + 5 ^ 6 : ℤ) : ZMod (5 ^ 7)) := by
   haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  intro hcert
   have key : PadicInt.toZModPow 7 (PowerSeries.coeff 2 (Toy.shaLp 5))
       = ((5 : ℕ) : ZMod (5 ^ 7)) := by
     rw [Toy.coeff_two_shaLp, map_natCast]
   have h : ((5 : ℕ) : ZMod (5 ^ 7))
       = ((1 + 4 * 5 + 3 * 5 ^ 2 + 5 ^ 3 + 5 ^ 5 + 5 ^ 6 : ℤ) : ZMod (5 ^ 7)) :=
-    key.symm.trans C.c2_5
+    key.symm.trans hcert
   revert h
   decide
 

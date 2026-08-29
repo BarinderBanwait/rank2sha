@@ -4,7 +4,6 @@ import FinShaRank2.Interface.Iwasawa
 import FinShaRank2.Interface.Heights
 import FinShaRank2.Interface.Katz
 import FinShaRank2.Interface.Global
-import FinShaRank2.Interface.Certificates
 import FinShaRank2.Kernel.Anomalous
 import FinShaRank2.Kernel.Decoupling
 import FinShaRank2.Kernel.FunctionalEquation
@@ -20,7 +19,6 @@ import FinShaRank2.Main.Lemma41
 import FinShaRank2.Main.Consequence
 import FinShaRank2.Main.Dictionary
 import FinShaRank2.Main.Reduction
-import FinShaRank2.Main.Corollaries
 
 /-!
 # FinShaRank2 — root module
