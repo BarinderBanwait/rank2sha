@@ -66,6 +66,37 @@ jobs:
           mkdir -p ../web
           plastex -c plastex.cfg web.tex
 
+      # While \dochome is empty, leanblueprint builds every declaration link as
+      # "{dochome}/find/#doc/NAME" (Packages/blueprint.py), so each one points at
+      # /find/, which does not exist here: no API documentation is published.
+      # Render them as plain text rather than dead links. Two anchor forms occur,
+      # one in the section pages and one in the dependency graph, so match any
+      # anchor whose href is /find/ and keep its classes and its text.
+      # Delete this step once doc-gen4 is a Lake dependency, its output is
+      # published, and \dochome names it - then the links resolve on their own.
+      - name: Neutralise the unresolved declaration links
+        run: |
+          python3 - <<'EOF'
+          import pathlib, re, sys
+          pat = re.compile(r'<a\s+([^>]*?)href="/find/[^"]*"([^>]*?)>(.*?)</a>', re.S)
+          def repl(m):
+              attrs = (m.group(1) + " " + m.group(2)).strip()
+              return f'<span {attrs}>{m.group(3)}</span>' if attrs else f'<span>{m.group(3)}</span>'
+          n = 0
+          for f in sorted(pathlib.Path("formalisation/blueprint/web").rglob("*.html")):
+              s = f.read_text()
+              s, k = pat.subn(repl, s)
+              if k:
+                  f.write_text(s); n += k
+          left = sum(len(re.findall(r'href="/find/', f.read_text()))
+                     for f in pathlib.Path("formalisation/blueprint/web").rglob("*.html"))
+          print(f"stripped {n} declaration links; {left} remaining")
+          if left:
+              sys.exit("unresolved /find/ links survived the strip")
+          if n == 0:
+              sys.exit("nothing stripped - has \\dochome been set? remove this step if so")
+          EOF
+
       - name: Put the PDF alongside the web pages
         run: |
           cp formalisation/blueprint/print/print.pdf \

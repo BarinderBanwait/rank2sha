@@ -29,7 +29,13 @@
 \input{macros/common}
 \input{macros/web}
 
-\home{}
+% \home is where this blueprint is served.  \github and \dochome are empty
+% deliberately: the repository is private, so a \github link would fail for a
+% reader of the public blueprint, and \dochome needs doc-gen4 API documentation
+% published alongside, which needs doc-gen4 as a Lake dependency.  While
+% \dochome is empty the declaration links resolve to /find/, which does not
+% exist; the Pages workflow strips them so the names render as plain text.
+\home{https://barindersbanwait.com/rank2sha/}
 \github{}
 \dochome{}
 
