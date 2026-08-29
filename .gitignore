@@ -15,11 +15,31 @@
 /project_management/
 /CLAUDE.md
 
+# Retired computations, kept on disk because they may be useful to a later
+# project, but not part of this paper and not published with it:
+#   legacy/magma/  the pi-descent written for the withdrawn Paper I
+#   legacy/sage/   the six-prime "A5 certificate" pipeline, the reach
+#                  measurement, and the table generators that fed it
+#   legacy/gp/     superseded one-off gp scripts
+#   legacy/data/   the raw output of every run above
+/code/legacy/
+
+# Retired Lean declarations, kept on disk for the record but outside Lake's
+# build and outside scripts/audit.sh:
+#   legacy/Anchors.lean  the withdrawn anchor corollaries cor_sha5/cor_sha13,
+#                        the Certificates structure and its two Fact instances,
+#                        and the digit-certificate extraction lemmas
+/formalisation/legacy/
+
 # Belt and braces. The manuscript must never be committed here, whatever
 # directory it is copied into.
 main.tex
 main.pdf
 STATE.txt
+
+# Staged output of an interrupted or failed code/gp/deltaE.gp run. A clean run
+# moves this onto code/data/deltaE_phase2.txt and leaves nothing behind.
+/code/data/*.partial
 
 .DS_Store
 .claude/

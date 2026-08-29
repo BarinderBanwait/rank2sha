@@ -1,6 +1,0 @@
-=== p37 n=5 upgrade started 2026-08-21 04:58:52 UTC ===
-FAIL  -> $SERIES/code/lpadic/../data/cert_37.FAILED.out   (any existing cert_37.out left untouched)
-$SERIES/code/lpadic/../data/cert_37.FAILED.out:*** STOP THE LINE: in-house recomputation disagrees with Appendix B at p = 37
-$SERIES/code/lpadic/../data/cert_37.FAILED.out:RESULT            : 3 CHECK(S) FAILED
-$SERIES/code/lpadic/../data/cert_37.out:RESULT            : ALL CHECKS PASS
-=== p37 finished 2026-08-21 06:57:29 UTC ===

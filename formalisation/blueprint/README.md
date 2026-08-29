@@ -1,7 +1,13 @@
-# Blueprint (local-only) — T50 scaffold
+# Blueprint
 
-leanblueprint scaffold for the `FinShaRank2` formalization, adapted to this
-project's **local-only** decision (no git, no GitHub, no CI until task T63).
+leanblueprint scaffold for the `FinShaRank2` formalisation.
+
+This directory was written when the project was not under version control and
+had no remote. That is no longer so: since 2026-08-29 `formalisation/` is part
+of the `rank2sha` repository. The `bp` driver below still works and is still
+the supported way to build, but the reason it exists — leanblueprint's CLI
+refusing to run outside a git repository — no longer applies, so the real CLI
+may now work directly.
 
 ## TL;DR — building
 
@@ -23,8 +29,8 @@ Both builds are verified green on this machine (2026-07-15).
 > Error: Could not find a Lean project. Please run this command from inside
 > your project folder.
 
-This project is deliberately not a git repository (user decision; hosting +
-git init is deferred task T63, blocked on user go-ahead). Do **not** work
+When this was written the project was deliberately not a git repository, and
+hosting was deferred. Both have since changed. Do **not** work
 around this by running `git init`.
 
 `blueprint/bp` runs the *exact* commands the CLI would run (from
@@ -36,7 +42,7 @@ around this by running `git init`.
 | `leanblueprint web` | `plastex -c plastex.cfg web.tex` |
 | `leanblueprint checkdecls` | `lake exe checkdecls blueprint/lean_decls` (run from `formal/`) |
 
-so after T63 (git init + GitHub), the real CLI takes over with zero changes
+so the real CLI takes over with zero changes
 to the blueprint sources.
 
 ## Toolchain (installed 2026-07-15)
@@ -62,7 +68,7 @@ Matches what `leanblueprint new` (v0.0.20) generates — the templates were
 rendered with the same Jinja settings the CLI uses — **minus** the git/CI
 artifacts (`.github/workflows/blueprint.yml`, jekyll `home_page/`, git
 commit). In `src/web.tex`, `\home{}`, `\github{}`, `\dochome{}` are
-intentionally empty (local-only; fill them at T63).
+intentionally empty; fill them when the blueprint is published.
 
 ```
 blueprint/

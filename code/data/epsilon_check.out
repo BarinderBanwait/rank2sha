@@ -1,0 +1,25 @@
+epsilon_check.gp --- guard-free re-determination of the unit character eps
+curve         E: y^2 = x^3 - 56x, ainvs [0,0,0,-56,0], N = 12544 = 2^8*7^2
+backs         paper/v2 Sec. 6.2, the sentence after eq:psiE
+PARI/GP       2.17.2
+realprecision 3217 decimal digits (the arithmetic below is exact:
+              integers, Z/p, and ellap; no real number enters a decision)
+prime range   split 5 <= p <= 60000, p != 7
+
+pass 1: residue classes mod 56 determined: 384
+
+CHECK 1  eps depends only on the residue class mod 56
+  split primes tested : 3018
+  conflicts           : 0
+  primes with no unique candidate: 0
+
+CHECK 2  eps = (56/.)_4^{-1}, i.e. CK + m = 0 mod 4 with (56/alpha)_4 = i^m
+  primes agreeing     : 3018
+  primes disagreeing  : 0
+
+COVERAGE of the 384 classes used by deltaE.gp
+  classes covered by the prime range: 384
+  classes not reached               : 0
+
+STATUS: eps is consistent at every split prime tested, agrees with the
+        closed form (56/.)_4^{-1}, and covers all 384 classes of D_E.

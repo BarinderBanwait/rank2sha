@@ -1,0 +1,67 @@
+### verification of the four scan output files, paper Section 5.3
+python            : 3.14.2
+data directory    : /Users/barinder/Documents/fin_sha_rank_2/code/data
+sieve bound       : 30000
+
+res_1.txt   interval [5, 5113]
+  [PASS] every line parses as "p v" or JOBDONE
+  [PASS] every entry is prime
+  [PASS] every entry is = 1 mod 4
+  [PASS] every recorded valuation is 2
+  [PASS] no line carries an ESC or MAXED flag
+  [PASS] entries are strictly increasing, with no repetition
+  [PASS] interval [5, 5113] is complete
+  [PASS] count is 335   computed 335, paper 335
+  [PASS] first entry is the stated lower end 5   computed 5
+  [PASS] last entry is the stated upper end 5113   computed 5113
+
+res_2.txt   interval [8009, 9349]
+  [PASS] every line parses as "p v" or JOBDONE
+  [PASS] every entry is prime
+  [PASS] every entry is = 1 mod 4
+  [PASS] every recorded valuation is 2
+  [PASS] no line carries an ESC or MAXED flag
+  [PASS] entries are strictly increasing, with no repetition
+  [PASS] interval [8009, 9349] is complete
+  [PASS] count is 77   computed 77, paper 77
+  [PASS] first entry is the stated lower end 8009   computed 8009
+  [PASS] last entry is the stated upper end 9349   computed 9349
+
+res_3.txt   interval [12517, 13513]
+  [PASS] every line parses as "p v" or JOBDONE
+  [PASS] every entry is prime
+  [PASS] every entry is = 1 mod 4
+  [PASS] every recorded valuation is 2
+  [PASS] no line carries an ESC or MAXED flag
+  [PASS] entries are strictly increasing, with no repetition
+  [PASS] interval [12517, 13513] is complete
+  [PASS] count is 54   computed 54, paper 54
+  [PASS] first entry is the stated lower end 12517   computed 12517
+  [PASS] last entry is the stated upper end 13513   computed 13513
+
+res_4.txt   interval [16001, 16889]
+  [PASS] every line parses as "p v" or JOBDONE
+  [PASS] every entry is prime
+  [PASS] every entry is = 1 mod 4
+  [PASS] every recorded valuation is 2
+  [PASS] no line carries an ESC or MAXED flag
+  [PASS] entries are strictly increasing, with no repetition
+  [PASS] interval [16001, 16889] is complete
+  [PASS] count is 42   computed 42, paper 42
+  [PASS] first entry is the stated lower end 16001   computed 16001
+  [PASS] last entry is the stated upper end 16889   computed 16889
+
+across the four files
+  [PASS] total count is 508   computed 508, paper 508
+  [PASS] the four segments are disjoint and in increasing order
+  [PASS] largest prime is 16889   computed 16889, paper 16889
+  [PASS] every prime is below 30000, so cor:shavanishing applies at all of them   largest 16889
+  [PASS] all_primes_vreg.txt is the concatenation of the four files, in order   508 lines against 508
+
+summary
+  segment counts    : 335, 77, 54, 42   (paper: 335, 77, 54, 42)
+  total             : 508   (paper: 508)
+  exceptions v != 2 : 0   (paper: zero)
+  largest prime     : 16889   (paper: 16889)
+  checks failed     : 0
+VERIFYSCANDONE

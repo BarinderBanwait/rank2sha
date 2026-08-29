@@ -1,0 +1,37 @@
+### the null model of paper Section 5.4 (ssec:scanweight)
+python            : 3.14.2
+scanned primes    : /Users/barinder/Documents/fin_sha_rank_2/code/data/all_primes_vreg.txt
+
+the scanned set
+  number of primes                   508                    paper 508
+  smallest, largest                  5, 16889               paper 5, 16889
+  lambda = sum 1/p                   0.802654               paper 0.803...
+
+probability of a clean scan
+  (H1) conj:strong                   1                      paper 1
+  (H2) chance, exp(-lambda)          0.4481                 paper 0.45
+  (H3) c = 5, exp(-5 lambda)         0.0181                 paper 0.018
+
+likelihood ratios
+  (H1):(H2) = exp(lambda)            2.231                  paper 2.2
+  (H1):(H3) at c = 5                 55.327                 paper 55
+  (H1):(H3) at c = 1                 2.231                  paper 2.2
+  (H3) at c = 1 is (H2), so the two ratios agree.
+
+the extension to every split prime below 10^6
+  number of split primes             39175                  paper not printed
+  lambda                             1.026174               paper 1.03
+  clean probability exp(-lambda)     0.3584                 paper 0.36
+  (H1):(H2) = exp(lambda)            2.790                  paper 2.8
+
+the opposite outcome
+  Poisson(lambda), P(X >= 5)         1.432e-03              paper 1.4e-03
+
+exact Bernoulli model, for comparison with the Poisson approximation
+  The paper states the Poisson approximation.  Under the independent
+  Bernoulli model itself the clean probability is the product of
+  1 - 1/p over the scanned primes.
+  product of (1 - 1/p)               0.4348                 paper not printed
+  Poisson exp(-lambda)               0.4481                 paper 0.45
+
+NULLMODELDONE

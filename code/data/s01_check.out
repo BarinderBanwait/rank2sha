@@ -1,0 +1,89 @@
+s01_check.gp --- size of the grade-0 sum S_{0,1} against working precision
+curve         E: y^2 = x^3 - 56x, ainvs [0,0,0,-56,0], N = 12544 = 2^8*7^2
+backs         paper/v2 Sec. 6.3, the grade-0 entry of the table of sums
+PARI/GP       2.17.2
+precisions    [200, 400, 800, 1600, 3200] decimal digits
+control       |S_{0,2} - 3584|, the noise floor of a sum of the same shape
+
+---------------------------------------------------------------------------
+WORKING PRECISION: 200 decimal digits requested, 211 allocated
+  points on D_E                : 384 (expect 384)
+  max_g |E_1^*(t_g)|           : 58.3656581534
+  max_g |wp(t_g)|              : 3413.3910427827
+  exponent(|S_{0,1}|)          : 2^-694  = 10^-208.9
+    exponent(|Re S_{0,1}|)     : 2^-694  = 10^-208.9
+    exponent(|Im S_{0,1}|)     : 2^-698  = 10^-210.1
+  exponent(|S_{0,2} - 3584|)   : 2^-687  = 10^-206.8   (control, the noise floor of the run)
+  |S_{0,1}| below the largest clean power of ten : 10^-208
+  |S_{0,1}| relative to max_g |E_1^*|            : 10^-210.4
+  |S_{0,1}| relative to the noise floor          : 10^-2.1
+---------------------------------------------------------------------------
+WORKING PRECISION: 400 decimal digits requested, 404 allocated
+  points on D_E                : 384 (expect 384)
+  max_g |E_1^*(t_g)|           : 58.3656581534
+  max_g |wp(t_g)|              : 3413.3910427827
+  exponent(|S_{0,1}|)          : 2^-1332  = 10^-401.0
+    exponent(|Re S_{0,1}|)     : 2^-1332  = 10^-401.0
+    exponent(|Im S_{0,1}|)     : 2^-1336  = 10^-402.2
+  exponent(|S_{0,2} - 3584|)   : 2^-1327  = 10^-399.5   (control, the noise floor of the run)
+  |S_{0,1}| below the largest clean power of ten : 10^-400
+  |S_{0,1}| relative to max_g |E_1^*|            : 10^-402.5
+  |S_{0,1}| relative to the noise floor          : 10^-1.5
+---------------------------------------------------------------------------
+WORKING PRECISION: 800 decimal digits requested, 809 allocated
+  points on D_E                : 384 (expect 384)
+  max_g |E_1^*(t_g)|           : 58.3656581534
+  max_g |wp(t_g)|              : 3413.3910427827
+  exponent(|S_{0,1}|)          : 2^-2675  = 10^-805.3
+    exponent(|Re S_{0,1}|)     : 2^-2675  = 10^-805.3
+    exponent(|Im S_{0,1}|)     : 2^-2679  = 10^-806.5
+  exponent(|S_{0,2} - 3584|)   : 2^-2669  = 10^-803.4   (control, the noise floor of the run)
+  |S_{0,1}| below the largest clean power of ten : 10^-804
+  |S_{0,1}| relative to max_g |E_1^*|            : 10^-806.8
+  |S_{0,1}| relative to the noise floor          : 10^-1.8
+---------------------------------------------------------------------------
+WORKING PRECISION: 1600 decimal digits requested, 1618 allocated
+  points on D_E                : 384 (expect 384)
+  max_g |E_1^*(t_g)|           : 58.3656581534
+  max_g |wp(t_g)|              : 3413.3910427827
+  exponent(|S_{0,1}|)          : 2^-5362  = 10^-1614.1
+    exponent(|Re S_{0,1}|)     : 2^-5362  = 10^-1614.1
+    exponent(|Im S_{0,1}|)     : 2^-5371  = 10^-1616.8
+  exponent(|S_{0,2} - 3584|)   : 2^-5355  = 10^-1612.0   (control, the noise floor of the run)
+  |S_{0,1}| below the largest clean power of ten : 10^-1613
+  |S_{0,1}| relative to max_g |E_1^*|            : 10^-1615.6
+  |S_{0,1}| relative to the noise floor          : 10^-2.1
+---------------------------------------------------------------------------
+WORKING PRECISION: 3200 decimal digits requested, 3217 allocated
+  points on D_E                : 384 (expect 384)
+  max_g |E_1^*(t_g)|           : 58.3656581534
+  max_g |wp(t_g)|              : 3413.3910427827
+  exponent(|S_{0,1}|)          : 2^-10673  = 10^-3212.9
+    exponent(|Re S_{0,1}|)     : 2^-10673  = 10^-3212.9
+    exponent(|Im S_{0,1}|)     : 2^-10683  = 10^-3215.9
+  exponent(|S_{0,2} - 3584|)   : 2^-10666  = 10^-3210.8   (control, the noise floor of the run)
+  |S_{0,1}| below the largest clean power of ten : 10^-3212
+  |S_{0,1}| relative to max_g |E_1^*|            : 10^-3214.4
+  |S_{0,1}| relative to the noise floor          : 10^-2.1
+---------------------------------------------------------------------------
+
+SUMMARY
+  requested  allocated   |S_{0,1}| <      noise floor |S_{0,2} - 3584| <
+  200        211         10^-208          10^-206
+  400        404         10^-400          10^-399
+  800        809         10^-804          10^-803
+  1600       1618        10^-1613         10^-1611
+  3200       3217        10^-3212         10^-3210
+
+READING.  |S_{0,1}| tracks the allocated precision: at D allocated decimal
+digits the returned value has absolute value near 10^{-D}.  It sits at the
+size of the residual of the control sum S_{0,2}, whose exact value 3584 is
+known.  So S_{0,1} vanishes to the working precision of each run, and no run
+certifies a bound materially below its own noise floor.
+
+PARI allocates more digits than are requested: realprecision 400 works to
+404 digits.  That is why the 400-digit run returns a value below 10^{-400},
+with about one decimal digit of margin, while its noise floor is 10^{-399}.
+A statement at that precision therefore rests on the allocation rather than
+on the requested precision.  The statement with margin is the one from the
+main run at 3200 digits.

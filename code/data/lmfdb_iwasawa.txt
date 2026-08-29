@@ -1,32 +1,32 @@
-# lmfdb_iwasawa.txt -- Appendix B of TASK_BOARD_SERIES.md in machine-readable form.
+# lmfdb_iwasawa.txt -- Iwasawa invariants of E : y^2 = x^3 - 56x from the LMFDB,
+# in machine-readable form.  Read by check C7 of code/sage/check_agreement.py.
 #
-# Iwasawa invariants of E : y^2 = x^3 - 56x  (minimal model [0,0,0,-56,0],
-# conductor N = 12544 = 2^8 * 7^2, CM by Z[i], rank 2), read off the LMFDB curve
-# page on 2026-08-20 by the PM and reproduced in Appendix B of the board.
+# E has minimal model [0,0,0,-56,0], conductor N = 12544 = 2^8 * 7^2, CM by Z[i]
+# and rank 2.  The values below were read off the LMFDB curve page on 2026-08-20.
 #
 # THESE ARE ANALYTIC INVARIANTS OF L_p(E) AND CARRY NO STATED ERROR BOUNDS.
-# They are CORROBORATION ONLY. The certificate the paper cites is the in-house
-# recomputation in code/data/cert_<p>.out, produced by code/lpadic/run.sh.
-# A disagreement between the two is a stop-the-line event (board, Risks).
+# They are corroboration only.  What the paper cites is the recomputation in
+# code/data/cert_<p>.out, produced by code/sage/run.sh.  A disagreement between
+# the two is a stop-the-line event.
 #
 # At supersingular primes LMFDB reports Pollack's pair (lambda^+, lambda^-) and
 # (mu^+, mu^-) for L_p^{+/-}(E) [Pollack, Duke 118 (2003) 523-558; Sprung, JNT 132
 # (2012) 1483-1506; computed as in Perrin-Riou, Exp. Math. 12 (2003) 155-186, S6].
 # The ordering of each pair is by position in the LMFDB row and has NOT been
-# checked against their convention. Nothing in this series depends on it.
+# checked against their convention. Nothing here depends on it.
 #
 # Structure, all consistent with CM by Z[i]:
-#   ord <=> p = 1 (mod 4) <=> p split in K = Q(i)   [these feed prop:consequence]
+#   ord <=> p = 1 (mod 4) <=> p split in K = Q(i)
 #   ss  <=> p = 3 (mod 4) <=> p inert,  a_p = 0
 #   p = 2, 7 additive (N = 2^8 * 7^2)
 #
-# Columns: p  reduction  lambda  mu  split  used_by_paper_I
+# Columns: p  reduction  lambda  mu  split  ordinary_split
 #   reduction in {add, ord, ss}
 #   lambda, mu: a single integer at ord; a "+,-" pair at ss; "-" at add
 #   split: yes/no/- (- = additive)
-#   used_by_paper_I: yes only at the six split ordinary primes
+#   ordinary_split: yes at the split ordinary primes, where C7 compares
 #
-p   reduction  lambda  mu    split  used_by_paper_I
+p   reduction  lambda  mu    split  ordinary_split
 2   add        -       -     -      no
 3   ss         2,2     0,0   no     no
 5   ord        2       0     yes    yes
@@ -43,11 +43,11 @@ p   reduction  lambda  mu    split  used_by_paper_I
 43  ss         2,2     0,0   no     no
 47  ss         4,2     0,0   no     no
 #
-# The six split ordinary primes, extracted:
+# The split ordinary primes covered by this table:
 #   5, 13, 17, 29, 37, 41   all with lambda = 2, mu = 0.
 #
-# Via lem:c0c1 (main.tex:884), which gives c_0 = c_1 = 0 unconditionally at every
-# good ordinary p for this curve, "lambda_an = 2 and mu_an = 0" is EQUIVALENT to
-# v_p(c_2(p)) = 0 -- hypothesis (v) of cor:sha5.
+# By lem:c0c1, which gives c_0 = c_1 = 0 unconditionally at every good ordinary p
+# for this curve, "lambda_an = 2 and mu_an = 0" is equivalent to v_p(c_2(p)) = 0.
+# That is what check C7 compares against.
 #
-# The p = 47 entry (4,2) is recorded and not used; see board, Established facts (6).
+# The p = 47 entry (4,2) is recorded and not used.

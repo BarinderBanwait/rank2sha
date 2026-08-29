@@ -1,0 +1,18 @@
+### per-prime timings of ellpadicregulator, paper Section 5.3 (ssec:scan)
+pari version      : [2, 17, 2]
+curve             : y^2 = x^3 - 56x   [0,0,0,-56,0]
+MW basis          : (8,8), (9,15)
+call timed        : ellpadicregulator(E, p, n, G)
+repeats per case  : 3, on a freshly initialised curve each time
+precision rule    : n = 6 (p < 2000), n = 5 (2000 <= p < 10^4), n = 4 (p >= 10^4)
+hardware          : timings are hardware-dependent; the paper's were
+                    measured on an Apple M1 Pro (arm64), 16 GB RAM
+
+       p   n             runs (ms)       min    median    paper
+     101   6             [7, 5, 4]      4 ms      5 ms    5 ms
+    1009   6          [99, 97, 96]     96 ms     97 ms    97 ms
+    5003   5       [540, 535, 533]    533 ms    535 ms    0.55 s
+   16889   4    [2323, 2287, 2283]   2283 ms   2287 ms    2.3 s
+
+Each of the four calls returned v_fp(Reg_fp) = 2, as the scan files record.
+TIMINGSDONE

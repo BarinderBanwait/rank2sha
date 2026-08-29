@@ -1,0 +1,67 @@
+### the excluded set S_E of eq:Sexc, paper Section 5.1 (ssec:testbed)
+pari version      : [2, 17, 2]
+curve             : E : y^2 = x^3 - 56x   [0,0,0,-56,0]
+field             : K = Q(i), d_K = -4
+
+quoted invariants (tab:testbed, LMFDB 12544.g1)
+  conductor N       : 12544 = 2^8 * 7^2
+  prod_v c_v        : 4
+  #E(Q)_tors        : 2
+  d_K               : -4
+  isogeny_degrees   : [1, 2]   (class {E, E_1}, E_1 : y^2 = x^3 + 14x)
+
+the Grossencharacter conductor f, from N = |d_K| * Nm(f)
+  N / |d_K|         : 12544 / 4 = 3136   (paper: Nm(f) = 3136)
+  class number of K : 1   (Q(i) has class number 1)
+  ideals of Z[i] of norm 3136 : 1   (paper: unique)
+    ideal 1 : [56, 0; 0, 56]   norm 3136
+  (56) in HNF       : [56, 0; 0, 56]
+  unique ideal of norm 3136 equals (56) : 1
+  Nm(f) - 1         : 3135 = 3 * 5 * 11 * 19   (Section 6.4 check (iii): 3135 = 3 * 5 * 11 * 19)
+
+S_bad : the primes dividing 6N * prod_v c_v * #tors * d_K
+  product           : -2408448 = -2^14 * 3 * 7^2   (paper: 2^14 * 3 * 7^2, up to sign)
+  S_bad             : {2, 3, 7}   (paper: <= {2, 3, 7})
+
+S_an : the anomalous primes
+  lem:noanomalous: for a curve with CM by Z[i] the only prime that can
+  be anomalous is p = 5, and 5 is anomalous exactly when a_5 = -4.
+  E  : a_5          : -2   (paper: -2)
+  E  : #Etilde(F_5) : 8   (paper: 8)
+  E  : 5 | #Etilde(F_5)? : 0   (0 = not anomalous)
+  S_an              : {}   (paper: empty)
+  The exception at p = 5 is not vacuous.  The counterexample of
+  Section 5.1 is E' : y^2 = x^3 + 3x.
+  E' : j            : 1728   (1728: CM by Z[i])
+  E' : discriminant : -1728 = -2^6 * 3^3
+  E' : good reduction at 5? : 1
+  E' : a_5          : -4   (paper: -4)
+  E' : #E'tilde(F_5) : 10   (paper: 10)
+  E' : 5 | #E'tilde(F_5)? : 1   (1 = anomalous)
+
+S_red : the primes at which rhobar_{E,p} is reducible
+  Quoted from LMFDB 12544.g1: isogeny_degrees is [1,2], so the isogeny
+  class is the two curves E and E_1 : y^2 = x^3 + 14x joined by a
+  2-isogeny.  A reducible rhobar_{E,p} gives a rational p-isogeny, so
+  rhobar_{E,p} is irreducible at every odd p.
+  S_red             : {2}   (paper: <= {2})
+
+S_cmp : the set of lem:comparison: the primes dividing 6N * Nm(f),
+        together with supp(omega_E)
+  6N * Nm(f)        : 236027904 = 2^15 * 3 * 7^4   (paper: 2^15 * 3 * 7^4)
+  its prime support : {2, 3, 7}
+  supp(omega_E)     : {2, 7}   (quoted from Section 5.1, not computed)
+  S_cmp             : {2, 3, 7}   (paper: <= {2, 3, 7})
+
+S_cl : the primes dividing #Cl_f(K), the ray class group of K = Q(i)
+       modulo f = (56)
+  cyclic structure  : [48, 4, 2]   ([48, 4, 2] is Z/48 x Z/4 x Z/2)
+  #Cl_f(K)          : 384 = 2^7 * 3   (paper: 384 = 2^7 * 3)
+  S_cl              : {2, 3}   (paper: <= {2, 3})
+  conj:EK guard #Cl_f(K) >= 6 : 1   (1 = discharged)
+
+conclusion
+  S_E               : {2, 3, 7}   (paper: <= {2, 3, 7})
+  members = 1 mod 4 : {}   (paper: none)
+  no split prime excluded : 1
+EXCLUDEDSETDONE

@@ -7,13 +7,13 @@
 # so EVERY `leanblueprint <cmd>` fails with
 #   "Error: Could not find a Lean project. Please run this command from
 #    inside your project folder."
-# in a project that is not a git repo.  This project is deliberately not a
-# git repo (user decision; hosting is deferred task T63).  Each case below
+# in a project that is not a git repo.  That was this project's situation when
+# this driver was written; since 2026-08-29 formalisation/ is part of the
+# rank2sha repository, so the real CLI may now work.  Each case below
 # runs the EXACT command leanblueprint's client.py would run (see mk_pdf,
-# mk_web, do_checkdecls there), so switching back to the real CLI after T63
-# is a no-op.
+# mk_web, do_checkdecls there), so switching back to the real CLI is a no-op.
 #
-# Usage, from formal/ (or anywhere):  blueprint/bp pdf | web | all | serve | checkdecls
+# Usage, from formalisation/ (or anywhere):  blueprint/bp pdf | web | all | serve | checkdecls
 set -e
 BP_DIR="$(cd "$(dirname "$0")" && pwd)"
 VENV=/Users/barinder/.venvs/leanblueprint

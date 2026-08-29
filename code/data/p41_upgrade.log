@@ -1,6 +1,0 @@
-=== p41 n=5 upgrade started 2026-08-21 04:58:52 UTC ===
-FAIL  -> $SERIES/code/lpadic/../data/cert_41.FAILED.out   (any existing cert_41.out left untouched)
-$SERIES/code/lpadic/../data/cert_41.FAILED.out:*** STOP THE LINE: in-house recomputation disagrees with Appendix B at p = 41
-$SERIES/code/lpadic/../data/cert_41.FAILED.out:RESULT            : 3 CHECK(S) FAILED
-$SERIES/code/lpadic/../data/cert_41.out:RESULT            : ALL CHECKS PASS
-=== p41 finished 2026-08-21 06:57:29 UTC ===
