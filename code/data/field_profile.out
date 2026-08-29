@@ -1,0 +1,44 @@
+# field_profile.m   Magma V2.29-9
+
+================ p = 5 ================
+[F:Q] = 8   (2(p-1) = 8)   [field 0.050s]
+signature (r1,r2) = (0,4), unit rank = 3
+MaximalOrder(F : Ramification := [ 2, 5, 7 ])  [0.020s]
+disc(F) = 246727835648000
+disc(F) factored (trial division over the hint) = [ <2, 24>, <5, 3>, <7, 6> ]
+residual cofactor after removing [ 2, 5, 7 ] = 1   (GOOD: disc supported on the hint)
+MinkowskiBound(F) = 99208   [0.000s]
+   (this is the search bound an UNCONDITIONAL class group needs)
+Cl(F) under GRH = [ 20 ]   [0.220s]
+
+================ p = 13 ================
+[F:Q] = 24   (2(p-1) = 24)   [field 0.060s]
+signature (r1,r2) = (0,12), unit rank = 11
+MaximalOrder(F : Ramification := [ 2, 7, 13 ])  [4.230s]
+disc(F) = 13781652129336732670572695623547911610822608027648
+disc(F) factored (trial division over the hint) = [ <2, 72>, <7, 18>, <13, 11> ]
+residual cofactor after removing [ 2, 7, 13 ] = 1   (GOOD: disc supported on the hint)
+MinkowskiBound(F) = 31347862589493924   [0.000s]
+   (this is the search bound an UNCONDITIONAL class group needs)
+Cl(F) under GRH = [ 260 ]   [25.840s]
+
+================ p = 17 ================
+[F:Q] = 32   (2(p-1) = 32)   [field 0.130s]
+signature (r1,r2) = (0,16), unit rank = 15
+MaximalOrder(F : Ramification := [ 2, 7, 17 ])  [15.360s]
+disc(F) = 43447657352433528216556818035748100492579570686664475611995620507648
+disc(F) factored (trial division over the hint) = [ <2, 96>, <7, 24>, <17, 15> ]
+residual cofactor after removing [ 2, 7, 17 ] = 1   (GOOD: disc supported on the hint)
+MinkowskiBound(F) = 56613176243583852451925   [0.000s]
+   (this is the search bound an UNCONDITIONAL class group needs)
+Cl(F) under GRH = [ 68 ]   [190.460s]
+
+================ p = 29 ================
+[F:Q] = 56   (2(p-1) = 56)   [field 2.100s]
+signature (r1,r2) = (0,28), unit rank = 27
+MaximalOrder(F : Ramification := [ 2, 7, 29 ])  [317.870s]
+disc(F) = 356371442870780741846094948007904543596987232486031479939373095185800037712196911113867087832168340238896409088673914443268096
+disc(F) factored (trial division over the hint) = [ <2, 168>, <7, 42>, <29, 27> ]
+residual cofactor after removing [ 2, 7, 29 ] = 1   (GOOD: disc supported on the hint)
+MinkowskiBound(F) = 4642736065928555445386809331075897756781331   [0.010s]
+   (this is the search bound an UNCONDITIONAL class group needs)

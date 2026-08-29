@@ -1,0 +1,56 @@
+#!/bin/sh
+# Local-only driver for the blueprint — replacement for the `leanblueprint`
+# CLI subcommands (pdf / web / serve / checkdecls).
+#
+# WHY THIS EXISTS: leanblueprint v0.0.20 opens the enclosing git repository at
+# module-import time (client.py, `Repo(".", search_parent_directories=True)`),
+# so EVERY `leanblueprint <cmd>` fails with
+#   "Error: Could not find a Lean project. Please run this command from
+#    inside your project folder."
+# in a project that is not a git repo.  This project is deliberately not a
+# git repo (user decision; hosting is deferred task T63).  Each case below
+# runs the EXACT command leanblueprint's client.py would run (see mk_pdf,
+# mk_web, do_checkdecls there), so switching back to the real CLI after T63
+# is a no-op.
+#
+# Usage, from formal/ (or anywhere):  blueprint/bp pdf | web | all | serve | checkdecls
+set -e
+BP_DIR="$(cd "$(dirname "$0")" && pwd)"
+VENV=/Users/barinder/.venvs/leanblueprint
+export PATH="$VENV/bin:$PATH"
+
+case "$1" in
+  pdf)
+    # = leanblueprint pdf  (latexmkrc selects xelatex; output in blueprint/print/)
+    mkdir -p "$BP_DIR/print"
+    (cd "$BP_DIR/src" && latexmk -output-directory=../print)
+    # leanblueprint copies the bibliography for the web build:
+    if [ -f "$BP_DIR/print/print.bbl" ]; then
+      cp "$BP_DIR/print/print.bbl" "$BP_DIR/src/web.bbl"
+    fi
+    ;;
+  web)
+    # = leanblueprint web  (output in blueprint/web/ per plastex.cfg)
+    mkdir -p "$BP_DIR/web"
+    (cd "$BP_DIR/src" && plastex -c plastex.cfg web.tex)
+    ;;
+  all)
+    "$0" pdf
+    "$0" web
+    ;;
+  serve)
+    # View the built web blueprint (needed for the dependency graph page,
+    # which does not render well over file://).
+    echo "Serving http://localhost:8000/ — Ctrl-C to stop."
+    (cd "$BP_DIR/web" && python3 -m http.server 8000)
+    ;;
+  checkdecls)
+    # = leanblueprint checkdecls.  Requires the checkdecls Lake dependency in
+    # formal/lakefile.toml and a completed `lake build` — see README.md §checkdecls.
+    (cd "$BP_DIR/.." && lake exe checkdecls blueprint/lean_decls)
+    ;;
+  *)
+    echo "usage: $0 {pdf|web|all|serve|checkdecls}" >&2
+    exit 2
+    ;;
+esac

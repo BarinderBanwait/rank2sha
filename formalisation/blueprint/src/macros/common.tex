@@ -1,0 +1,83 @@
+% In this file you should put all LaTeX macros and settings to be used both by
+% the pdf version and the web version.
+% This should be most of your macros.
+
+% The theorem-like environments defined below are those that appear by default
+% in the dependency graph. See the README of leanblueprint if you need help to
+% customize this. 
+% The configuration below use the theorem counter for all those environments
+% (this is what the [theorem] arguments mean) and never resets it.
+% If you want for instance to number them within chapters then you can add
+% [chapter] at the end of the next line.
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+% --- T51: the classical-input / assumption environment -------------------
+% Registered per TASK_BOARD.md §1 (epistemic three-way split) and the
+% blueprint/README.md T51 authoring note: interface fields of `ClassicalInputs`
+% (citable classical theorems: Rubin, Mazur, Greenberg, MTT, Bannai–Kobayashi,
+% de Shalit, Schneider/Perrin-Riou, Hasse) are rendered in this environment
+% rather than as `lemma`/`proposition`/`theorem`, so a reader can see at a
+% glance, by the header word alone ("Assumption" vs "Lemma"/"Theorem"), which
+% statements are asserted on citation and which are Lean-kernel-proved.
+% `\leanok` is never applied to a node in this environment (TASK_BOARD.md §1:
+% these are the human-refereeable trust boundary, not proof obligations).
+%
+% NOTE for the graph-owning agent (not this task's fence): plasTeX's
+% `plastexdepgraph` plugin only draws dependency-graph nodes for theorem
+% *kinds* listed in the `thms=` option passed to
+% `\usepackage[showmore, dep_graph]{blueprint}` in `src/web.tex` (default
+% `definition+lemma+proposition+theorem+corollary`). `src/web.tex` is outside
+% this task's fence (T51), so `assumption` nodes below render with their own
+% distinct header/style in the PDF and HTML *prose* but are **not** picked up
+% by the auto-generated dependency graph. The handful of assumption-flavoured
+% nodes that a proved theorem's dependency chain must visibly pass through in
+% the graph (`lem:comparison`, `eq:padicbsd`, `def:deltaE`, `prop:jetformula`,
+% `hyp:sinnott`, `conj:EK`) are therefore instead declared as `definition`
+% (one of the five default graph-visible kinds, box-shaped) and deliberately
+% never carry `\leanok`, so they still read as visually distinct (box, no
+% green fill) from proved `theorem`/`lemma`/`proposition`/`corollary` nodes
+% (ellipse, green once proved). See blueprint/README.md for the one-line
+% `src/web.tex` change (`thms=...+assumption`) that would let `assumption`
+% itself join the graph, if a future task takes on that file.
+\newtheorem{assumption}[theorem]{Assumption}
+
+%% --- Paper macros, ported verbatim from main.tex (T51 / Wave 7 fix, 2026-08-18).
+%% The blueprint restates the paper's results, so it needs the paper's notation.
+%% Keep this block in sync with main.tex's preamble (main.tex lines 11-31).
+%%
+%% BRACE-TRANSPARENCY FIX (2026-08-18, W7-A): this blueprint builds with
+%% xelatex + unicode-math (see src/latexmkrc), under which \mathfrak (and,
+%% for safety, \mathcal/\overline/\widehat) are NOT brace-transparent, so an
+%% unbraced subscript/superscript use like `_\fp` fails with
+%% "! Missing { inserted." / "\__um_group_begin:". Every macro below whose
+%% expansion starts with one of those commands is therefore given an extra
+%% {...} layer in its own definition, so `_\fp`, `^\Qbar`, etc. keep working
+%% unbraced at any call site. \DeclareMathOperator macros are unaffected
+%% (\mathop already groups their content) and are ported unchanged.
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Qbar}{{\overline{\Q}}}
+\newcommand{\Sha}{\mathrm{III}}
+\newcommand{\fp}{{\mathfrak{p}}}
+\newcommand{\fq}{{\mathfrak{q}}}
+\newcommand{\ff}{{\mathfrak{f}}}
+\newcommand{\OK}{{\mathcal{O}_K}}
+\newcommand{\Lp}{L_p}
+\newcommand{\Gm}{{\widehat{\mathbb{G}}_m}}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\Reg}{Reg}
+\DeclareMathOperator{\Sel}{Sel}
+\DeclareMathOperator{\corank}{corank}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Nm}{N}
+\DeclareMathOperator{\car}{char}

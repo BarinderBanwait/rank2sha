@@ -1,0 +1,138 @@
+# command : nice -n 10 timeout 1800 /usr/local/bin/magma -b pp:=13 curve:=0,0,0,-56,0 grh:=on rk:=2 ram:=2,7,13 optrep:=off tag:=A2-attempt-1-ramhint prog:=$HOME/fsr2_descent/p13.prog $HOME/fsr2_descent/pi_descent.m
+# magma   : V2.29-9
+# date    : 2026-08-21T05:03:08Z (UTC), host remote-host, timeout 1800s, nice 10
+================ p = 13 ================
+# pi_descent.m   Magma V2.29-9
+# curve  = [ 0, 0, 0, -56, 0 ]
+# GRH    = on   (SetClassGroupBounds("GRH") APPLIED)
+# ram    = 2,7,13   optrep = off   rk = 2   tag = A2-attempt-1-ramhint
+# E      = Elliptic Curve defined by y^2 = x^3 - 56*x over Rational Field
+# minimal model [ 0, 0, 0, -56, 0 ], conductor 12544, disc 11239424
+# CM     = true (disc -4)
+# bad primes of E : [ 2, 7 ] ; S-primes (bad and p) : [ 2, 7, 13 ]
+kernel polys of degree 6 : 2
+F = K(E[pi]) : [F:Q] = 24
+# field construction [0.090s]
+T : order 13
+#Gal(F/K) = 12  (expected 12)
+chi values : [ 1, 12, 4, 3, 2, 8, 7, 6, 5, 11, 10, 9 ]
+# chi faithful : true   (faithful => E(K)[p] = 0)
+# sigma0 candidates (chi(sigma0) a primitive root mod 13) : 4 of 12
+# MaximalOrder(F : Ramification := [ 2, 7, 13 ]) done [4.480s]
+# disc(F) = 13781652129336732670572695623547911610822608027648
+Cl(F) = [ 260 ]   [27.220s]  (GRH: SetClassGroupBounds("GRH"))
+#S = 4
+dim_F13 F(S,13) = 16   [0.320s]
+
+sigma with chi = 12 :
+   eigenvalue 1 : dim 9
+   eigenvalue 12 : dim 7
+
+sigma with chi = 4 :
+   eigenvalue 1 : dim 5
+   eigenvalue 3 : dim 2
+   eigenvalue 4 : dim 3
+   eigenvalue 9 : dim 2
+   eigenvalue 10 : dim 2
+   eigenvalue 12 : dim 2
+
+sigma with chi = 3 :
+   eigenvalue 1 : dim 7
+   eigenvalue 3 : dim 5
+   eigenvalue 9 : dim 4
+
+sigma with chi = 2 :
+   eigenvalue 1 : dim 4
+   eigenvalue 2 : dim 2
+   eigenvalue 3 : dim 1
+   eigenvalue 4 : dim 1
+   eigenvalue 5 : dim 1
+   eigenvalue 6 : dim 1
+   eigenvalue 7 : dim 1
+   eigenvalue 8 : dim 1
+   eigenvalue 9 : dim 1
+   eigenvalue 10 : dim 1
+   eigenvalue 11 : dim 1
+   eigenvalue 12 : dim 1
+
+sigma with chi = 8 :
+   eigenvalue 1 : dim 6
+   eigenvalue 5 : dim 3
+   eigenvalue 8 : dim 4
+   eigenvalue 12 : dim 3
+
+sigma with chi = 7 :
+   eigenvalue 1 : dim 4
+   eigenvalue 2 : dim 1
+   eigenvalue 3 : dim 1
+   eigenvalue 4 : dim 1
+   eigenvalue 5 : dim 1
+   eigenvalue 6 : dim 1
+   eigenvalue 7 : dim 2
+   eigenvalue 8 : dim 1
+   eigenvalue 9 : dim 1
+   eigenvalue 10 : dim 1
+   eigenvalue 11 : dim 1
+   eigenvalue 12 : dim 1
+
+sigma with chi = 6 :
+   eigenvalue 1 : dim 4
+   eigenvalue 2 : dim 1
+   eigenvalue 3 : dim 1
+   eigenvalue 4 : dim 1
+   eigenvalue 5 : dim 1
+   eigenvalue 6 : dim 2
+   eigenvalue 7 : dim 1
+   eigenvalue 8 : dim 1
+   eigenvalue 9 : dim 1
+   eigenvalue 10 : dim 1
+   eigenvalue 11 : dim 1
+   eigenvalue 12 : dim 1
+
+sigma with chi = 5 :
+   eigenvalue 1 : dim 6
+   eigenvalue 5 : dim 4
+   eigenvalue 8 : dim 3
+   eigenvalue 12 : dim 3
+
+sigma with chi = 11 :
+   eigenvalue 1 : dim 4
+   eigenvalue 2 : dim 1
+   eigenvalue 3 : dim 1
+   eigenvalue 4 : dim 1
+   eigenvalue 5 : dim 1
+   eigenvalue 6 : dim 1
+   eigenvalue 7 : dim 1
+   eigenvalue 8 : dim 1
+   eigenvalue 9 : dim 1
+   eigenvalue 10 : dim 1
+   eigenvalue 11 : dim 2
+   eigenvalue 12 : dim 1
+
+sigma with chi = 10 :
+   eigenvalue 1 : dim 5
+   eigenvalue 3 : dim 2
+   eigenvalue 4 : dim 2
+   eigenvalue 9 : dim 2
+   eigenvalue 10 : dim 3
+   eigenvalue 12 : dim 2
+
+sigma with chi = 9 :
+   eigenvalue 1 : dim 7
+   eigenvalue 3 : dim 4
+   eigenvalue 9 : dim 5
+
+---------------- SUMMARY ----------------
+curve [ 0, 0, 0, -56, 0 ]   p = 13   GRH = on
+[F:Q] = 24   #Gal(F/K) = 12   chi faithful = true   Cl(F) = [ 260 ]
+dim F(S,13) = 16
+sigma0 with chi(sigma0) = 2 (primitive root mod 13)
+dim chi-eigenspace      = 2
+dim chi^{-1}-eigenspace = 1
+BOUND b = max = 2        (s <= b, convention-free)
+rank E(Q) = 2, so s >= 2 always; internal check requires b >= 2
+INTERNAL CHECK b >= rank E(Q) : PASS
+CONCLUSION : s = 2, so Sha(E/K)[phi] = 0, Sha(E/K)[13] = 0,
+             hence Sha(E/Q)[13^oo] = 0.   [GRH-CONDITIONAL]
+---------------- END --------------------
+# EXIT   : 0

@@ -1,0 +1,25 @@
+# ---------------------------------------------------------------------------
+# This is the public-facing repository. `code/` and `formalisation/` are the
+# only directories it tracks. Everything else in the working tree is private
+# working material and is listed here.
+#
+#   paper/               the manuscript (v1, v2, fragments, series). It is its
+#                        own local-only git repository; nothing in it is ever
+#                        pushed anywhere.
+#   literature/          third-party papers. Copyright is not ours to publish.
+#   project_management/  task boards, review notes, WRITING_STYLE.md, STATE.txt.
+#   CLAUDE.md            working rules for this checkout.
+# ---------------------------------------------------------------------------
+/paper/
+/literature/
+/project_management/
+/CLAUDE.md
+
+# Belt and braces. The manuscript must never be committed here, whatever
+# directory it is copied into.
+main.tex
+main.pdf
+STATE.txt
+
+.DS_Store
+.claude/

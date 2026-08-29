@@ -1,0 +1,30 @@
+# command : nice -n 10 timeout 3600 /usr/local/bin/magma -b pp:=13 curve:=0,0,0,-56,0 grh:=off rk:=2 ram:=2,7,13 optrep:=off tag:=A4-unconditional-p13 prog:=$HOME/fsr2_descent/p13u.prog $HOME/fsr2_descent/pi_descent.m
+# magma   : V2.29-9
+# date    : 2026-08-21T05:16:05Z (UTC), host remote-host, timeout 3600s, nice 10
+================ p = 13 ================
+# pi_descent.m   Magma V2.29-9
+# curve  = [ 0, 0, 0, -56, 0 ]
+# GRH    = off   (SetClassGroupBounds("GRH") NOT applied)
+# ram    = 2,7,13   optrep = off   rk = 2   tag = A4-unconditional-p13
+# E      = Elliptic Curve defined by y^2 = x^3 - 56*x over Rational Field
+# minimal model [ 0, 0, 0, -56, 0 ], conductor 12544, disc 11239424
+# CM     = true (disc -4)
+# bad primes of E : [ 2, 7 ] ; S-primes (bad and p) : [ 2, 7, 13 ]
+kernel polys of degree 6 : 2
+F = K(E[pi]) : [F:Q] = 24
+# field construction [0.090s]
+T : order 13
+#Gal(F/K) = 12  (expected 12)
+chi values : [ 1, 12, 4, 3, 2, 8, 7, 6, 5, 11, 10, 9 ]
+# chi faithful : true   (faithful => E(K)[p] = 0)
+# sigma0 candidates (chi(sigma0) a primitive root mod 13) : 4 of 12
+# MaximalOrder(F : Ramification := [ 2, 7, 13 ]) done [4.420s]
+# disc(F) = 13781652129336732670572695623547911610822608027648
+
+WARNING
+Class group unconditional proof is infeasible.
+Hint: to obtain class group proven under GRH, input
+> SetClassGroupBounds("GRH");
+before starting the current calculation.
+
+# EXIT   : 124 -- KILLED BY timeout AT 3600s (run did not complete)

@@ -1,0 +1,20 @@
+# command : nice -n 10 timeout 3600 /usr/local/bin/magma -b pp:=17 curve:=0,0,0,-56,0 grh:=on rk:=2 ram:=2,7,17 optrep:=off tag:=A2-p17-attempt-1 prog:=$HOME/fsr2_descent/p17.prog $HOME/fsr2_descent/pi_descent.m
+# magma   : V2.29-9
+# date    : 2026-08-21T05:27:48Z (UTC), host remote-host, timeout 3600s, nice 10
+================ p = 17 ================
+# pi_descent.m   Magma V2.29-9
+# curve  = [ 0, 0, 0, -56, 0 ]
+# GRH    = on   (SetClassGroupBounds("GRH") APPLIED)
+# ram    = 2,7,17   optrep = off   rk = 2   tag = A2-p17-attempt-1
+# E      = Elliptic Curve defined by y^2 = x^3 - 56*x over Rational Field
+# minimal model [ 0, 0, 0, -56, 0 ], conductor 12544, disc 11239424
+# CM     = true (disc -4)
+# bad primes of E : [ 2, 7 ] ; S-primes (bad and p) : [ 2, 7, 17 ]
+kernel polys of degree 8 : 2
+F = K(E[pi]) : [F:Q] = 32
+# field construction [0.170s]
+# EXIT   : KILLED BY OPERATOR at ~49 min, still inside Roots()/Automorphisms()
+#          on the degree-32 field, BEFORE MaximalOrder was ever reached.
+#          See code/data/field_profile.out: the hinted MaximalOrder at p=17
+#          costs 15.4 s, so the field is not the obstruction. Retried with
+#          preord:=on (job p17b).
