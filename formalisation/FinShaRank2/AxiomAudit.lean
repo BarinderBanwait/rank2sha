@@ -66,10 +66,10 @@ below is unchanged.
 Eisenstein–Kronecker package `Toy.toyEK`, which is the `ClassicalInputs.ek` field of both
 toy instances; `Toy.Setup.ap_ne_one`, which discharges `ClassicalInputs.notAnomalous`
 there; and `ClassicalInputs.isPUnit_one_sub_alphaInv`, the bridge from that field to
-`rmk:normalisation`(i). No declaration was removed: the three retired `KatzData` fields
+`prop:normalisation`. No declaration was removed: the three retired `KatzData` fields
 were structure fields, not audited declarations, and `isPUnit_c2tilde_iff_of_split` is
 kept (see its docstring — it is `lem:noanomalous`(2) composed with
-`rmk:normalisation`(i), and is no longer on the route the main theorems take).
+`prop:normalisation`, and is no longer on the route the main theorems take).
 
 **Amended 2026-08-29 (R2b).** Two declarations added. `cor_horizontal`
 (`Main/Horizontal.lean`) is the paper's Theorem A, which until now had no Lean
@@ -124,7 +124,7 @@ def auditedDecls : List Name :=
    ``FinShaRank2.c0_eq_zero, ``FinShaRank2.c1_eq_zero,
    ``FinShaRank2.prop_consequence, ``FinShaRank2.prop_dictionary,
    ``FinShaRank2.thm_reduction,
-  -- R2a — the eq:Sexc non-anomality clause, bridged to rmk:normalisation(i)
+  -- R2a — the eq:Sexc non-anomality clause, bridged to prop:normalisation
    ``FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv,
   -- R2b — Theorem A, and Theorem C with its first input from conj:EK
    ``FinShaRank2.cor_horizontal, ``FinShaRank2.thm_reduction_of_conjEK,

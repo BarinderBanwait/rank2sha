@@ -4,8 +4,8 @@ import Mathlib
 # Core definitions (task T10)
 
 This file fixes the basic objects shared across the whole formalization of
-*Horizontal rigidity for second jets of Katz p-adic L-functions, with
-applications to the Tate–Shafarevich group in rank two*.
+*Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
+rank-two CM elliptic curves*.
 
 It is intentionally interface-free: the per-prime data structures
 (`AnalyticData`, `IwasawaData`, …) do not exist yet — tasks T11–T14 build them
@@ -25,7 +25,7 @@ Contents:
 * `corank` — the `ℤ_[p]`-corank abbreviation (`Module.finrank ℤ_[p] ·`) used to
   phrase the Selmer-corank conclusions (conventions §2.1).
 
-Paper labels quoted below: `def:c2tilde`, `rmk:normalisation`, `lem:c0c1`,
+Paper labels quoted below: `def:c2tilde`, `prop:normalisation`, `lem:c0c1`,
 `prop:consequence`.
 
 ## API notes for downstream tasks
@@ -104,7 +104,7 @@ def IsPUnit (x : ℚ_[p]) : Prop := ‖x‖ = 1
 
 /-- For an integral element, `IsPUnit` of its image in `ℚ_[p]` is exactly
 `IsUnit` in `ℤ_[p]`. This bridges the norm-phrased conclusion to the ring-theoretic
-`IsUnit (coeff 2 L_p)` that task T26 (`rmk:normalisation`(i)) extracts.
+`IsUnit (coeff 2 L_p)` that task T26 (`prop:normalisation`) extracts.
 Tools: `PadicInt.padic_norm_e_of_padicInt`, `PadicInt.isUnit_iff`. -/
 theorem isPUnit_coe_iff {x : ℤ_[p]} : IsPUnit (x : ℚ_[p]) ↔ IsUnit x := by
   rw [IsPUnit, PadicInt.padic_norm_e_of_padicInt, PadicInt.isUnit_iff]
@@ -138,7 +138,7 @@ This is a standalone function of its data:
   testbed curve; pinned as data in `ClassicalInputs`, task T14).
 
 The interface structures do not exist yet; T11–T14 supply the arguments and
-T26 (`rmk:normalisation`(i)) proves `IsPUnit (c2tilde …) ↔ IsUnit (coeff 2 L_p)`
+T26 (`prop:normalisation`) proves `IsPUnit (c2tilde …) ↔ IsUnit (coeff 2 L_p)`
 under the non-anomalous hypothesis.
 
 **Junk-value convention** (conventions §2.5): `c2tilde` is total. At an anomalous

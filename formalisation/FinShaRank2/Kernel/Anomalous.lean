@@ -10,7 +10,7 @@ Frobenius unit root `α_p` satisfies `α_p ≢ 1 (mod 𝔭)`, equivalently the l
 factor `1 − α_p⁻¹` that appears in the interpolation / normalisation is a
 `p`-adic unit. This is exactly the input that discharges the non-anomalous
 hypothesis carried by every theorem about `c2tilde` (see `Defs.lean`), used by
-tasks T26 (`rmk:normalisation`(i)) and T31 (`prop:consequence`).
+tasks T26 (`prop:normalisation`) and T31 (`prop:consequence`).
 
 The argument has four gap-free pieces, matching the paper's proof:
 
@@ -62,7 +62,7 @@ elliptic curve with complex multiplication, so part (1) is not formalised. The
 formalised statements above cover part (2), the split case, which is the case
 every downstream theorem uses.
 
-Paper labels: `lem:noanomalous`, `def:c2tilde`, `rmk:normalisation`.
+Paper labels: `lem:noanomalous`, `def:c2tilde`, `prop:normalisation`.
 -/
 
 namespace FinShaRank2

@@ -99,7 +99,7 @@ theorem toy_no_finite_submodule (N : Submodule (Λ p) (ToyX p)) (hN : Finite N) 
     rcases mul_eq_zero.mp h4 with h5 | h5
     · exact Nat.cast_injective (sub_eq_zero.mp h5)
     · exact absurd h5 hi
-  haveI : Finite ℕ := Finite.of_injective _ hinj
+  have : Finite ℕ := Finite.of_injective _ hinj
   exact not_finite ℕ
 
 /-! ### The descent layer -/
@@ -125,7 +125,7 @@ noncomputable def toyIwasawa (p : ℕ) [Fact p.Prime] :
   rubin_structure := by
     refine ⟨2, fun _ => (X : Λ p), LinearMap.id, ?_, ?_, ?_⟩
     · rw [LinearMap.ker_id]; infer_instance
-    · haveI : Subsingleton
+    · have : Subsingleton
           ((Fin 2 → (Λ p ⧸ Ideal.span {(X : Λ p)})) ⧸
             LinearMap.range (LinearMap.id : ToyX p →ₗ[Λ p] ToyX p)) :=
         Submodule.Quotient.subsingleton_iff.mpr LinearMap.range_id

@@ -5,8 +5,8 @@ import FinShaRank2.Defs
 # `IwasawaData p` and `SelmerData p` (task T12)
 
 The Iwasawa-theoretic and descent inputs to the proof of `prop:consequence` in
-*Horizontal rigidity for second jets of Katz p-adic L-functions, with
-applications to the Tate–Shafarevich group in rank two*.
+*Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
+rank-two CM elliptic curves*.
 
 Both structures package **classical, citable theorems** as explicit fields, per
 the trust story of the formalization (`TASK_BOARD.md` §1): the skeptical referee

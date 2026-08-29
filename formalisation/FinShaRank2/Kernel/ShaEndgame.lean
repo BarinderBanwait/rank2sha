@@ -41,8 +41,8 @@ The bundled corollary `sha_endgame_of_nonempty` takes the five exactness fields 
 the **exact shapes** of `FinShaRank2.SelmerData` (`ι`, `π`, `ι_inj`, `π_surj`,
 `mw_sha_exact`), followed by the `Nonempty (Sel ≃ₗ ℤ_p^2)` that T31 assembles from
 `IwasawaData.control` and `selmer_dual_structure` (T23). Hence T31 applies it to a
-`SelmerData` record's fields verbatim, with no adapter (`Scratch/T15Chain.lean`
-exercises exactly this call end-to-end, at step 8 of `T15Chain.chain`).
+`SelmerData` record's fields verbatim, with no adapter. Step 8 of
+`prop_consequence` (`Main/Consequence.lean`) is that call.
 -/
 
 namespace FinShaRank2
@@ -52,7 +52,7 @@ variable {p : ℕ} [Fact p.Prime]
 /-- **T27, `prop:consequence` Step 5.** Given the dualized descent data on
 finitely generated `ℤ_[p]`-modules — an injection `ι : Sha ↪ Sel`, a surjection
 `π : Sel ↠ ℤ_p^2`, exactness `range ι = ker π`, and a rank-two identification
-`e : Sel ≃ ℤ_p^2` — the Tate–Shafarevich dual is a subsingleton and the Selmer
+`e : Sel ≃ ℤ_p^2` — the Shafarevich–Tate dual is a subsingleton and the Selmer
 dual has `ℤ_[p]`-rank two.
 
 The `Sel ≃ ℤ_p^2` input is where the upstream structure theorem (`Lp ~ X²`,

@@ -14,18 +14,16 @@ import FinShaRank2.Statements
 Frozen headline signature (T15 statement freeze; `TASK_BOARD.md` §2 conv. 7).
 The proof is supplied by task T31.
 
-> **Proposition (`prop:consequence`).** *Assume Conjecture `conj:weak`. Then for
-> every non-anomalous split prime `p ∉ S` with `c̃₂(p) ∈ ℤ_p^×` one has:*
+> **Theorem B (`prop:consequence`).** *Let `p ≥ 5` be a split prime of good
+> reduction with `p ∉ S_E` and `c̃₂(p) ∈ ℤ_p^×`. Then:*
 > *(1) `μ_an(𝔭) = 0` and `λ_an(𝔭) = 2`; (2) `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2`;*
 > *(3) `Ш(E/ℚ)[p^∞] = 0`.*
 
-`conj:weak` is quoted in the paper only to *produce* the hypothesis
-`c̃₂(p) ∈ ℤ_p^×` at all but finitely many split primes; the proposition's own
-content is the implication from that unit condition at a single prime. The formal
-statement therefore takes the unit condition as the hypothesis `hc2` and mentions
-no conjecture — matching `TASK_BOARD.md` §1 (no conjectural hypothesis outside
-`thm_reduction`) and the paper's own remark that the proof "is unconditional once
-`v_p(c₂(p)) = 0` is certified" (`cor:sha5` proof).
+The statement carries no conjectural hypothesis; its content is the implication
+from the unit condition at a single prime. The formal statement takes that unit
+condition as the hypothesis `hc2`, which matches `TASK_BOARD.md` §1 (no
+conjectural hypothesis outside `thm_reduction`) and the head of the paper's
+proof, which records that nothing in it assumes `conj:strong` or `conj:weak`.
 
 ## Translation conventions (`TASK_BOARD.md` §2)
 
@@ -43,7 +41,7 @@ no conjecture — matching `TASK_BOARD.md` §1 (no conjectural hypothesis outsid
 * "non-anomalous" is *not* an assumption of this theorem: it is `H.notAnomalous`
   at `p`, which is a clause of the definition of `S`.
 
-## How non-anomality reaches `rmk:normalisation`(i)
+## How non-anomality reaches `prop:normalisation`
 
 `Kernel.Anomalous.isPUnit_one_sub_alphaInv_iff`, applied to the `AnalyticData`
 field `alpha_root`, turns `H.notAnomalous p …` — the statement `a_p ≢ 1 (mod p)`
@@ -63,14 +61,14 @@ gone from this theorem and from `thm_reduction`. The proved non-anomality lemma
 still gives the clause unconditionally at every split `p ≥ 13`.
 
 Paper labels rendered here: `prop:consequence`, `lem:noanomalous`, `eq:Sexc`,
-`rmk:normalisation`(i).
+`prop:normalisation`.
 -/
 
 open PowerSeries
 
 namespace FinShaRank2
 
-/-- **Non-anomality at a split prime `p ∉ S`, in the form `rmk:normalisation`(i)
+/-- **Non-anomality at a split prime `p ∉ S`, in the form `prop:normalisation`
 consumes.** `ClassicalInputs.notAnomalous` is the `S_an` clause of `eq:Sexc`,
 stated as `a_p ≢ 1 (mod p)`; `Kernel.Anomalous.isPUnit_one_sub_alphaInv_iff`, fed
 the `AnalyticData` field `alpha_root`, converts it into the `p`-adic unit
@@ -78,7 +76,7 @@ statement for the local factor `1 − α_p⁻¹`.
 
 This is the bridge that lets `prop_consequence` and `thm_reduction` call
 `Kernel.Normalization.isPUnit_c2tilde_iff` with no residual `p = 5` hypothesis.
-PAPER: `eq:Sexc` (`S_an`), `def:anomalous`, `rmk:normalisation`(i). -/
+PAPER: `eq:Sexc` (`S_an`), `def:anomalous`, `prop:normalisation`. -/
 theorem ClassicalInputs.isPUnit_one_sub_alphaInv (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
     (hsplit : p % 4 = 1) (hpS : p ∉ H.S) :
     IsPUnit ((1 : ℚ_[p]) -
@@ -96,7 +94,7 @@ The four conclusions are returned in the order `MuZero`, `lambdaAn = 2`,
 `finrank = 2`, `Subsingleton ShaDual` — i.e. the paper's (1), (2), (3) with the
 μ/λ pair split, kept adjacent per conv. 5.
 
-Assembly route for T31 (`TASK_BOARD.md`): `rmk:normalisation`(i) via
+Assembly route for T31 (`TASK_BOARD.md`): `prop:normalisation` via
 `Kernel.Normalization.isPUnit_c2tilde_iff`, fed non-anomality by
 `ClassicalInputs.isPUnit_one_sub_alphaInv`, turns `hc2` into
 `IsUnit (coeff 2 Lp)`; `lem:c0c1` (T30) gives `c₀ = c₁ = 0`; T21 factors
@@ -118,7 +116,7 @@ theorem prop_consequence (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
       ∧ Module.finrank ℤ_[p] (H.dataAt p Fact.out hsplit hpS).selmer.SelDual = 2
       ∧ Subsingleton (H.dataAt p Fact.out hsplit hpS).selmer.ShaDual := by
   set D := H.dataAt p Fact.out hsplit hpS with hDdef
-  -- **step 1** `rmk:normalisation`(i): the normalised jet is a unit iff `c₂` is.
+  -- **step 1** `prop:normalisation`: the normalised jet is a unit iff `c₂` is.
   --   Non-anomality comes from `H.notAnomalous`, the `S_an` clause of `eq:Sexc`.
   have step1 : IsUnit (coeff 2 D.analytic.Lp) :=
     (isPUnit_c2tilde_iff (coeff 2 D.analytic.Lp) _ H.torsSqOverTam

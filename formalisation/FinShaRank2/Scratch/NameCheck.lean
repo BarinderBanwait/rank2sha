@@ -8,12 +8,13 @@ declaration on the T03 list is exercised below by a `#check` (existence +
 exact fully-qualified name) and, where instances or unification could bite,
 by an `example` (signature really composes at our types).
 
-Audited against the project pin: mathlib `v4.32.0`
-(rev `81a5d257c8e410db227a6665ed08f64fea08e997`), toolchain `leanprover/lean4:v4.32.0`.
+Audited against the project pin: mathlib `v4.33.1`
+(rev `0df444a360eaa60ab8c11dca51a86af692955474`), toolchain `leanprover/lean4:v4.33.1`.
+Re-checked at that pin on 2026-08-29 (task R2d); every name below still resolves.
 
 This file lives in `Scratch/` — NOT imported by the root module, excluded from
 audit. Compile directly:
-`cd formal && lake env lean FinShaRank2/Scratch/NameCheck.lean`
+`cd formalisation && lake build FinShaRank2.Scratch.NameCheck`
 -/
 
 noncomputable section

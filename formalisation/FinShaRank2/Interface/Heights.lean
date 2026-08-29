@@ -5,8 +5,8 @@ import FinShaRank2.Defs
 # Height interface: `HeightData p` (task T13)
 
 The per-prime height layer of the assumption surface for
-*Horizontal rigidity for second jets of Katz p-adic L-functions, with
-applications to the Tate–Shafarevich group in rank two*.
+*Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
+rank-two CM elliptic curves*.
 
 `HeightData p` packages the **leading-term / p-adic BSD** side of the paper's
 normalisation dictionary (`prop:dictionary`, `eq:padicbsd`): the normalised
@@ -103,10 +103,11 @@ structure HeightData (p : ℕ) [Fact p.Prime] where
 
   Extracted in the proof of `prop:dictionary` from integrality of the p-adic
   sigma function: for `P ∈ E°(ℚ)`, `σ_p(P)/d(P) ∈ ℤ_p^×`, so `v_p(h(P)) ≥ 1`,
-  whence `v_p(Reg_p) ≥ 2` and `Reg_γ ∈ ℤ_p`; the exact unit constant was
-  verified at `p = 5` (App. `app:anchor`).
+  whence `v_p(Reg_p) ≥ 2` and `Reg_γ ∈ ℤ_p`. Paper v1 verified the exact unit
+  constant at `p = 5` in the appendix that went with the anchor corollaries;
+  paper v2 dropped both, and this field asserts only the inequality.
   SOURCE: Mazur–Stein–Tate sigma-function integrality [MST, Doc. Math. (2006),
-  577–614] + the App. `app:anchor` verified constant.
+  577–614].
   PAPER: `prop:dictionary` proof ("`Reg_γ ∈ ℤ_p`").
   STATUS: consequence-form (of the classical integrality). -/
   reg_integral : ‖Reg_γ‖ ≤ 1

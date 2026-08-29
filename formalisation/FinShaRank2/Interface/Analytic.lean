@@ -3,9 +3,9 @@ import FinShaRank2.Defs
 /-!
 # Analytic interface (task T11): `AnalyticData p`
 
-The per-prime **analytic** input layer for the formalization of *Horizontal
-rigidity for second jets of Katz p-adic L-functions, with applications to the
-Tate–Shafarevich group in rank two*.
+The per-prime **analytic** input layer for the formalization of *Second
+derivatives of p-adic L-functions and the Shafarevich–Tate group of rank-two CM
+elliptic curves*.
 
 `AnalyticData p hsplit` bundles the Mazur–Tate–Teitelbaum (MTT) p-adic
 L-function `L_p(E, T)` of the testbed curve `E : y² = x³ − 56x` together with
@@ -35,7 +35,7 @@ condition of the whole structure and is not consumed by any individual field
 type.
 
 Paper labels quoted below: `ssec:notation`, `lem:c0c1`, `def:c2tilde`,
-`rmk:normalisation`, `lem:noanomalous`, `sec:testbed`.
+`rmk:integrality`, `lem:noanomalous`, `ssec:testbed`.
 -/
 
 open PowerSeries
@@ -60,12 +60,12 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
   coefficients lie in `ℤ_[p]`) holds for all split `p` outside an explicit finite
   set, by integrality of the modular symbols of `E` at primes of irreducible
   residual representation — for split CM curves the mod-`𝔭` representation is
-  irreducible for all but finitely many split `𝔭` (`rmk:normalisation`(iii));
+  irreducible for all but finitely many split `𝔭` (`rmk:integrality`);
   encoded here by the field type `Λ p` landing in `ℤ_[p]⟦X⟧`.
 
   SOURCE: Mazur–Tate–Teitelbaum, Invent. math. 84 (1986), 1–48 (construction);
           Stein–Wuthrich, Math. Comp. 82 (2013) (normalisation).
-  PAPER:  ssec:notation (definition of `L_p`); rmk:normalisation(iii) (integrality).
+  PAPER:  ssec:notation (definition of `L_p`); rmk:integrality (integrality).
   STATUS: data. -/
   Lp : Λ p
   /-- The trace of Frobenius `a_p = p + 1 − #Ẽ(𝔽_p) ∈ ℤ`. For the testbed curve
@@ -102,7 +102,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: classical (modular symbol `L(E,1)/Ω_E`); Stein–Wuthrich, Math. Comp. 82
           (2013).
-  PAPER:  lem:c0c1; sec:testbed (exact evaluation).
+  PAPER:  lem:c0c1; ssec:testbed (exact evaluation).
   STATUS: data. -/
   modularSymbol0 : ℚ
   /-- **MTT interpolation at the trivial character**, as a data-equation
@@ -130,7 +130,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: exact computation for `E : y² = x³ − 56x` (eclib/Sage modular symbols,
           cross-checked in PARI/GP).
-  PAPER:  lem:c0c1 (hypothesis `L(E,1) = 0`); sec:testbed (certification).
+  PAPER:  lem:c0c1 (hypothesis `L(E,1) = 0`); ssec:testbed (certification).
   STATUS: certificate. -/
   msymb_zero : modularSymbol0 = 0
   /-- **MTT p-adic functional equation** with the root number `w(E) = +1` folded

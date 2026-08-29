@@ -5,11 +5,10 @@ import FinShaRank2.Kernel.Anomalous
 /-!
 # Normalisation of the second jet (task T26)
 
-Two pieces of `mathlib`-only arithmetic for *Horizontal rigidity for second jets
-of Katz p-adic L-functions, with applications to the Tate–Shafarevich group in
-rank two*:
+Two pieces of `mathlib`-only arithmetic for *Second derivatives of p-adic
+L-functions and the Shafarevich–Tate group of rank-two CM elliptic curves*:
 
-* **(A) `rmk:normalisation`(i).** At a non-anomalous prime and with the testbed's
+* **(A) `prop:normalisation`.** At a non-anomalous prime and with the testbed's
   rational factor `(#tors)²/∏cᵥ = 1`, the normalisation is invisible to the unit
   test: `IsPUnit (c̃₂(p)) ↔ IsUnit (c₂(p))`. Formally
   `isPUnit_c2tilde_iff`, on the standalone `Defs.c2tilde`.
@@ -23,9 +22,11 @@ rank two*:
 
 This file also held the digit-certificate extraction lemmas
 `isUnit_of_toZModPow_cert`, `isUnit_of_toZModPow_cert'`, `isUnit_of_cert_five`
-and `isUnit_of_cert_thirteen`, which served the withdrawn anchor corollaries
-`cor:sha5` / `cor:sha13`. They were retired to `legacy/Anchors.lean` on
-2026-08-29 and are not part of the audited tree.
+and `isUnit_of_cert_thirteen`, which served paper v1's two anchor corollaries,
+`Ш(E/ℚ)[p^∞] = 0` at `p = 5` and at `p = 13`. Paper v2 withdrew both: Coates,
+Liang and Sujatha prove the same vanishing for the `2`-isogenous partner of the
+testbed curve at every split `p < 30000`. The lemmas were retired to
+`legacy/Anchors.lean` on 2026-08-29 and are not audited.
 
 ## Proof routes
 
@@ -60,7 +61,7 @@ the multiplicative norm collapses the two extra factors, so
   shape at every split `p ≥ 13`, which bounds what `notAnomalous` assumes beyond
   the proved lemma to the single value `a₅`.
 
-Paper labels quoted below: `rmk:normalisation`, `def:c2tilde`,
+Paper labels quoted below: `prop:normalisation`, `def:c2tilde`,
 `lem:noanomalous`.
 -/
 
@@ -68,9 +69,9 @@ open PowerSeries
 
 namespace FinShaRank2
 
-/-! ### (A) `rmk:normalisation`(i) — the normalisation is invisible to the unit test -/
+/-! ### (A) `prop:normalisation` — the normalisation is invisible to the unit test -/
 
-/-- **`rmk:normalisation`(i).** At a non-anomalous prime (`IsPUnit (1 − α_p⁻¹)`,
+/-- **`prop:normalisation`.** At a non-anomalous prime (`IsPUnit (1 − α_p⁻¹)`,
 supplied by `lem:noanomalous` / T24) and with the testbed's rational factor
 `(#tors)²/∏cᵥ = 1`, the normalised second jet is a `p`-adic unit exactly when the
 raw second jet is:
@@ -81,7 +82,7 @@ The second jet `c2 : ℤ_[p]` is integral (it is `coeff 2 Lp`) and is coerced in
 `ℤ_[p]`.
 
 Route: `‖·‖` is multiplicative on `ℚ_[p]`, so `‖c̃₂‖ = ‖c₂‖ · ‖1 − α⁻¹‖⁻² · ‖1‖`
-collapses to `‖c₂‖`; then `isPUnit_coe_iff`. PAPER: `rmk:normalisation`(i),
+collapses to `‖c₂‖`; then `isPUnit_coe_iff`. PAPER: `prop:normalisation`,
 `def:c2tilde`. -/
 theorem isPUnit_c2tilde_iff {p : ℕ} [Fact p.Prime] (c2 : ℤ_[p]) (alphaInv : ℚ_[p]) (tors : ℚ)
     (hanom : IsPUnit ((1 : ℚ_[p]) - alphaInv)) (htors : tors = 1) :
@@ -99,7 +100,7 @@ The split-prime dichotomy `eq_five_or_thirteen_le` used below was moved to
 `Kernel/Anomalous.lean` (task R1β), where `anomalous_iff_five` also needs it;
 `Anomalous.lean` is imported by this file, so the name is unchanged. -/
 
-/-- **Non-anomality at a split prime, in the form `rmk:normalisation`(i)
+/-- **Non-anomality at a split prime, in the form `prop:normalisation`
 consumes.** From the `AnalyticData` fields `hasse`, `ap_from_CM`, `alpha_root`
 (verbatim shapes) plus the split hypothesis `p % 4 = 1`, the local factor
 `1 − α_p⁻¹` is a `p`-adic unit — provided the value `a₅ = −2` is supplied in the
@@ -117,7 +118,7 @@ proves the same conclusion outright at every split `p ≥ 13`, from the
 `AnalyticData` fields alone.
 
 Route: `eq_five_or_thirteen_le` supplies `noAnomalous`'s case split. PAPER:
-`lem:noanomalous`, `rmk:normalisation`(i). -/
+`lem:noanomalous`, `prop:normalisation`. -/
 theorem isPUnit_one_sub_alphaInv_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α : ℤ_[p]ˣ}
     (hsplit : p % 4 = 1)
     (hasse : a ^ 2 ≤ 4 * (p : ℤ))
@@ -128,7 +129,7 @@ theorem isPUnit_one_sub_alphaInv_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α
   noAnomalous hasse ap_from_CM alpha_root
     ((eq_five_or_thirteen_le (Fact.out : p.Prime) hsplit).symm.imp_right fun h => ⟨h, h5 h⟩)
 
-/-- **`rmk:normalisation`(i) composed with `lem:noanomalous`(2).** The
+/-- **`prop:normalisation` composed with `lem:noanomalous`(2).** The
 composition of `isPUnit_one_sub_alphaInv_of_split` and `isPUnit_c2tilde_iff`:
 from the `AnalyticData` fields alone (plus `p = 5 → a = −2` and the pinned
 rational factor `torsSqOverTam = 1` of `ClassicalInputs.torsSqOverTam_eq`),
@@ -140,7 +141,7 @@ with `c̃₂(p)` in the mandatory double-coercion spelling
 `PrimeData.c2norm_tie` / `Statements.PrimeData.c2tilde`.
 
 Like `isPUnit_one_sub_alphaInv_of_split`, it is off the route the main theorems
-take since task R2a; see that lemma's docstring. PAPER: `rmk:normalisation`(i),
+take since task R2a; see that lemma's docstring. PAPER: `prop:normalisation`,
 `def:c2tilde`, `lem:noanomalous`. -/
 theorem isPUnit_c2tilde_iff_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α : ℤ_[p]ˣ}
     (c2 : ℤ_[p]) (tors : ℚ)

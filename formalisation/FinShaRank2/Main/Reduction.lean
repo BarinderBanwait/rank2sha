@@ -136,7 +136,7 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
         letI : Fact p.Prime := ⟨hp⟩
         IsPUnit (H.dataAt p hp hsplit hpS).c2tilde := by
     intro p hp hsplit hpS hsupp hval
-    letI : Fact p.Prime := ⟨hp⟩
+    have : Fact p.Prime := ⟨hp⟩
     set D := H.dataAt p hp hsplit hpS with hDdef
     have hsin' := hsin p hp hsplit hpS hsupp
     -- step 1 `hyp:sinnott`(i) makes every factor of `δ_E(c)` `𝔭`-integral, and
@@ -163,7 +163,7 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
       (isUnit_iff_residue_ne_zero_of_grading_congr D.katz.maxIdeal_eq_p hpne κ₀ _ _ hcong).mpr hres
     -- step 5
     obtain ⟨c, u, hcomp⟩ := D.katz.comparison
-    haveI := D.katz.algMap_isLocalHom
+    have := D.katz.algMap_isLocalHom
     have hu0 : IsUnit (coeff 0 (u : PowerSeries D.katz.W)) := by
       rw [coeff_zero_eq_constantCoeff]
       exact u.isUnit.map (constantCoeff (R := D.katz.W))
@@ -201,13 +201,13 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
     have hLp2 : IsUnit (coeff 2 D.analytic.Lp) :=
       Decoupling.isUnit_coeff_two_of_comparison (algebraMap ℤ_[p] D.katz.W)
         D.analytic.Lp D.katz.LKatz c u hcomp hK0 hK1 hLK
-    -- step 6 `rmk:normalisation`(i), with non-anomality from `H.notAnomalous`.
+    -- step 6 `prop:normalisation`, with non-anomality from `H.notAnomalous`.
     exact (isPUnit_c2tilde_iff (coeff 2 D.analytic.Lp) _ H.torsSqOverTam
       (H.isPUnit_one_sub_alphaInv hsplit hpS) H.torsSqOverTam_eq).mpr hLp2
   refine ⟨?_, ⟨H.ek.deltaE c, H.ek.supp c, hEK,
     fun p hp hsplit hpS hsupp hval => key p hp hsplit hpS hsupp hval⟩⟩
   intro p hp hsplit hpS hsupp hval
-  letI : Fact p.Prime := ⟨hp⟩
+  have : Fact p.Prime := ⟨hp⟩
   have hc2 := key p hp hsplit hpS hsupp hval
   obtain ⟨hmu, hlam, _, hsha⟩ := prop_consequence H hsplit hpS hc2
   exact ⟨hc2, hmu, hlam, hsha⟩

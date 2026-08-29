@@ -283,7 +283,7 @@ theorem sha_no_finite_submodule (N : Submodule (Λ p) (ShaX p)) (hN : Finite N) 
     intro r hinj
     have h : Function.Injective (fun k : ℕ => (⟨r k • x, N.smul_mem _ hxN⟩ : N)) :=
       fun k l hkl => hinj (congrArg Subtype.val hkl)
-    haveI : Finite ℕ := Finite.of_injective _ h
+    have : Finite ℕ := Finite.of_injective _ h
     exact not_finite ℕ
   fin_cases i
   · exact main (fun k => (k : Λ p)) fun k l hkl =>
@@ -320,7 +320,7 @@ noncomputable def shaIwasawa (p : ℕ) [Fact p.Prime] :
   rubin_structure := by
     refine ⟨3, shaF p, LinearMap.id, ?_, ?_, ?_⟩
     · rw [LinearMap.ker_id]; infer_instance
-    · haveI : Subsingleton
+    · have : Subsingleton
           ((∀ i : Fin 3, (Λ p) ⧸ Ideal.span {shaF p i}) ⧸
             LinearMap.range (LinearMap.id : ShaX p →ₗ[Λ p] ShaX p)) :=
         Submodule.Quotient.subsingleton_iff.mpr LinearMap.range_id

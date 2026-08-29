@@ -31,7 +31,7 @@ The proof is supplied by task T32.
 ## Why no non-anomality hypothesis appears
 
 The paper states the dictionary at non-anomalous `p` because its proof routes
-through `prop:consequence` and `rmk:normalisation`(i). Against the frozen
+through `prop:consequence` and `prop:normalisation`. Against the frozen
 interface, however, both directions are available from the Schneider/Perrin-Riou
 consequence-forms alone:
 
@@ -43,7 +43,7 @@ consequence-forms alone:
 * `PrimeData.shaOrd_tie : IsPUnit shaOrd ↔ Subsingleton ShaDual` is the T13/T14
   proxy-meaning assignment.
 
-No anomality-sensitive step (`rmk:normalisation`(i), which converts between
+No anomality-sensitive step (`prop:normalisation`, which converts between
 `c̃₂` and `c₂`) is needed, so no `h5`/non-anomality hypothesis is carried here.
 This is a *strengthening* relative to the paper's statement, not a weakening: the
 formal proposition holds at every split `p ∉ S`. T32 may instead route through

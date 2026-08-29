@@ -6,8 +6,8 @@ import FinShaRank2.Interface.EK
 # Katz interface: `KatzData p` + `SinnottHyp` (task T13)
 
 The Katz-measure / Eisenstein–Kronecker layer of the assumption surface for
-*Horizontal rigidity for second jets of Katz p-adic L-functions, with
-applications to the Tate–Shafarevich group in rank two* (paper §`sec:deltaE`).
+*Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
+rank-two CM elliptic curves* (paper §`sec:deltaE`).
 
 `KatzData p Lp` packages the algebraic phase of the programme:
 

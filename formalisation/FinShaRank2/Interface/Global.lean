@@ -9,9 +9,8 @@ import FinShaRank2.Interface.Katz
 /-!
 # Global aggregation: `PrimeData p` and `ClassicalInputs` (task T14)
 
-The top of the assumption surface for *Horizontal rigidity for second jets of
-Katz p-adic L-functions, with applications to the Tate–Shafarevich group in rank
-two*.
+The top of the assumption surface for *Second derivatives of p-adic L-functions
+and the Shafarevich–Tate group of rank-two CM elliptic curves*.
 
 `PrimeData` collects the four per-prime interface layers built in T11–T13 into a
 single per-prime bundle and welds them together with the **definitional
@@ -204,13 +203,13 @@ structure ClassicalInputs where
   /-- The global rational factor `(#E(ℚ)_tors)² / ∏_v c_v` of `def:c2tilde`,
   pinned `= 1` for the testbed curve by `torsSqOverTam_eq`.
   SOURCE: `def:c2tilde`; testbed data `#tors = 2`, `∏c_v = 4`, so `4/4 = 1`.
-  PAPER:  `def:c2tilde`, `sec:testbed`.
+  PAPER:  `def:c2tilde`, `ssec:testbed`.
   STATUS: data (value pinned by `torsSqOverTam_eq`). -/
   torsSqOverTam : ℚ
   /-- **Defining equation** pinning `torsSqOverTam = 1` (`def:c2tilde`, testbed
   data `(#tors)²/∏cᵥ = 2²/4 = 1`). Kept as a separate field (data + equation, conv.
   3) so the normalisation value is a checkable datum rather than baked in.
-  SOURCE: testbed arithmetic `2² / 4 = 1`. PAPER: `def:c2tilde`, `sec:testbed`.
+  SOURCE: testbed arithmetic `2² / 4 = 1`. PAPER: `def:c2tilde`, `ssec:testbed`.
   STATUS: data (defining equation). -/
   torsSqOverTam_eq : torsSqOverTam = 1
   /-- The **per-prime data** at every split prime `p ∉ S`. The instance

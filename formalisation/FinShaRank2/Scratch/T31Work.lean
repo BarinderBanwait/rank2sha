@@ -24,7 +24,10 @@ namespace T31Work
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-! ### Part 1 — the two promoted kernel lemmas (verbatim from `Scratch/T15Chain.lean`) -/
+/-! ### Part 1 — the two promoted kernel lemmas
+
+Copied verbatim from the T15 chain test, which task R2d deleted. Both now live in
+`Kernel/LambdaModule.lean` and are audited. -/
 
 theorem quotient_collapse (M : Type) [AddCommGroup M] [Module (Λ p) M] [Module ℤ_[p] M]
     [IsScalarTower ℤ_[p] (Λ p) M] (hzero : ∀ x : M, (X : Λ p) • x = 0) :
@@ -67,7 +70,7 @@ theorem prop_consequence (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
       ∧ Module.finrank ℤ_[p] (H.dataAt p Fact.out hsplit hpS).selmer.SelDual = 2
       ∧ Subsingleton (H.dataAt p Fact.out hsplit hpS).selmer.ShaDual := by
   set D := H.dataAt p Fact.out hsplit hpS with hDdef
-  -- **step 1** `rmk:normalisation`(i)
+  -- **step 1** `prop:normalisation`
   have step1 : IsUnit (coeff 2 D.analytic.Lp) :=
     (isPUnit_c2tilde_iff_of_split (coeff 2 D.analytic.Lp) H.torsSqOverTam hsplit
       D.analytic.hasse D.analytic.ap_from_CM D.analytic.alpha_root h5

@@ -148,11 +148,11 @@ theorem selmer_dual_structure
   -- Per-factor structure: `Λ ⧸ (f i) ≃ Fin (k i) → ℤ_[p]`, `f i ~ X^{k i}`, `k i ≤ 2`.
   choose k hk hassoc hequiv using fun i => quotSpan_of_dvd_Xsq (f i) (hdvd i)
   have ei : ∀ i, (Λ p ⧸ Ideal.span {f i}) ≃ₗ[ℤ_[p]] (Fin (k i) → ℤ_[p]) := fun i => (hequiv i).some
-  haveI free_i : ∀ i, Module.Free ℤ_[p] (Λ p ⧸ Ideal.span {f i}) := fun i =>
+  have free_i : ∀ i, Module.Free ℤ_[p] (Λ p ⧸ Ideal.span {f i}) := fun i =>
     Module.Free.of_equiv (ei i).symm
-  haveI fin_i : ∀ i, Module.Finite ℤ_[p] (Λ p ⧸ Ideal.span {f i}) := fun i =>
+  have fin_i : ∀ i, Module.Finite ℤ_[p] (Λ p ⧸ Ideal.span {f i}) := fun i =>
     Module.Finite.equiv (ei i).symm
-  haveI nz_i : ∀ i, NoZeroSMulDivisors ℤ_[p] (Λ p ⧸ Ideal.span {f i}) := fun i =>
+  have nz_i : ∀ i, NoZeroSMulDivisors ℤ_[p] (Λ p ⧸ Ideal.span {f i}) := fun i =>
     Function.Injective.noZeroSMulDivisors (ei i) (ei i).injective (map_zero _) (map_smul (ei i))
   -- (b) `∑ k i = 2` from `∏ f i ~ X²` (primality + cancellation only).
   have hsum : (∑ i, k i) = 2 := by
@@ -171,10 +171,10 @@ theorem selmer_dual_structure
   set φ' : X_mod →ₗ[ℤ_[p]] (Π i, (Λ p) ⧸ Ideal.span {f i}) := φ.restrictScalars ℤ_[p] with hφ'
   have hinj' : Function.Injective φ' := hinj
   -- `X` is `ℤ_[p]`-finite (embeds in the Noetherian `C`), torsion-free, hence free.
-  haveI : Module.Finite ℤ_[p] X_mod := Module.Finite.of_injective φ' hinj'
-  haveI : NoZeroSMulDivisors ℤ_[p] X_mod :=
+  have : Module.Finite ℤ_[p] X_mod := Module.Finite.of_injective φ' hinj'
+  have : NoZeroSMulDivisors ℤ_[p] X_mod :=
     Function.Injective.noZeroSMulDivisors φ' hinj' (map_zero φ') (map_smul φ')
-  haveI : Module.Free ℤ_[p] X_mod := inferInstance
+  have : Module.Free ℤ_[p] X_mod := inferInstance
   -- Upper bound `finrank ℤ_[p] X ≤ 2` from the embedding into `C`.
   have hle : Module.finrank ℤ_[p] X_mod ≤ 2 := by
     rw [← LinearMap.finrank_range_of_inj hinj', ← hCfin2]

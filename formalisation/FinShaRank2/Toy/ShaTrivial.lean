@@ -47,8 +47,8 @@ multiset to `(X, X, C p)`.
 This is a *toy* world: it is not the testbed curve, and no faithfulness claim is
 made about it. Its only job is to witness that the assumption bundle does not
 entail the conclusion. What excludes this world is the numerical `c₂` datum:
-`toySha_fails_c2_5_certificate` shows the seven `5`-adic digits of `eq:match5`
-are not the digits of `coeff 2 (shaLp 5) = 5`.
+`toySha_fails_c2_5_certificate` shows the seven computed `5`-adic digits of
+`c₂(5)` for the testbed curve are not the digits of `coeff 2 (shaLp 5) = 5`.
 -/
 
 open PowerSeries
@@ -130,7 +130,7 @@ theorem toySha_conclusions_fail (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1)
     ¬ Subsingleton (ToySha.dataAt p hp hsplit hpS).selmer.ShaDual
       ∧ ¬ MuZero (ToySha.dataAt p hp hsplit hpS).analytic.Lp
       ∧ lambdaAn (ToySha.dataAt p hp hsplit hpS).analytic.Lp ≠ 2 := by
-  letI : Fact p.Prime := ⟨hp⟩
+  have : Fact p.Prime := ⟨hp⟩
   refine ⟨Toy.not_subsingleton_ShaK, Toy.not_muZero_shaLp, ?_⟩
   rw [show (ToySha.dataAt p hp hsplit hpS).analytic.Lp = Toy.shaLp p from rfl,
     Toy.lambdaAn_shaLp]
@@ -159,7 +159,7 @@ theorem interface_does_not_force_sha_trivial :
   exact (toySha_conclusions_fail 5 (by norm_num) (by norm_num) (Finset.notMem_empty 5)).1
     (h ToySha 5 (by norm_num) (by norm_num) (Finset.notMem_empty 5))
 
-/-- **`ToySha` fails the `5`-adic jet certificate of `eq:match5`.**
+/-- **`ToySha` fails the computed `5`-adic jet certificate.**
 
 The certificate is the seven-digit congruence
 `toZModPow 7 (coeff 2 Lp₅) = 1 + 4·5 + 3·5² + 5³ + 5⁵ + 5⁶ mod 5⁷`, whose leading
@@ -173,13 +173,17 @@ The Frobenius-trace datum `a₅ = −2` fails here too, since the toy `a_p = 2a`
 positive; only the jet digits are used below.
 
 SOURCE: none — this is a computation about the toy instance.
-PAPER:  `eq:match5`; `TASK_BOARD.md` §1 (the numerics are load-bearing).
+PAPER:  none. The digits on the right are this project's computation of `c₂(5)`
+        for the testbed curve; paper v1 displayed them, and paper v2 dropped the
+        display together with the anchor corollaries it served
+        (`legacy/Anchors.lean`). `TASK_BOARD.md` §1: the numerics are
+        load-bearing.
 STATUS: theorem (toy model). -/
 theorem toySha_fails_c2_5_certificate :
     letI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
     PadicInt.toZModPow 7 (PowerSeries.coeff 2 (Toy.shaLp 5))
       ≠ ((1 + 4 * 5 + 3 * 5 ^ 2 + 5 ^ 3 + 5 ^ 5 + 5 ^ 6 : ℤ) : ZMod (5 ^ 7)) := by
-  haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have : Fact (Nat.Prime 5) := ⟨by norm_num⟩
   intro hcert
   have key : PadicInt.toZModPow 7 (PowerSeries.coeff 2 (Toy.shaLp 5))
       = ((5 : ℕ) : ZMod (5 ^ 7)) := by

@@ -3,10 +3,10 @@ import FinShaRank2.Interface.Global
 /-!
 # Frozen paper statements (task T15): `HorizontalControl`, `ConjStrong`, `ConjWeak`
 
-The formal renderings of the paper's *definitions and conjectures* for *Horizontal
-rigidity for second jets of Katz p-adic L-functions, with applications to the
-Tate–Shafarevich group in rank two*. The first three declarations are part of the
-T15 **statement freeze**: their shapes are a contract (`TASK_BOARD.md` §2 conv. 7).
+The formal renderings of the paper's *definitions and conjectures* for *Second
+derivatives of p-adic L-functions and the Shafarevich–Tate group of rank-two CM
+elliptic curves*. The first three declarations are part of the T15 **statement
+freeze**: their shapes are a contract (`TASK_BOARD.md` §2 conv. 7).
 `ConjEK` was added by R2b and is not under the freeze.
 
 Faithfulness is the deliverable; each declaration is docstringed with its tex label

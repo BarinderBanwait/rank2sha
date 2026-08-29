@@ -3,8 +3,9 @@ import Mathlib
 /-!
 # Decoupling of the second jet (`lem:decoupling`, task T22)
 
-Pure power-series algebra behind `lem:decoupling` of *Horizontal rigidity for
-second jets of Katz p-adic L-functions*. The paper's decoupling step observes
+Pure power-series algebra behind `lem:decoupling` of *Second derivatives of
+p-adic L-functions and the Shafarevich–Tate group of rank-two CM elliptic
+curves*. The paper's decoupling step observes
 that when the low coefficients of one factor vanish, the second Taylor
 coefficient of a product `A · B` collapses to a single term, so that
 "grade-two units" transfer between comparison partners.
