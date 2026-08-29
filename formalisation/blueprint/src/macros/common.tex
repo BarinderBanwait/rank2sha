@@ -17,35 +17,43 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 
-% --- T51: the classical-input / assumption environment -------------------
-% Registered per TASK_BOARD.md §1 (epistemic three-way split) and the
-% blueprint/README.md T51 authoring note: interface fields of `ClassicalInputs`
-% (citable classical theorems: Rubin, Mazur, Greenberg, MTT, Bannai–Kobayashi,
-% de Shalit, Schneider/Perrin-Riou, Hasse) are rendered in this environment
-% rather than as `lemma`/`proposition`/`theorem`, so a reader can see at a
-% glance, by the header word alone ("Assumption" vs "Lemma"/"Theorem"), which
-% statements are asserted on citation and which are Lean-kernel-proved.
-% `\leanok` is never applied to a node in this environment (TASK_BOARD.md §1:
-% these are the human-refereeable trust boundary, not proof obligations).
+% --- The classical-input / assumption environment ------------------------
+% Interface fields of `ClassicalInputs` (citable classical theorems: Rubin,
+% Mazur, Greenberg, MTT, Bannai–Kobayashi, de Shalit, Schneider/Perrin-Riou,
+% Hasse) are rendered in this environment rather than as
+% `lemma`/`proposition`/`theorem`, so a reader can see at a glance, by the
+% header word alone ("Assumption" vs "Lemma"/"Theorem"), which statements are
+% asserted on citation and which are Lean-kernel-proved. `\leanok` is never
+% applied to a node in this environment: these are the human-refereeable
+% trust boundary, not proof obligations.
 %
-% NOTE for the graph-owning agent (not this task's fence): plasTeX's
-% `plastexdepgraph` plugin only draws dependency-graph nodes for theorem
-% *kinds* listed in the `thms=` option passed to
-% `\usepackage[showmore, dep_graph]{blueprint}` in `src/web.tex` (default
-% `definition+lemma+proposition+theorem+corollary`). `src/web.tex` is outside
-% this task's fence (T51), so `assumption` nodes below render with their own
-% distinct header/style in the PDF and HTML *prose* but are **not** picked up
-% by the auto-generated dependency graph. The handful of assumption-flavoured
-% nodes that a proved theorem's dependency chain must visibly pass through in
-% the graph (`lem:comparison`, `eq:padicbsd`, `def:deltaE`, `prop:jetformula`,
-% `hyp:sinnott`, `conj:EK`) are therefore instead declared as `definition`
-% (one of the five default graph-visible kinds, box-shaped) and deliberately
-% never carry `\leanok`, so they still read as visually distinct (box, no
-% green fill) from proved `theorem`/`lemma`/`proposition`/`corollary` nodes
-% (ellipse, green once proved). See blueprint/README.md for the one-line
-% `src/web.tex` change (`thms=...+assumption`) that would let `assumption`
-% itself join the graph, if a future task takes on that file.
+% plasTeX's `plastexdepgraph` plugin draws dependency-graph nodes only for
+% theorem *kinds* listed in the `thms=` option passed to
+% `\usepackage[showmore, dep_graph]{blueprint}` in `src/web.tex`, whose
+% default is `definition+lemma+proposition+theorem+corollary`. `src/web.tex`
+% lists `assumption` there (added 2026-08-18), so assumption nodes do appear
+% in the graph. An earlier note here said they did not, and described a
+% workaround of declaring them as `definition` instead; that note was stale
+% by the time it was read, and was removed on 2026-08-29 (R3bp). Nodes in
+% this environment never carry `\leanok`, so they never receive the green
+% fill a proved node gets.
 \newtheorem{assumption}[theorem]{Assumption}
+
+% --- R3bp (2026-08-29): the paper's own conjecture/hypothesis environments.
+% conj:strong, conj:weak and conj:EK are Conjectures in the paper and
+% hyp:sinnott is a Hypothesis; rendering them as `definition` or `assumption`
+% made every cross-reference read "Definition N" or "Assumption N" where the
+% surrounding prose says "Conjecture" / "Hypothesis". Both share the theorem
+% counter, as every other environment here does, and both are listed in the
+% `thms=` option of src/web.tex so they appear as dependency-graph nodes.
+%
+% \leanok discipline is unchanged and reads the same way in these two
+% environments as everywhere else: it marks that the Lean *statement* matches,
+% not that anything is proved. conj:strong and conj:weak carry it (ConjStrong
+% and ConjWeak are Prop-valued defs whose statements match); conj:EK and
+% hyp:sinnott do not (see their own text for the reason in each case).
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
 
 %% --- Paper macros, ported verbatim from main.tex (T51 / Wave 7 fix, 2026-08-18).
 %% The blueprint restates the paper's results, so it needs the paper's notation.
