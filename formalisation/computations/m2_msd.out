@@ -1,0 +1,32 @@
+=== m2_msd.sage : the criterion class in the MTT normalisation, C1a ===
+sage version      : SageMath version 10.7, Release Date: 2025-08-09
+curve             : E : y^2 = x^3 - 56x   [0,0,0,-56,0]
+conductor         : 12544
+normalisation     : MTT / Stein-Wuthrich, real Neron period (Sage padic_lseries)
+series precision  : n = 3
+
+kappa(p) = 2 c_2(p) mod p is the criterion class times the comparison unit
+c_p u(0) of lem:comparison.  Its vanishing is that of c(fp); its value is not.
+
+p      a_p    c_2(p)                          v_p(c_2)  c_2 mod p  kappa(p)  time
+5      -2     1 + 4*5 + O(5^2)                0         1          2         1.3s
+13     -6     1 + 11*13 + O(13^2)             0         1          2         0.1s
+17     -8     16 + 8*17 + O(17^2)             0         16         15        0.2s
+29     4      6 + 21*29 + O(29^2)             0         6          12        0.7s
+37     -12    27 + 26*37 + O(37^2)            0         27         17        1.5s
+41     -8     22 + 10*41 + O(41^2)            0         22         3         2.1s
+53     -4     48 + 4*53 + O(53^2)             0         48         43        4.8s
+61     -10    17 + 23*61 + O(61^2)            0         17         34        7.5s
+73     -16    1 + 31*73 + O(73^2)             0         1          2         13.7s
+89     -16    62 + 41*89 + O(89^2)            0         62         35        27.1s
+97     8      82 + 53*97 + O(97^2)            0         82         67        37.0s
+101    -2     75 + 93*101 + O(101^2)          0         75         49        42.9s
+109    20     77 + 56*109 + O(109^2)          0         77         45        56.7s
+113    -14    39 + 68*113 + O(113^2)          0         39         78        64.6s
+
+c_0 = c_1 = 0 at every prime above (lem:c0c1: the central zero is double).
+v_p(c_2) = 0 at every prime above, so c(fp) != 0 at each of them, and by
+prop:scaneq this agrees with v_fp(Reg_fp) = 2 in code/data/all_primes_vreg.txt.
+
+failures          : 0
+M2MSDDONE
