@@ -31,7 +31,7 @@
 \\
 \\ so no Newton polygon is needed: the gate is the positivity of p-1 valuations.
 \\ v_fp is computed by applying iota_p (i |-> i_p) and taking v_p in Z_p, with the
-\\ fp-labelling of m2_katz.gp.  The run also prints v_fp of the constant term,
+\\ fp-labelling of legacy/gp/m2_katz.gp.  The run also prints v_fp of the constant term,
 \\ which is (p-1) times the common valuation of the D_m when the Newton polygon
 \\ is a single segment, as it is at every slot below.
 \\
@@ -43,21 +43,26 @@
 \\ Parameters from the environment:
 \\     GTP     the split prime                   default 13
 \\     GTPREC  realprecision                     default 500
-\\     GTOUT   output file                       default m2_gtest.out
+\\     GTOUT   output file                       default ../data/m2_gtest.out
 \\ Cost is O(p) class sums of 384 terms, so p = 29 costs about twice p = 13.
+\\ Output staging: results are written to TMP and moved onto OUT only when every
+\\ gate passes.  An interrupted run, or one whose gates do not all pass, never
+\\ reaches the move: the committed OUT is untouched and the partial output is
+\\ left in TMP.
 \\ ---------------------------------------------------------------------------
 
 default(parisizemax, 6000000000);
 getdef(name, dflt) = { my(s = getenv(name)); if(type(s) == "t_STR" && s != "", s, dflt) };
 P    = eval(getdef("GTP", "13"));
 PREC = eval(getdef("GTPREC", "500"));
-OUT  = getdef("GTOUT", "m2_gtest.out");
+OUT  = getdef("GTOUT", "../data/m2_gtest.out");
+TMP  = Str(OUT, ".partial");
 default(realprecision, PREC);
 
 E = ellinit([0,0,0,-56,0]); w1 = E.omega[1]; A = w1^2/Pi;
 NGATE = 0; NGTOT = 0;
-system(Str("rm -f ", OUT));
-say(s) = { print(s); write(OUT, s); };
+system(Str("rm -f ", TMP));
+say(s) = { print(s); write(TMP, s); };
 gate(name, ok) = { NGTOT++; if(ok, NGATE++); say(Str(name, if(ok, "PASS", "FAIL"))); };
 
 say("=== m2_gtest.gp : numerical test of (G), SINNOT_W_NOTE section 6.1 ===");
@@ -87,7 +92,7 @@ NC = #CA;
 say(Str("classes of D_E    : ", NC));
 gate("384 classes      : ", NC == 384);
 
-\\ the fp-labelling of m2_katz.gp
+\\ the fp-labelling of legacy/gp/m2_katz.gp
 {my(sol = qfbsolve(QF,P), a = sol[1], b = sol[2], fa = 0, fb = 0);
  for(k = 0, 3, if(isprimary(a,b), fa = a; fb = b; break); [a,b] = [-b,a]);
  if(fb < 0, fb = -fb); GA = fa; GB = fb;}
@@ -159,5 +164,8 @@ runslot("(a,b)=(0,3)  e*_{0,3} = -wp'/2", z -> -ellwp(E,z,1)[2]/2, 225792);
 
 say("");
 say(Str("gates passed      : ", NGATE, " of ", NGTOT));
-{if(NGATE == NGTOT, print("M2GTESTDONE"), print("M2GTESTINCOMPLETE"));}
+{if(NGATE == NGTOT,
+    system(Str("mv -f ", TMP, " ", OUT)); print("M2GTESTDONE"),
+    print(OUT, " left unchanged; partial output in ", TMP, ".");
+    print("M2GTESTINCOMPLETE"));}
 quit

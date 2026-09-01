@@ -4,7 +4,7 @@
 \\ gave it.  Companion notes: project_management/SINNOT_C1B_NOTE.md (this run),
 \\ SINNOT_W_NOTE.md (which proves (W1) and (W2)), SINNOT_C1A_NOTE.md (which
 \\ supplies the conventions and the dictionary this script reuses).  Companion
-\\ script: m2_katz.gp, whose class sums the fast routines here reproduce.
+\\ script: legacy/gp/m2_katz.gp, whose class sums the fast routines here reproduce.
 \\ Bannai--Kobayashi (BK) is cited in Duke numbering.
 \\
 \\ WHAT THIS COMPUTES
@@ -23,7 +23,7 @@
 \\ terms, which is why (W1) escapes the obstruction recorded in SINNOT_C1A_NOTE
 \\ section 8.  The script computes B_alg, reports v_p(B_alg) and p^{-2}B_alg mod p,
 \\ and compares the vanishing against the independently computed MSD-normalised
-\\ criterion class kappa(p) of m2_msd.out.
+\\ criterion class kappa(p) of ../data/m2_msd.out.
 \\
 \\ INDEXING (SINNOT_C1A_NOTE section 3, SINNOT_W_NOTE (A))
 \\   c_{k,l}(t) = coefficient of z^k w^l/(k! l!) in Theta_{t,0}(z,w) - 1/w
@@ -47,10 +47,10 @@
 \\   (k,l):  the w-recursion j Phi_j = sum_{m<=j} m X_m Phi_{j-m} on z-series of
 \\           length k+1, X_m = [w^m](L(z+w) - L(z) - l0(w) - w conj(t)/A).
 \\ The d_n come from the ODE wp'' = 6 wp^2 - g2/2.  Gate 1 below checks all three
-\\ routines against the 25 class sums m2_katz.gp computes by full bivariate
+\\ routines against the 25 class sums legacy/gp/m2_katz.gp computes by full bivariate
 \\ expansion; they agree exactly, denominators included.
 \\
-\\ CONVENTIONS: those of m2_katz.gp and numerics.tex, unchanged.  fp is labelled
+\\ CONVENTIONS: those of legacy/gp/m2_katz.gp and numerics.tex, unchanged.  fp is labelled
 \\ as there: pi_gen = a + b*i primary with b > 0, fp := (pi_gen), iota_p fixed by
 \\ i |-> i_p with i_p = -a/b mod p, and psi_E(fp) = eps(pi_gen) pi_gen.
 \\
@@ -58,25 +58,30 @@
 \\ Parameters from the environment:
 \\     W1PRIMES  comma-separated split primes           default "5,13,17"
 \\     W1PREC    realprecision                          default 400
-\\     W1OUT     output file                            default m2_w1.out
+\\     W1OUT     output file                            default ../data/m2_w1.out
 \\ Cost grows like p^4: 6 s at p = 13, about 3 min at p = 29, 15 min at p = 37
 \\ (realprecision 600).  Results are appended prime by prime, so an interrupted
 \\ run keeps what it computed.
+\\ Output staging: results are written to TMP and moved onto OUT only when every
+\\ gate passes.  An interrupted run, or one whose gates do not all pass, never
+\\ reaches the move: the committed OUT is untouched and the partial output is
+\\ left in TMP.
 \\ ---------------------------------------------------------------------------
 
 default(parisizemax, 8000000000);
 getdef(name, dflt) = { my(s = getenv(name)); if(type(s) == "t_STR" && s != "", s, dflt) };
 PRIMES = eval(Str("[", getdef("W1PRIMES", "5,13,17"), "]"));
 PREC   = eval(getdef("W1PREC", "400"));
-OUT    = getdef("W1OUT", "m2_w1.out");
+OUT    = getdef("W1OUT", "../data/m2_w1.out");
+TMP    = Str(OUT, ".partial");
 default(realprecision, PREC);
 
 E = ellinit([0,0,0,-56,0]);
 w1 = E.omega[1]; A = w1^2/Pi; G2 = E.c4/12;
 NF = 3136;                                     \\ N(ff), ff = (56)
 NGATE = 0; NGTOT = 0;
-system(Str("rm -f ", OUT));
-say(s) = { print(s); write(OUT, s); };
+system(Str("rm -f ", TMP));
+say(s) = { print(s); write(TMP, s); };
 gate(name, ok) = { NGTOT++; if(ok, NGATE++); say(Str(name, if(ok, "PASS", "FAIL"))); };
 
 say("=== m2_w1.gp : the algebraic bracket B_alg of (W1)/(W2), task C1b ===");
@@ -154,9 +159,9 @@ rec(x) = {
   [re, im, if(err == 0, -oo, exponent(err))];
 };
 
-\\ --- gate: the fast routines reproduce m2_katz.gp's class sums --------------
+\\ --- gate: the fast routines reproduce legacy/gp/m2_katz.gp's class sums ------
 say("");
-say("--- gate: the fast slot routines against m2_katz.gp (full bivariate) ---");
+say("--- gate: the fast slot routines against legacy/gp/m2_katz.gp (bivariate) ---");
 {my(l0s = mkl0(11), SW = matrix(5,5), bad = 0);
  for(j = 1, NC,
    my(t = (CA[j] + CB[j]*I)*w1/56, ep = I^CK[j], de = mkde(t, 8));
@@ -176,7 +181,7 @@ say("--- gate: the fast slot routines against m2_katz.gp (full bivariate) ---");
 \\ --------------------------- the per-prime computation ---------------------
 say("");
 say("--- B_alg per prime ---");
-say("kappa(p) is read from m2_msd.out (MSD normalisation); (W2) predicts");
+say("kappa(p) is read from ../data/m2_msd.out (MSD normalisation); (W2) predicts");
 say("v_p(B_alg) = 2 exactly when kappa(p) != 0, and v_p(B_alg) >= 3 when it is 0.");
 {KAPPA = [[5,2],[13,2],[17,15],[29,12],[37,17],[41,3],[53,43],[61,34],[73,2],
           [89,35],[97,67],[101,49],[109,45],[113,78]];}
@@ -247,5 +252,8 @@ kapof(p) = { my(r = -1); for(j = 1, #KAPPA, if(KAPPA[j][1] == p, r = KAPPA[j][2]
 
 say("");
 say(Str("gates passed      : ", NGATE, " of ", NGTOT));
-{if(NGATE == NGTOT, print("M2W1DONE"), print("M2W1INCOMPLETE"));}
+{if(NGATE == NGTOT,
+    system(Str("mv -f ", TMP, " ", OUT)); print("M2W1DONE"),
+    print(OUT, " left unchanged; partial output in ", TMP, ".");
+    print("M2W1INCOMPLETE"));}
 quit

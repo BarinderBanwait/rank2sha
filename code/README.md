@@ -120,6 +120,35 @@ cd gp && gp -q deltaE.gp
 About 210 seconds, single-threaded, peak resident set 16 MB. Reproduces
 `data/deltaE_phase2.txt`.
 
+### The bracket $B(\mathfrak{p})$ at five primes (§6.8)
+
+```bash
+cd gp && gp -q m2_w1.gp                                  # p = 5, 13, 17
+cd gp && W1PRIMES=29,37 W1PREC=600 W1OUT=../data/m2_w1_2937.out gp -q m2_w1.gp
+```
+
+The first is about 25 seconds and reproduces `data/m2_w1.out`; the second is
+about 18 minutes, the cost growing like $p^4$, and reproduces
+`data/m2_w1_2937.out`. Both stage their output and move it onto `data/` only if
+every gate passes, so an interrupted run leaves the committed file alone and its
+partial output in `.partial`.
+
+The modular-symbol side the bracket is checked against is
+
+```bash
+cd sage && sage m2_msd.sage
+```
+
+about three minutes, reproducing `data/m2_msd.out`. The $\kappa(p)$ table it
+prints is transcribed into `gp/m2_w1.gp`, which does not read the file at run
+time. The torsion-translate collapse test of `lem:collapse` is
+
+```bash
+cd gp && gp -q m2_gtest.gp
+```
+
+about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
+
 ## The map from paper to script to file
 
 ### §5 — the testbed and the scan
@@ -143,6 +172,10 @@ About 210 seconds, single-threaded, peak resident set 16 MB. Reproduces
 | The vanishing of $S_{0,1}$ across precisions | `gp/s01_check.gp` | `data/s01_check.out` |
 | The unit character $\varepsilon$, re-determined | `gp/epsilon_check.gp` | `data/epsilon_check.out` |
 | The reconstruction artefact of §6.7 | `gp/reconstruction_artefact.gp` | `data/reconstruction_artefact.out` |
+| §6.8, $v_\mathfrak{p}(B(\mathfrak{p})) = 2$ at $p = 5, 13, 17$ | `gp/m2_w1.gp` | `data/m2_w1.out` |
+| §6.8, the same at $p = 29, 37$ | `gp/m2_w1.gp`, `W1PRIMES=29,37` | `data/m2_w1_2937.out` |
+| §6.8, the modular-symbol side $\kappa(p)$ | `sage/m2_msd.sage` | `data/m2_msd.out` |
+| §6.8, the collapse test of `lem:collapse` | `gp/m2_gtest.gp` | `data/m2_gtest.out` |
 
 ## Reading the output files
 
@@ -161,6 +194,14 @@ About 210 seconds, single-threaded, peak resident set 16 MB. Reproduces
   first, then the four stages, then the verdict. `MACHINE` lines carry the
   $p$-adic expansions in a fixed format so that the cross-checks compare digits
   mechanically rather than by eye. On `cert_13.out` see the note below.
+- `m2_w1.out`, `m2_w1_2937.out` — one block per prime: the three class sums with
+  their exactness residuals, the Euler factors, the three term valuations,
+  $v_p(B_{\mathrm{alg}})$ and $p^{-2}B_{\mathrm{alg}} \bmod p$, and the comparison
+  against $\kappa(p)$. The file ends with a gate tally: 11 of 11 and 8 of 8.
+- `m2_msd.out` — $\kappa(p)$ in the Mazur–Tate–Teitelbaum normalisation at
+  fourteen split primes.
+- `m2_gtest.out` — one block per section of `eq:jetpackage`, giving the valuation
+  of each translated class sum against the untranslated one.
 - `lmfdb_iwasawa.txt` — the LMFDB Iwasawa invariants of the curve, read by
   `check_agreement.py` for its last check. Corroboration only: the control does
   not depend on it, and the check reports itself skipped if the file is absent.
@@ -191,7 +232,8 @@ also carries the section names of a superseded draft — `A5 CERTIFICATE`,
 ## What is not here
 
 `legacy/` holds the $\pi$-descent written for the withdrawn Paper I, the
-six-prime certificate pipeline that the v2 rewrite cut, and several superseded
-one-off scripts. None of it supports the paper, it is gitignored, and it is not
+six-prime certificate pipeline that the v2 rewrite cut, several superseded
+one-off scripts, and `gp/m2_katz.gp`, the Katz-side companion to `gp/m2_w1.gp`
+that the paper does not quote. None of it supports the paper, it is gitignored, and it is not
 published. `legacy/README.md` says what each part was for and, where a script is
 wrong, why. Do not cite anything in it.

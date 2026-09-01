@@ -3,7 +3,7 @@
 # for E: y^2 = x^3 - 56x.
 # ---------------------------------------------------------------------------
 # Task C1a of project_management/SINNOT_HYPOTHESIS_PLAN.md.  Companion note:
-# project_management/SINNOT_C1A_NOTE.md.  Companion script: m2_katz.gp, which
+# project_management/SINNOT_C1A_NOTE.md.  Companion script: legacy/gp/m2_katz.gp, which
 # does the Katz side.
 #
 # WHAT THIS COMPUTES
@@ -32,7 +32,7 @@
 #   in its first two digits.
 #
 # Run from this directory:  sage m2_msd.sage        (about three minutes)
-# Output: m2_msd.out
+# Output: ../data/m2_msd.out
 # ---------------------------------------------------------------------------
 
 import time, sys
@@ -41,7 +41,7 @@ PRIMES = [5, 13, 17, 29, 37, 41, 53, 61, 73, 89, 97, 101, 109, 113]
 NTERMS = 3          # (p-1)p^(n-1) modular symbols; n = 3 leaves c_2 mod p^2
 
 E = EllipticCurve([0, 0, 0, -56, 0])
-out = open("m2_msd.out", "w")
+out = open("../data/m2_msd.out", "w")
 
 
 def say(s):

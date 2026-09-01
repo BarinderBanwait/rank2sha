@@ -218,6 +218,10 @@ check_file data/res_4.txt           "output of gp/scan.gp, segment 4"
 check_file data/deltaE_phase2.txt   "output of gp/deltaE.gp"
 check_file data/cert_5.out          "output of sage/run.sh at p = 5"
 check_file data/cert_13.out         "output of sage/run.sh at p = 13"
+check_file data/m2_w1.out           "output of gp/m2_w1.gp at p = 5, 13, 17"
+check_file data/m2_w1_2937.out      "output of gp/m2_w1.gp at p = 29, 37"
+check_file data/m2_msd.out          "output of sage/m2_msd.sage"
+check_file data/m2_gtest.out        "output of gp/m2_gtest.gp at p = 13"
 
 # ---------------------------------------------------------------------------
 head2 "4. Smoke test"
@@ -444,7 +448,10 @@ for s in gp/scan.gp:"508 primes in four windows, about 6 minutes; produces data/
          gp/independence.gp:"the independence bound eq:indep, Section 6.5; 2.4 s at three precisions" \
          gp/epsilon_check.gp:"the unit character over 3018 split primes, Section 6.2; under a second" \
          gp/reconstruction_artefact.gp:"the naive-reconstruction artefact of Section 6.7; 40 s" \
-         gp/s01_check.gp:"S_{0,1} at five working precisions, Section 6.3; 2.6 minutes"; do
+         gp/s01_check.gp:"S_{0,1} at five working precisions, Section 6.3; 2.6 minutes" \
+         gp/m2_w1.gp:"the bracket B(fp) of Section 6.8; 25 s at p = 5, 13, 17 and about 18 min at p = 29, 37 (W1PRIMES=29,37 W1PREC=600)" \
+         gp/m2_gtest.gp:"the collapse test of lem:collapse at p = 13, Section 6.8; 2.5 minutes" \
+         sage/m2_msd.sage:"kappa(p) at fourteen split primes, the modular-symbol side of Section 6.8; 3 minutes"; do
   name="${s%%:*}"; why="${s#*:}"
   if [ -f "$HERE/$name" ]; then
     info "$name  present, not run: $why"
@@ -462,8 +469,9 @@ for f in "$GPDIR"/*.gp "$SAGEDIR"/*.sage "$SAGEDIR"/*.py "$SAGEDIR"/*.sh; do
     gp/regulator.gp|gp/scan.gp|gp/deltaE.gp) ;;
     gp/excluded_set.gp|gp/timings.gp|gp/independence.gp) ;;
     gp/epsilon_check.gp|gp/reconstruction_artefact.gp|gp/s01_check.gp) ;;
+    gp/m2_w1.gp|gp/m2_gtest.gp) ;;
     sage/regulator.sage|sage/certificates.sage|sage/check_agreement.py|sage/run.sh) ;;
-    sage/verify_scan.py|sage/null_model.py) ;;
+    sage/verify_scan.py|sage/null_model.py|sage/m2_msd.sage) ;;
     *) EXTRA="$EXTRA ${f#"$HERE"/}" ;;
   esac
 done
