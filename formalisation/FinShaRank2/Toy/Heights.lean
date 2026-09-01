@@ -2,10 +2,10 @@ import FinShaRank2.Interface.Heights
 import FinShaRank2.Toy.Analytic
 
 /-!
-# Toy height layer (task T40): `Toy.toyHeight`
+# Toy height layer: `Toy.toyHeight`
 
 The height / p-adic-BSD layer of the non-vacuity instance. The toy world takes
-`Reg_γ := 1`, `shaOrd := 1`, `heightNondeg := True`, and — forced by the T14
+`Reg_γ := 1`, `shaOrd := 1`, `heightNondeg := True`, and — forced by the `ClassicalInputs`
 tie-equation `c2norm_tie` — the normalised jet
 
 `c2norm := c̃₂ = coeff₂(X²) · (1 − α⁻¹)⁻² · 1 = (1 − α⁻¹)⁻²`.
@@ -52,7 +52,7 @@ theorem isPUnit_toy_c2norm {α : ℤ_[p]ˣ} (hα : IsUnit ((α : ℤ_[p]) - 1)) 
   rw [Rat.cast_one, mul_one, one_mul, norm_pow, norm_inv, h, inv_one, one_pow]
 
 /-- **Toy `HeightData`**: trivial regulator and Ш-order, nondegeneracy `True`,
-and the normalised jet forced by the T14 tie-equation. -/
+and the normalised jet forced by the `ClassicalInputs` tie-equation. -/
 noncomputable def toyHeight (α : ℤ_[p]ˣ) (hα : IsUnit ((α : ℤ_[p]) - 1)) : HeightData p where
   Reg_γ := 1
   heightNondeg := True

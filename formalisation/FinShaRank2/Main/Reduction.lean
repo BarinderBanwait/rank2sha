@@ -11,29 +11,29 @@ import FinShaRank2.Main.Consequence
 import FinShaRank2.Statements
 
 /-!
-# `thm:reduction` — Conjecture `conj:EK` + Hypothesis `hyp:sinnott` ⟹ `conj:strong` (task T33)
+# Theorem C (Theorem 4.12) — Conjecture 4.11 + Hypothesis 4.10 ⟹ Conjecture 3.4
 
-`thm_reduction` is the paper's theorem, taking one instance of `conj:EK`;
-`thm_reduction_of_conjEK` (task R2b) is the same statement with that instance
+`thm_reduction` is the paper's theorem, taking one instance of Conjecture 4.11;
+`thm_reduction_of_conjEK` is the same statement with that instance
 supplied by the conjecture.
 
-> **Theorem (Reduction, `thm:reduction`).** *Assume Hypothesis `hyp:sinnott` for*
+> **Theorem (Reduction, Theorem C).** *Assume Hypothesis 4.10 for*
 > *`E`, let `c` be a vector as in its part (i), and assume `δ_E(c) ≠ 0`. Then for*
 > *every split `p ≥ 5` of good reduction with `p ∉ S_E ∪ supp(c)` and*
 > *`𝔭 ∤ δ_E(c)`: `c̃₂(p) ∈ ℤ_p^×`, `λ_an(𝔭) = 2`, `Ш(E/ℚ)[p^∞] = 0`. If moreover*
-> *`S_E` is finite, Conjecture `conj:strong` holds for `E` with the invariant*
+> *`S_E` is finite, Conjecture 3.4 holds for `E` with the invariant*
 > *`δ_E(c)` and with `Σ = S_E ∪ supp(c)`.*
 
-## The epistemic firewall (`TASK_BOARD.md` §1, conv. 4)
+## The epistemic firewall
 
-**`conj:EK` and `hyp:sinnott` occur in this file and nowhere else.** Both appear
+**Conjecture 4.11 and Hypothesis 4.10 occur in this file and nowhere else.** Both appear
 strictly in hypothesis position:
 
-* `hEK` = one instance of `conj:EK`, the nonvanishing of the Eisenstein–Kronecker
-  invariant `def:deltaE`; formally `H.ek.deltaE c ≠ 0`. The conjecture itself is
+* `hEK` = one instance of Conjecture 4.11, the nonvanishing of the Eisenstein–Kronecker
+  invariant Definition 4.8; formally `H.ek.deltaE c ≠ 0`. The conjecture itself is
   `ConjEK H` (`Statements.lean`) and is a hypothesis of `thm_reduction_of_conjEK`
   below, which is the only declaration that mentions it;
-* `hsin` = `hyp:sinnott`, formally the `Prop`-structure `SinnottHyp` quantified
+* `hsin` = Hypothesis 4.10, formally the `Prop`-structure `SinnottHyp` quantified
   over every split `p ∉ H.S ∪ supp(c)`.
 
 Neither occurs in `prop_consequence`, `prop_dictionary` or `cor_horizontal`: those
@@ -42,77 +42,79 @@ which is the paper's own hypothesis for Theorem A. `SinnottHyp` is never a field
 an instantiable structure, so the assumption surface `ClassicalInputs` stays free
 of conjecture.
 
-## Translation conventions (`TASK_BOARD.md` §2)
+## Translation conventions
 
-* Conjecture `conj:strong` ↦ `ConjStrong H` (`Statements.lean`), an existential in
+* Conjecture 3.4 ↦ `ConjStrong H` (`Statements.lean`), an existential in
   the invariant `δ` and the exceptional set `Sig`; the paper's `Σ` is `H.S ∪ Sig`.
-* `𝔭 ∤ δ_E(c)`, i.e. `v_𝔭(ι_p δ_E(c)) = 0` (`ssec:notation`) ↦
+* `𝔭 ∤ δ_E(c)`, i.e. `v_𝔭(ι_p δ_E(c)) = 0` (§2.1) ↦
   `H.ek.v p (H.ek.deltaE c) = 1`. Mathlib's `Valuation` is multiplicative, so the
   paper's `v_𝔭(x) = 0` is `v x = 1` (module docstring of `Interface/EK.lean`).
 * `p ∉ supp(c)` ↦ `p ∉ H.ek.supp c`.
 * `λ_an(𝔭) = 2` ↦ `lambdaAn (…).analytic.Lp = 2`, kept paired with
-  `MuZero (…).analytic.Lp` per conv. 5 (`lambdaAn` is junk-valued without it).
-* `Ш(E/ℚ)[p^∞] = 0` ↦ `Subsingleton (…).selmer.ShaDual` (conv. 1).
+  `MuZero (…).analytic.Lp` so that the junk-value pair stays adjacent (`lambdaAn` is
+  junk-valued without it).
+* `Ш(E/ℚ)[p^∞] = 0` ↦ `Subsingleton (…).selmer.ShaDual` (dual side).
 * "`p ≥ 5` of good reduction, `p ∉ S_E`" ↦ `hsplit : p % 4 = 1` and `hpS : p ∉ H.S`.
 
 ## Deviations from the paper's shape, and why
 
 1. `hsin` is spelled `SinnottHyp p (…).analytic.Lp (…).katz H.ek c`, not
-   `SinnottHyp p … (….toKatzData) …`: the T13/T14 interface exposes the Katz layer
+   `SinnottHyp p … (….toKatzData) …`: the `KatzData` and `ClassicalInputs` interface
+   exposes the Katz layer
    as the `PrimeData` **field** `katz : KatzData p analytic.Lp`, and there is no
    `toKatzData` coercion (aggregation, not `extends` — see
    `Interface/Global.lean`). Same content, forced spelling.
 2. The paper's last assertion is conditional on `S_E` being finite. `H.S` is a
    `Finset ℕ`, so finiteness holds by construction and the conditional disappears.
-3. The first conjunct reports `MuZero` alongside `lambdaAn = 2` (conv. 5); the
+3. The first conjunct reports `MuZero` alongside `lambdaAn = 2` (the junk-value pair,
+kept adjacent); the
    paper's display names only `c̃₂(p) ∈ ℤ_p^×`, `λ_an(𝔭) = 2` and `Ш = 0`.
-4. `ConjStrong` omits the integrality clause of `conj:strong`; see its docstring
-   in `Statements.lean` and `rmk:integrality`.
+4. `ConjStrong` omits the integrality clause of Conjecture 3.4; see its docstring
+   in `Statements.lean` and Remark 3.6.
 
-Paper labels rendered here: `thm:reduction`, `conj:EK`, `hyp:sinnott`,
-`conj:strong`, `def:deltaE`, `prop:consequence`.
+Paper statements rendered here: Theorem C, Conjecture 4.11, Hypothesis 4.10,
+Conjecture 3.4, Definition 4.8, Theorem B (Theorem 3.9).
 -/
 
 open PowerSeries
 
 namespace FinShaRank2
 
-/-- **`thm:reduction`** — the paper's reduction of horizontal rigidity to
-`conj:EK` (`hEK`) and `hyp:sinnott` (`hsin`).
+/-- **Theorem C (Theorem 4.12)** — the paper's reduction of horizontal rigidity to
+Conjecture 4.11 (`hEK`) and Hypothesis 4.10 (`hsin`).
 
-> *Assume Hypothesis `hyp:sinnott` for `E`, let `c` be a vector as in its part*
+> *Assume Hypothesis 4.10 for `E`, let `c` be a vector as in its part*
 > *(i), and assume `δ_E(c) ≠ 0`. Then for every split `p ≥ 5` of good reduction*
 > *with `p ∉ S_E ∪ supp(c)` and `𝔭 ∤ δ_E(c)`: `c̃₂(p) ∈ ℤ_p^×`, `λ_an(𝔭) = 2`,*
-> *`Ш(E/ℚ)[p^∞] = 0`. If moreover `S_E` is finite, Conjecture `conj:strong` holds*
+> *`Ш(E/ℚ)[p^∞] = 0`. If moreover `S_E` is finite, Conjecture 3.4 holds*
 > *for `E` with the invariant `δ_E(c)` and with `Σ = S_E ∪ supp(c)`.*
 
 The conclusion is the conjunction of the per-prime statement and `ConjStrong H`.
 
-Assembly route. `hsin.integral` is `hyp:sinnott`(i)'s integrality clause, so the
+Assembly route. `hsin.integral` is Hypothesis 4.10(i)'s integrality clause, so the
 factors of `δ_E(c) = ∏_{t ∈ D_E} F_c(t)` (`EKPackage.deltaE_def`) are all
 `𝔭`-integral; with `𝔭 ∤ δ_E(c)`,
 `Kernel.Resultant.forall_eq_one_of_prod_eq_one` gives `v_𝔭(F_c(t)) = 0` for every
 `t ∈ D_E`. That is the antecedent of `hsin.nonvanishing`, which yields
 `traceClass ≠ 0`; `hsin.presentation` identifies the residue of `m2core` with it,
-so T25 (`Kernel.GradingValuation.isUnit_iff_residue_ne_zero_of_grading_congr`)
-yields `IsUnit (coeff 2 LKatz)`; `KatzData.comparison` + T22
+so `SelmerData.π_surj` (`Kernel.GradingValuation.isUnit_iff_residue_ne_zero_of_grading_congr`)
+yields `IsUnit (coeff 2 LKatz)`; `KatzData.comparison` + `Kernel/Decoupling.lean`
 (`Kernel.Decoupling.isUnit_coeff_two_of_comparison`) transfers unitness to
-`coeff 2 Lp`; T26 (`Kernel.Normalization.isPUnit_c2tilde_iff`, fed non-anomality
+`coeff 2 Lp`; `isPUnit_c2tilde_iff` (`Kernel.Normalization.isPUnit_c2tilde_iff`, fed non-anomality
 by `ClassicalInputs.isPUnit_one_sub_alphaInv` and the rational factor by
 `H.torsSqOverTam_eq`) converts it to `IsPUnit c̃₂(p)`; `prop_consequence` supplies
 the remaining three conclusions.
 
-Until R2a the first step was the assumed `KatzData` field `resultant_link`, which
-asserted its conclusion outright. It is now proved, and the integrality it rested
-on has moved into `hsin`, which is where the paper puts it.
+The first step is proved rather than assumed, and the integrality it rests on is
+a clause of `hsin`, which is where the paper puts it.
 
 `hEK` is used to witness the `δ ≠ 0` conjunct of `ConjStrong H`. At an individual
 prime it would be free — `Kernel.Resultant.prod_ne_zero_of_prod_eq_one` derives
-`δ_E(c) ≠ 0` from `v_𝔭(δ_E(c)) = 0` alone — but `conj:strong` asserts a *single*
+`δ_E(c) ≠ 0` from `v_𝔭(δ_E(c)) = 0` alone — but Conjecture 3.4 asserts a *single*
 nonzero `δ_E` valid at every prime at once, and that is what `hEK` supplies.
 
 `hEK`/`hsin` are the **only** conjectural hypotheses in the project and occur
-nowhere else (`TASK_BOARD.md` §1).
+nowhere else.
 
 TRANSLATION: see the module docstring (`𝔭 ∤ δ_E(c)` ↦ `H.ek.v p (H.ek.deltaE c) = 1`;
 dual-side Ш; μ/λ pairing). -/
@@ -139,14 +141,14 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
     have : Fact p.Prime := ⟨hp⟩
     set D := H.dataAt p hp hsplit hpS with hDdef
     have hsin' := hsin p hp hsplit hpS hsupp
-    -- step 1 `hyp:sinnott`(i) makes every factor of `δ_E(c)` `𝔭`-integral, and
-    --   `𝔭 ∤ δ_E(c)` then forces every factor to be a `𝔭`-unit (R1β).
+    -- step 1 Hypothesis 4.10(i) makes every factor of `δ_E(c)` `𝔭`-integral, and
+    --   `𝔭 ∤ δ_E(c)` then forces every factor to be a `𝔭`-unit.
     have hprod : H.ek.v p (∏ t ∈ H.ek.D, H.ek.Fc c t) = 1 := by
       rw [← H.ek.deltaE_def c]; exact hval
     have hunits : ∀ t ∈ H.ek.D, H.ek.v p (H.ek.Fc c t) = 1 :=
       Resultant.forall_eq_one_of_prod_eq_one (H.ek.v p) H.ek.D (H.ek.Fc c)
         hsin'.integral hprod
-    -- step 2 `hyp:sinnott`(ii), then its presentation clause.
+    -- step 2 Hypothesis 4.10(ii), then its presentation clause.
     have htr : D.katz.traceClass ≠ 0 := hsin'.nonvanishing hunits
     have hres : IsLocalRing.residue D.katz.W D.katz.m2core ≠ 0 := by
       rw [hsin'.presentation]; exact htr
@@ -201,7 +203,7 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
     have hLp2 : IsUnit (coeff 2 D.analytic.Lp) :=
       Decoupling.isUnit_coeff_two_of_comparison (algebraMap ℤ_[p] D.katz.W)
         D.analytic.Lp D.katz.LKatz c u hcomp hK0 hK1 hLK
-    -- step 6 `prop:normalisation`, with non-anomality from `H.notAnomalous`.
+    -- step 6 Proposition 3.3, with non-anomality from `H.notAnomalous`.
     exact (isPUnit_c2tilde_iff (coeff 2 D.analytic.Lp) _ H.torsSqOverTam
       (H.isPUnit_one_sub_alphaInv hsplit hpS) H.torsSqOverTam_eq).mpr hLp2
   refine ⟨?_, ⟨H.ek.deltaE c, H.ek.supp c, hEK,
@@ -212,25 +214,25 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
   obtain ⟨hmu, hlam, _, hsha⟩ := prop_consequence H hsplit hpS hc2
   exact ⟨hc2, hmu, hlam, hsha⟩
 
-/-- **`thm:reduction` with its first input supplied by Conjecture `conj:EK`.**
+/-- **Theorem C (Theorem 4.12) with its first input supplied by Conjecture 4.11.**
 
 Theorem C lists as its input (i) the nonvanishing `δ_E(c) ≠ 0` for a vector `c` as
-in its input (ii), and records that `conj:EK` implies it, that vector being
+in its input (ii), and records that Conjecture 4.11 implies it, that vector being
 nonzero. `thm_reduction` takes the single instance `H.ek.deltaE c ≠ 0`; this
 corollary takes the conjecture instead and applies it at `c`.
 
-`hc : c ≠ 0` is the nonzeroness that `hyp:sinnott`(i) asserts of the vector it
+`hc : c ≠ 0` is the nonzeroness that Hypothesis 4.10(i) asserts of the vector it
 produces ("There exist a nonzero `c ∈ K⁶` and an integer `k ≥ 1` …"). It is a
 separate hypothesis here because `SinnottHyp` renders the three clauses
 `integral`, `presentation` and `nonvanishing` and carries `c` as a parameter, so
-the existential of `hyp:sinnott`(i) — and with it the nonzeroness of its witness —
+the existential of Hypothesis 4.10(i) — and with it the nonzeroness of its witness —
 is discharged by the caller, as in `thm_reduction`.
 
 `hconj` and `hsin` are conjectural and occur in hypothesis position only. This is
 the only declaration in the project that mentions `ConjEK`.
 
-TRANSLATION: as `thm_reduction`; `conj:EK` ↦ `ConjEK H` (`Statements.lean`), whose
-docstring records the one hypothesis of `conj:EK` that is not rendered. -/
+TRANSLATION: as `thm_reduction`; Conjecture 4.11 ↦ `ConjEK H` (`Statements.lean`), whose
+docstring records the one hypothesis of Conjecture 4.11 that is not rendered. -/
 theorem thm_reduction_of_conjEK (H : ClassicalInputs) (c : Fin 6 → H.ek.K) (hc : c ≠ 0)
     (hconj : ConjEK H)
     (hsin : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ H.S),

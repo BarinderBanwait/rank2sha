@@ -6,7 +6,7 @@ import FinShaRank2.Toy.Heights
 import FinShaRank2.Toy.Katz
 
 /-!
-# Non-vacuity of `ClassicalInputs` (task T40): `FinShaRank2.ToyTrivial`
+# Non-vacuity of `ClassicalInputs`: `FinShaRank2.ToyTrivial`
 
 **The assumption surface of this formalization is consistent.** This file
 assembles the four toy layers into
@@ -18,7 +18,7 @@ with *every field proved* — no incomplete proofs, no new axiom declarations, a
 `Quot.sound`. A
 skeptical referee's first question — "could `ClassicalInputs` be
 contradictory, so that the main theorems are vacuous?" — is thereby answered
-negatively by a Lean-kernel-checked construction (`TASK_BOARD.md` §1).
+negatively by a Lean-kernel-checked construction.
 
 ## The toy world, layer by layer
 
@@ -40,7 +40,7 @@ negatively by a Lean-kernel-checked construction (`TASK_BOARD.md` §1).
 This is a *toy* world: it is not the testbed curve, and no faithfulness claim is
 made about it. Its only job is to witness satisfiability of the assumption
 bundle. The complementary tripwire — that the assumptions alone do **not** force
-the headline conclusion — is the anti-vacuity instance `ToySha` (task T41).
+the headline conclusion — is the anti-vacuity instance `ToySha`.
 
 ## Deviation from the board sketch
 
@@ -86,7 +86,7 @@ noncomputable def toyPrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) :
 
 end Toy
 
-/-- **Non-vacuity of the assumption surface (task T40).**
+/-- **Non-vacuity of the assumption surface.**
 
 `ToyTrivial` is a *proved* instance of `ClassicalInputs`: the excluded set is
 empty, the Eisenstein–Kronecker package is `Toy.toyEK`, the rational factor is
@@ -96,7 +96,7 @@ hence that the headline implications `theorem … (H : ClassicalInputs) : …` a
 not vacuous.
 
 SOURCE: none — this is a construction, not an assumption.
-PAPER:  `TASK_BOARD.md` §1 (trust story, non-vacuity).
+PAPER:  none — this is what makes the assumption bundle non-vacuous.
 STATUS: theorem (toy model). -/
 noncomputable def ToyTrivial : ClassicalInputs where
   S := ∅

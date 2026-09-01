@@ -2,19 +2,19 @@ import Mathlib
 import FinShaRank2.Defs
 
 /-!
-# `IwasawaData p` and `SelmerData p` (task T12)
+# `IwasawaData p` and `SelmerData p`
 
-The Iwasawa-theoretic and descent inputs to the proof of `prop:consequence` in
+The Iwasawa-theoretic and descent inputs to the proof of Theorem B (Theorem 3.9) in
 *Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
 rank-two CM elliptic curves*.
 
 Both structures package **classical, citable theorems** as explicit fields, per
-the trust story of the formalization (`TASK_BOARD.md` §1): the skeptical referee
+the trust story of the formalization: the skeptical referee
 checks the field *statements* against the cited literature and against the
-paper's proof of `prop:consequence`, and Lean's kernel certifies everything the
+paper's proof of Theorem B, and Lean's kernel certifies everything the
 main theorems deduce from them. There are no global axioms.
 
-## Dual-side conventions (`TASK_BOARD.md` §2.1)
+## Dual-side conventions
 
 Everything is phrased on the **Pontryagin-dual side** as finitely generated
 `ℤ_[p]`- or `Λ`-modules, where mathlib is strong:
@@ -28,7 +28,8 @@ The paper's discrete statements translate as
 `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2 ↔ Module.finrank ℤ_[p] SelDual = 2` and
 `Ш(E/ℚ)[p^∞] = 0 ↔ Subsingleton ShaDual`. **Neither translation appears in any
 field type below** (convention §2.4, no conclusion vocabulary): the fields carry
-only the *inputs* the proof consumes, and the conclusions are theorems T31/T34
+only the *inputs* the proof consumes, and the conclusions are theorems
+`prop_consequence` and `cor_horizontal`
 derive from them.
 
 ## Instance-field plumbing
@@ -44,27 +45,27 @@ below each structure (the working pattern verified in
 `Scratch/NameCheck.lean` §8). `SelDual` and `ShaDual` are finitely generated
 `ℤ_[p]`-modules.
 
-## The Γ-coinvariants term (contract for T15/T23)
+## The Γ-coinvariants term
 
 The control isomorphism is stated against the **Γ-coinvariants**
 `X_Γ = X / T·X`, realized here by the literal submodule
 `Ideal.span {(PowerSeries.X : Λ p)} • (⊤ : Submodule (Λ p) X)` (the image of the
-`T`-multiplication, i.e. `T·X`). The kernel task T23 states the same theorem
-independently; T15 reconciles the two by this exact term. The `ℤ_[p]`-module
+`T`-multiplication, i.e. `T·X`). The kernel lemma `selmer_dual_structure` states the same theorem
+independently, against this exact term, so the two compose directly. The `ℤ_[p]`-module
 structure on the quotient is inferred from the tower via
 `Submodule.Quotient.module'`.
 
 ## Design notes
 
 * `IwasawaData` is parameterized over `Lp : Λ p` (the p-adic L-function, owned by
-  `AnalyticData`, T11) and over the Selmer-dual type `SelDual` (owned by
-  `SelmerData`). This threads a *single* `SelDual` through both structures: T14
+  `AnalyticData`, `AnalyticData`) and over the Selmer-dual type `SelDual` (owned by
+  `SelmerData`). This threads a *single* `SelDual` through both structures: `ClassicalInputs`
   builds `SelmerData` first and forms `IwasawaData p analytic.Lp selmer.SelDual`,
   so `control` and `mw_sha_exact` speak about the same object with no bridge.
 * `control` is provided as *data* (an actual `LinearEquiv`), faithful to Mazur's
-  control theorem, which produces the isomorphism, and convenient for T31.
+  control theorem, which produces the isomorphism, and convenient for `prop_consequence`.
 
-Paper labels quoted below: `prop:consequence` (Steps 3–4), `rmk:nofinitesub`.
+Paper statements quoted below: Theorem B (Steps 3–4), Remark 3.11.
 -/
 
 open PowerSeries
@@ -73,7 +74,7 @@ namespace FinShaRank2
 
 /-- **Iwasawa-module data at `p`** (dual side): the finitely generated
 `Λ = ℤ_[p]⟦T⟧`-module `X = Sel_{p^∞}(E/ℚ_∞)^∨` together with the two structural
-inputs Steps 3–4 of `prop:consequence` extract from the literature and the
+inputs Steps 3–4 of Theorem B (Theorem 3.9) extract from the literature and the
 Mazur-control isomorphism onto the Selmer dual `SelDual`.
 
 Parameterized over `Lp : Λ p` (the p-adic L-function, whose characteristic-ideal
@@ -107,7 +108,7 @@ structure IwasawaData (p : ℕ) [Fact p.Prime] (Lp : Λ p)
   `p ∤ #E(ℚ)_tors`; equivalently Prop. 4.15(ii) applies with ramification
   index `e_{v_0} = 1 ≤ p − 2`) — are recorded here and discharged for the
   testbed curve by the surrounding data.
-  PAPER: `prop:consequence` Step 3.
+  PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 3.
   STATUS: classical. -/
   no_finite_submodule : ∀ N : Submodule (Λ p) X, Finite N → N = ⊥
   /-- **Fused structure input**: a pseudo-isomorphism of `X` onto a product of
@@ -131,7 +132,7 @@ structure IwasawaData (p : ℕ) [Fact p.Prime] (Lp : Λ p)
 
   SOURCE: Washington GTM 83, Thm. 13.12, fused with Rubin, Invent. math. 103
   (1991), Thm. 12.3 (via Yager).
-  PAPER: `prop:consequence` Step 2 (characteristic ideal) feeding Step 3.
+  PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 2 (characteristic ideal) feeding Step 3.
   STATUS: classical. -/
   rubin_structure : ∃ (n : ℕ) (f : Fin n → Λ p)
       (φ : X →ₗ[Λ p] Π i, (Λ p) ⧸ Ideal.span {f i}),
@@ -153,7 +154,8 @@ structure IwasawaData (p : ℕ) [Fact p.Prime] (Lp : Λ p)
   `c_v` (here `= 1`, as `p ∉ S`), and non-anomalicity at `p`
   (`Ẽ(𝔽_p)[p^∞] = 0`) — are recorded here and supplied by the surrounding
   data for the testbed curve.
-  PAPER: `prop:consequence` Step 4 (the isomorphism `X_Γ ≅ Sel_{p^∞}(E/ℚ)^∨`).
+  PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 4 (the isomorphism `X_Γ ≅
+  Sel_{p^∞}(E/ℚ)^∨`).
   STATUS: classical (consequence form). -/
   control : (X ⧸ (Ideal.span {(PowerSeries.X : Λ p)} • (⊤ : Submodule (Λ p) X)))
       ≃ₗ[ℤ_[p]] SelDual
@@ -193,7 +195,7 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   SOURCE: Pontryagin dual of the descent sequence
   `0 → E(ℚ)⊗ℚ_p/ℤ_p → Sel_{p^∞}(E/ℚ) → Ш(E/ℚ)[p^∞] → 0`.
-  PAPER: `prop:consequence` Step 5 (the exact sequence of coranks).
+  PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 5 (the exact sequence of coranks).
   STATUS: classical. -/
   ι : ShaDual →ₗ[ℤ_[p]] SelDual
   /-- The surjection `Sel^∨ ↠ (E(ℚ)⊗ℚ_p/ℤ_p)^∨ ≅ ℤ_p^2` (dual of the inclusion
@@ -207,7 +209,7 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   SOURCE: Pontryagin dual of the descent sequence; rank from 2-descent +
   saturation of `E(ℚ)`.
-  PAPER: `prop:consequence` Step 5; `main.tex` §5 (rank-2 testbed).
+  PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 5; `main.tex` §5 (rank-2 testbed).
   STATUS: classical (rank from certified data). -/
   π : SelDual →ₗ[ℤ_[p]] (Fin 2 → ℤ_[p])
   /-- `ι` is injective. SOURCE / PAPER / STATUS as for `ι`. -/
@@ -218,7 +220,7 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   SOURCE: exactness of the dualized descent sequence (Pontryagin duality is
   exact).
-  PAPER: `prop:consequence` Step 5.
+  PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 5.
   STATUS: classical. -/
   mw_sha_exact : LinearMap.range ι = LinearMap.ker π
 

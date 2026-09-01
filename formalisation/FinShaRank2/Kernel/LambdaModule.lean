@@ -2,21 +2,20 @@ import Mathlib
 import FinShaRank2.Defs
 
 /-!
-# Λ-module structure kernel (task T23)
+# Λ-module structure kernel
 
 This file proves, as pure `mathlib`-only algebra, Steps 3–4 of the paper's
-`prop:consequence`: the structural core of the passage from the fused
+Theorem B (Theorem 3.9): the structural core of the passage from the fused
 Rubin ⊕ structure-theorem datum on the Selmer dual `X` to the two facts the
 Sha endgame consumes — that the cyclotomic variable acts as zero on `X`, and
 that `X` is `ℤ_[p]`-free of rank two.
 
 The main deliverable is `FinShaRank2.selmer_dual_structure`. Two small auxiliaries
-that the T15 chain test (`TASK_BOARD.md` T15, findings (D) and (E)) identified as
-missing links between this file's output and the neighbouring interface fields are
-supplied alongside it: `FinShaRank2.quotient_collapse` and
+are supplied alongside it, being the links between this file's output and the
+neighbouring interface fields: `FinShaRank2.quotient_collapse` and
 `FinShaRank2.rank_lower_bound` (final section).
 
-## Internal split (paper `prop:consequence` Steps 3–4)
+## Internal split (paper Theorem B Steps 3–4)
 
 * **(a)** `PowerSeries.X` is prime in `Λ` (`PowerSeries.X_prime`), and the
   quotients `Λ ⧸ (Xᵏ)` are `ℤ_[p]`-linearly the free modules `Fin k → ℤ_[p]`
@@ -36,7 +35,7 @@ supplied alongside it: `FinShaRank2.quotient_collapse` and
   lower bound `finrank ℤ_[p] X ≥ 2` (a quotient of `X`), so `finrank ℤ_[p] X = 2`
   and rank–nullity on the coinvariants submodule forces the `X`-action to vanish.
 
-## Coinvariants formulation (the T12 / T15 contract)
+## Coinvariants formulation
 
 The hypothesis `hrank` is stated with the **T-coinvariants** submodule in the
 `Ideal.span`-smul form
@@ -45,8 +44,8 @@ X ⧸ (Ideal.span {(PowerSeries.X : Λ p)} • (⊤ : Submodule (Λ p) X))
 ```
 with the `ℤ_[p]`-module structure on the quotient inferred through the scalar
 tower `[Module ℤ_[p] X] [IsScalarTower ℤ_[p] (Λ p) X]`. This is **the identical
-term** used by task T12's `control` field, so `selmer_dual_structure` composes
-against `IwasawaData.control` with no bridge lemma required at T15.
+term** used by `IwasawaData.control`, so `selmer_dual_structure` composes
+against `IwasawaData.control` with no bridge lemma required.
 
 ## Note on `_hcok`
 
@@ -115,9 +114,9 @@ private lemma quotSpan_of_dvd_Xsq (g : Λ p) (hg : g ∣ (X : Λ p) ^ 2) :
   obtain ⟨e⟩ := quotXpow_linEquiv (p := p) k
   exact ⟨((Submodule.quotEquivOfEq _ _ hspan).restrictScalars ℤ_[p]).trans e⟩
 
-/-! ### Main structure theorem (`prop:consequence` Steps 3–4) -/
+/-! ### Main structure theorem (Theorem B (Theorem 3.9) Steps 3–4) -/
 
-/-- **T23.** Steps 3–4 of `prop:consequence` as pure algebra.
+/-- **`selmer_dual_structure`.** Steps 3–4 of Theorem B (Theorem 3.9) as pure algebra.
 
 Given a finitely generated `Λ`-module `X` (the Selmer dual) with no nonzero
 finite `Λ`-submodule (`hnofin`, Greenberg), a Rubin ⊕ structure-theorem map
@@ -128,7 +127,7 @@ T-coinvariants (`hrank`, Mazur control), the cyclotomic variable `X` acts as zer
 on `X` and `X` is `ℤ_[p]`-free of rank two.
 
 The T-coinvariants quotient in `hrank` uses the `Ideal.span`-smul form, matching
-task T12's `control` field verbatim (see the module docstring). -/
+`IwasawaData`'s `control` field verbatim (see the module docstring). -/
 theorem selmer_dual_structure
     (X_mod : Type) [AddCommGroup X_mod] [Module (Λ p) X_mod] [Module.Finite (Λ p) X_mod]
     [Module ℤ_[p] X_mod] [IsScalarTower ℤ_[p] (Λ p) X_mod]
@@ -202,15 +201,14 @@ theorem selmer_dual_structure
   rw [hbot] at hmem
   simpa using hmem
 
-/-! ### Auxiliaries flanking the structure theorem (T15 chain-test findings (D), (E))
+/-! ### Auxiliaries flanking the structure theorem
 
 Both statements below are pure `mathlib` algebra; they mention no interface field.
-They were isolated by the T15 pre-freeze chain test as the two steps that no kernel
-file supplied when `selmer_dual_structure` is composed with task T12's `control`
-equivalence on one side and task T27's Sha endgame on the other. They are stated
-here in the exact shape that composition needs. -/
+They are the two steps no other kernel file supplies when `selmer_dual_structure`
+is composed with `IwasawaData.control` on one side and the Sha endgame on the
+other, and they are stated here in the exact shape that composition needs. -/
 
-/-- **T15 finding (D) — collapse of the `T`-coinvariants.**
+/-- **Collapse of the `T`-coinvariants.**
 
 If the cyclotomic variable `X` acts as zero on `M` — which is precisely the first
 conclusion of `selmer_dual_structure` — then the `Λ`-submodule
@@ -218,8 +216,9 @@ conclusion of `selmer_dual_structure` — then the `Λ`-submodule
 just `M`.
 
 This is the bridge from `selmer_dual_structure`'s output, which describes `M`
-itself, to task T12's `control` field, whose domain is the coinvariants quotient in
-the `Ideal.span`-smul form fixed by the T15 contract (see the module docstring).
+itself, to `IwasawaData`'s `control` field, whose domain is the coinvariants quotient in
+the `Ideal.span`-smul form fixed by `IwasawaData.control` (see the module
+docstring).
 The `ℤ_[p]`-structure on the quotient is inferred through the scalar tower, and the
 equivalence is obtained by restricting scalars along `ℤ_[p] → Λ p`.
 
@@ -233,20 +232,20 @@ theorem quotient_collapse (M : Type) [AddCommGroup M] [Module (Λ p) M] [Module 
     rw [Submodule.mem_bot, mul_smul, hzero, smul_zero]
   exact ⟨(Submodule.quotEquivOfEqBot _ hbot).restrictScalars ℤ_[p]⟩
 
-/-- **T15 finding (E) — the rank-two lower bound from a surjection onto `ℤ_[p]²`.**
+/-- **The rank-two lower bound from a surjection onto `ℤ_[p]²`.**
 
 A `ℤ_[p]`-linear surjection `N ↠ (Fin 2 → ℤ_[p])` forces `2 ≤ finrank ℤ_[p] N`
 (`LinearMap.finrank_le_finrank_of_surjective` together with
 `Module.finrank_fin_fun`).
 
 This supplies the `hrank` hypothesis of `selmer_dual_structure` after transport
-along `control`: the surjection is task T25's `SelmerData.π_surj`, so this lemma is
+along `control`: the surjection is `SelmerData.π_surj`, so this lemma is
 where the certified Mordell–Weil rank two enters the chain. Note the direction — the
 bound is a hypothesis of the structure theorem, not a consequence of it, so no
-circularity arises (T15 finding (F)).
+circularity arises.
 
 TRANSLATION: `corank_{ℤ_p} Sel_{p^∞} ≥ 2` ↦ `2 ≤ Module.finrank ℤ_[p] N` on the dual
-side (`TASK_BOARD.md` §2 conv. 1). -/
+side. -/
 theorem rank_lower_bound {N : Type} [AddCommGroup N] [Module ℤ_[p] N] [Module.Finite ℤ_[p] N]
     (π : N →ₗ[ℤ_[p]] (Fin 2 → ℤ_[p])) (hπ : Function.Surjective π) :
     2 ≤ Module.finrank ℤ_[p] N :=

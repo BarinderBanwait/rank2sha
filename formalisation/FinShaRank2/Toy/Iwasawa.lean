@@ -1,10 +1,9 @@
 import FinShaRank2.Interface.Iwasawa
 
 /-!
-# Toy Iwasawa / descent layers (task T40): `Toy.toySelmer`, `Toy.toyIwasawa`
+# Toy Iwasawa / descent layers: `Toy.toySelmer`, `Toy.toyIwasawa`
 
-The Λ-module and descent layers of the non-vacuity instance (`TASK_BOARD.md`
-§1). The toy world takes
+The Λ-module and descent layers of the non-vacuity instance. The toy world takes
 
 * `X := (Λ/(X))²` — the Iwasawa module, on which `T = PowerSeries.X` acts as
   zero, so its Γ-coinvariants are `X` itself;

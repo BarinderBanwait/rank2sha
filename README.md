@@ -18,9 +18,10 @@ committed here. `code/README.md` gives the map from number to script to file, an
 ## `formalisation`
 
 A Lean 4 formalisation of the paper's main statements, together with a blueprint
-linking the informal argument to the Lean declarations. See
-`formalisation/README.md` for the build and audit instructions and
-`formalisation/FORMALIZATION.md` for what is proved and what is assumed.
+linking the informal argument to the Lean declarations. `formalisation/README.md`
+is the guide: what is proved, what is assumed on citation, how to build it and
+re-run the audit, and a worked example of checking one assumed field against the
+literature it cites.
 
 ---
 

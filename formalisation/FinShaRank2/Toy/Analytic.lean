@@ -1,9 +1,9 @@
 import FinShaRank2.Interface.Analytic
 
 /-!
-# Toy analytic layer (task T40): `Toy.toyAnalytic`
+# Toy analytic layer: `Toy.toyAnalytic`
 
-Non-vacuity of the assumption surface (`TASK_BOARD.md` §1) is proved by
+Non-vacuity of the assumption surface is proved by
 *constructing* an instance of `ClassicalInputs` in a toy world where every field
 is genuinely provable. This file supplies the **analytic** layer.
 
@@ -31,7 +31,8 @@ which the height layer needs (`Toy/Heights.lean`).
   `Nat.Prime.sq_add_sq` and Hensel's lemma (`hensels_lemma`) applied to
   `F = X² − 2aX + p` at the approximate root `2a`.
 * `Toy.subst_σ_X_sq`, `Toy.functionalEquation_X_sq` — the toy functional
-  equation `subst σ (X²) = ((1+X)⁻¹)² · X²` (reusable test coverage for T20).
+  equation `subst σ (X²) = ((1+X)⁻¹)² · X²` (reusable test coverage for
+  `Kernel/FunctionalEquation.lean`).
 * `Toy.toyAnalytic` — `AnalyticData p hsplit`.
 -/
 
@@ -83,7 +84,8 @@ theorem constantCoeff_oneAddXUnit_inv :
 `(1+X)⁻¹ − 1`, so `subst σ X² = σ² = ((1+X)⁻¹)² · X²`.
 
 This is the identity the toy `funct_eq` needs; it is stated separately because it
-is reusable test coverage for the T20 kernel (`oneAddX_mul_σ` plus mathlib's
+is reusable test coverage for the `Kernel/FunctionalEquation.lean` kernel
+(`oneAddX_mul_σ` plus mathlib's
 `subst_pow` / `subst_X`). -/
 theorem subst_σ_X_sq :
     ((X : Λ p) ^ 2).subst σ = ((((oneAddXUnit p)⁻¹ : (Λ p)ˣ) : Λ p)) ^ 2 * (X : Λ p) ^ 2 := by
@@ -212,7 +214,7 @@ noncomputable def setup (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) : Setup p 
 
 `Setup` carries `1 ≤ a` and `2a < p`, so `2a − 1` lies strictly between `0` and
 `p` and cannot be divisible by `p`. This is the form `ClassicalInputs.notAnomalous`
-asks for — the `S_an` clause of `eq:Sexc` — and it is discharged from the toy data
+asks for — the `S_an` clause of (7) — and it is discharged from the toy data
 itself, with no change to the toy `a_p`.
 
 Used by both toy worlds: `ToyTrivial` and `ToySha` take the same `a_p = 2a`. -/

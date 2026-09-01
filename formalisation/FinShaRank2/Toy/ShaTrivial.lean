@@ -6,13 +6,12 @@ import FinShaRank2.Toy.ShaHeights
 import FinShaRank2.Toy.ShaKatz
 
 /-!
-# Anti-vacuity of `ClassicalInputs` (task T41): `FinShaRank2.ToySha`
+# Anti-vacuity of `ClassicalInputs`: `FinShaRank2.ToySha`
 
 **The assumption surface of this formalization does not smuggle in the
-conclusion.** Task T40 (`Toy/Trivial.lean`) built `ToyTrivial : ClassicalInputs`
-and thereby showed the assumption bundle is *consistent*. This file is the
-complementary tripwire for `TASK_BOARD.md` §2 convention 4 (no conclusion
-leakage): it builds a **second** proved instance
+conclusion.** `ToyTrivial` (`Toy/Trivial.lean`) shows the assumption bundle is
+*consistent*. This file is the complementary tripwire against conclusion
+leakage: it builds a **second** proved instance
 
 `ToySha : ClassicalInputs`
 
@@ -31,7 +30,7 @@ stops compiling, which is exactly its job.
 | `(#tors)²/∏cᵥ` | `1` | here |
 | `ek` (`D_E`, `𝓡_E`, `v_𝔭`, `supp`) | as `ToyTrivial` | `Toy/EK.lean` |
 | `Lp` | `C p · X²` (so `coeff 2 Lp = p`, a **non-unit**) | `Toy/ShaAnalytic.lean` |
-| `a_p`, `α` | `2a` with `a² + b² = p`; Hensel unit root (as T40) | `Toy/ShaAnalytic.lean` |
+| `a_p`, `α` | `2a` with `a² + b² = p`; Hensel unit root (as `ToyTrivial`) | `Toy/ShaAnalytic.lean` |
 | `X` (Iwasawa) | `Λ/(X) × Λ/(X) × Λ/(C p)` | `Toy/ShaIwasawa.lean` |
 | `SelDual`, `ShaDual` | `ℤ_[p]² × ℤ_[p]/(p)`, `ℤ_[p]/(p)` | `Toy/ShaIwasawa.lean` |
 | `Reg_γ`, `shaOrd`, `heightNondeg` | `1`, `p`, `True` | `Toy/ShaHeights.lean` |
@@ -101,7 +100,7 @@ theorem lambdaAn_shaLp : lambdaAn (shaLp p) = 0 := by
 
 end Toy
 
-/-- **The anti-vacuity instance (task T41).**
+/-- **The anti-vacuity instance.**
 
 `ToySha` is a *proved* instance of `ClassicalInputs` — every field discharged, no
 incomplete proofs, no new axiom declarations — in which the headline conclusion
@@ -110,7 +109,7 @@ prime**. It witnesses that `ClassicalInputs` alone does not entail the paper's
 conclusions.
 
 SOURCE: none — this is a construction, not an assumption.
-PAPER:  `TASK_BOARD.md` §1 (trust story), §2 conv. 4 (no conclusion leakage).
+PAPER:  none — this is the tripwire against conclusion leakage.
 STATUS: theorem (toy model). -/
 noncomputable def ToySha : ClassicalInputs where
   S := ∅
@@ -136,20 +135,20 @@ theorem toySha_conclusions_fail (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1)
     Toy.lambdaAn_shaLp]
   norm_num
 
-/-- **The anti-vacuity theorem (task T41).**
+/-- **The anti-vacuity theorem.**
 
 The classical-inputs interface does **not** entail the triviality of Ш: there is
 no proof of `Subsingleton ShaDual` from `H : ClassicalInputs` and splitness
 alone. Witnessed by `ToySha` (at `p = 5`, and in fact at every split prime, by
 `toySha_conclusions_fail`).
 
-Together with T40's `ToyTrivial` (which shows the same interface *is*
+Together with `ToyTrivial`'s `ToyTrivial` (which shows the same interface *is*
 satisfiable) this pins the epistemic status of the assumption surface: it is
 consistent, and it is not question-begging. What closes the gap is the numerical
 `c₂` datum, which `ToySha` fails (`toySha_fails_c2_5_certificate`).
 
 SOURCE: none — this is a construction, not an assumption.
-PAPER:  `TASK_BOARD.md` §1, §2 conv. 4.
+PAPER:  none — this is the tripwire against conclusion leakage.
 STATUS: theorem (tripwire). -/
 theorem interface_does_not_force_sha_trivial :
     ¬ ∀ (H : ClassicalInputs) (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ H.S),
@@ -173,11 +172,9 @@ The Frobenius-trace datum `a₅ = −2` fails here too, since the toy `a_p = 2a`
 positive; only the jet digits are used below.
 
 SOURCE: none — this is a computation about the toy instance.
-PAPER:  none. The digits on the right are this project's computation of `c₂(5)`
-        for the testbed curve; paper v1 displayed them, and paper v2 dropped the
-        display together with the anchor corollaries it served
-        (`legacy/Anchors.lean`). `TASK_BOARD.md` §1: the numerics are
-        load-bearing.
+PAPER:  none.  The digits on the right are this project's own computation of
+        `c₂(5)` for the testbed curve, cross-checked by two independent
+        implementations.  They correspond to no display in the paper.
 STATUS: theorem (toy model). -/
 theorem toySha_fails_c2_5_certificate :
     letI : Fact (Nat.Prime 5) := ⟨by norm_num⟩

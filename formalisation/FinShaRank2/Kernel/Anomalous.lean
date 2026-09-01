@@ -2,7 +2,7 @@ import Mathlib
 import FinShaRank2.Defs
 
 /-!
-# Anomalous-prime arithmetic (task T24, paper `lem:noanomalous`)
+# Anomalous-prime arithmetic
 
 This file proves, as pure `mathlib`-only arithmetic, that the split primes
 relevant to the testbed curve `E : y² = x³ − 56x` are **non-anomalous**: the
@@ -10,7 +10,7 @@ Frobenius unit root `α_p` satisfies `α_p ≢ 1 (mod 𝔭)`, equivalently the l
 factor `1 − α_p⁻¹` that appears in the interpolation / normalisation is a
 `p`-adic unit. This is exactly the input that discharges the non-anomalous
 hypothesis carried by every theorem about `c2tilde` (see `Defs.lean`), used by
-tasks T26 (`prop:normalisation`) and T31 (`prop:consequence`).
+`isPUnit_c2tilde_iff` (Proposition 3.3) and `prop_consequence` (Theorem B (Theorem 3.9)).
 
 The argument has four gap-free pieces, matching the paper's proof:
 
@@ -28,16 +28,16 @@ The argument has four gap-free pieces, matching the paper's proof:
 * **(iv) CM evenness** (`two_dvd_ap`). The `ap_from_CM` datum `a = 2·Re(π)`
   yields `2 ∣ a` in one line.
 * **(v) Split-prime dichotomy and the anomalous `iff`**
-  (`eq_five_or_thirteen_le`, `anomalous_iff_five`, task R1β). A prime
+  (`eq_five_or_thirteen_le`, `anomalous_iff_five`, the refactor). A prime
   `p ≡ 1 (mod 4)` is either `5` or at least `13`, since the residues `1` and `9`
   below `13` are not prime. Combining that with (i) gives part (2) of
-  `lem:noanomalous` in the strengthened form the paper now states: for
+  Lemma 2.3 in the strengthened form the paper now states: for
   `p ≡ 1 (mod 4)` and `a` even with `a² ≤ 4p`, the prime is anomalous
   (`a ≡ 1 (mod p)`) if and only if `p = 5` and `a = −4`. `eq_five_or_thirteen_le`
   was moved here from `Kernel/Normalization.lean` (which imports this file, so it
   could not be used from there); the name is unchanged.
 
-The composed convenience lemma `noAnomalous` packages (i)–(iv) for T31: from the
+The composed convenience lemma `noAnomalous` packages (i)–(iv) for `prop_consequence`: from the
 `AnalyticData` fields `hasse`, `ap_from_CM`, `alpha_root` and the split-prime
 case split `13 ≤ p ∨ (p = 5 ∧ a_p = −2)`, it concludes
 `IsPUnit ((1 : ℚ_[p]) − α_p⁻¹)`.
@@ -52,7 +52,7 @@ local ring an element is a unit exactly when its residue is nonzero
 cancelling the unit `toZMod α` gives `toZMod α = (a : ZMod p)` directly, and the
 whole equivalence follows in the field `ZMod p`.
 
-## Descoped: part (1) of `lem:noanomalous`
+## Descoped: part (1) of Lemma 2.3
 
 Part (1) states that `p ≢ 1 (mod 4)` implies `p ∣ a_p`, hence that such a `p` is
 not anomalous. Its proof reduces to Deuring's reduction criterion: a prime inert
@@ -62,7 +62,7 @@ elliptic curve with complex multiplication, so part (1) is not formalised. The
 formalised statements above cover part (2), the split case, which is the case
 every downstream theorem uses.
 
-Paper labels: `lem:noanomalous`, `def:c2tilde`, `prop:normalisation`.
+Paper statements: Lemma 2.3, Definition 3.2, Proposition 3.3.
 -/
 
 namespace FinShaRank2
@@ -186,7 +186,7 @@ class `1 mod 4` contains only `1` and `9`, neither of which is prime.
 
 This is exactly the disjunction `noAnomalous` consumes, so it is what turns the
 split hypothesis into the Hasse-squeeze / small-prime case split of
-`lem:noanomalous`. -/
+Lemma 2.3. -/
 theorem eq_five_or_thirteen_le {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) :
     p = 5 ∨ 13 ≤ p := by
   rcases Nat.lt_or_ge p 13 with hlt | hge
@@ -194,7 +194,7 @@ theorem eq_five_or_thirteen_le {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) :
     interval_cases p <;> first | omega | exact absurd hp (by norm_num)
   · exact Or.inr hge
 
-/-- **`lem:noanomalous`(2): anomality at a split prime happens only at `p = 5`.**
+/-- **Lemma 2.3(2): anomality at a split prime happens only at `p = 5`.**
 Let `p` be a prime with `p ≡ 1 (mod 4)` and let `a` be an even integer obeying
 the Hasse bound `a² ≤ 4p`. Then `a ≡ 1 (mod p)` holds if and only if `p = 5` and
 `a = −4`.
@@ -209,7 +209,7 @@ excludes `a = 1`; the only remaining value is `a = −4`. Backward: `−4 ≡ 1
 The trace of the testbed curve at `5` is `a₅ = −2` (see
 `neg_two_ne_one_zmod_five`), so the testbed is not the anomalous case.
 
-Part (1) of `lem:noanomalous` — that `p ≢ 1 (mod 4)` implies `p ∣ a_p` — is not
+Part (1) of Lemma 2.3 — that `p ≢ 1 (mod 4)` implies `p ∣ a_p` — is not
 formalised; see the module docstring. -/
 theorem anomalous_iff_five {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) {a : ℤ}
     (heven : 2 ∣ a) (hhasse : a ^ 2 ≤ 4 * (p : ℤ)) :
@@ -241,9 +241,9 @@ theorem two_dvd_ap {p : ℕ} {a : ℤ}
   obtain ⟨π, _, ha⟩ := h
   exact ⟨π.re, ha⟩
 
-/-! ### Composed non-anomality (the T31 deliverable) -/
+/-! ### Composed non-anomality (the `prop_consequence` deliverable) -/
 
-/-- **Non-anomality, composed for `prop:consequence` (T31).** Package (i)–(iv):
+/-- **Non-anomality, composed for Theorem B (Theorem 3.9) (`prop_consequence`).** Package (i)–(iv):
 from the `AnalyticData` fields `hasse` (`a² ≤ 4p`), `ap_from_CM`
 (`a = 2·Re(π)`, `N(π) = p`) and `alpha_root` (`α² − a·α + p = 0`), together with
 the split-prime case split `13 ≤ p ∨ (p = 5 ∧ a = −2)`, conclude that the local

@@ -2,19 +2,19 @@ import FinShaRank2.Interface.Katz
 import FinShaRank2.Toy.ShaAnalytic
 
 /-!
-# Anti-vacuity Katz layer (task T41): `Toy.shaKatz`
+# Anti-vacuity Katz layer: `Toy.shaKatz`
 
-The Katz-measure layer of the anti-vacuity instance `ToySha`. As in the T40 layer
+The Katz-measure layer of the anti-vacuity instance `ToySha`. As in the `ToyTrivial` layer
 (`Toy/Katz.lean`) the unramified coefficient ring is `W := ℤ_[p]` itself and
 `L^{Katz} := Lp`.
 
 The one change forced by `Lp = C p · X²` is the **grade-two core**: since
 `coeff 2 L^{Katz} = p`, the frozen `grading_congr` field
 `p² · (κ₀ · coeff 2 L^{Katz} − m2core) ∈ (p³)` forces `m2core ≡ 0 (mod p)`, so
-`m2core := 1` (the T40 value) is *not* available. We take `m2core := p`, which
+`m2core := 1` (the `ToyTrivial` value) is *not* available. We take `m2core := p`, which
 makes the congruence an equality `p² · 0 = 0` with `κ₀ = 1`.
 
-This is the expected shadow of the T25 grading-valuation kernel: a non-unit
+This is the expected shadow of the `SelmerData.π_surj` grading-valuation kernel: a non-unit
 `coeff 2 L^{Katz}` goes hand in hand with a vanishing criterion class. Nothing
 in `KatzData` asserts that the criterion class is nonzero, so the layer is
 constructible.

@@ -2,16 +2,17 @@ import Mathlib
 import FinShaRank2.Defs
 
 /-!
-# Sha endgame — `prop:consequence` Step 5 (task T27)
+# Sha endgame — Theorem B (Theorem 3.9) Step 5
 
 This file proves, as pure `ℤ_[p]`-module algebra, the final step of the paper's
-`prop:consequence`: from the dualized descent sequence
+Theorem B: from the dualized descent sequence
 
 ```
 0 → Ш(E/ℚ)[p^∞]^∨ → Sel_{p^∞}(E/ℚ)^∨ → (E(ℚ)⊗ℚ_p/ℤ_p)^∨ ≅ ℤ_p^2 → 0
 ```
 
-together with the fact — established upstream (T21/T23) — that the Selmer dual is
+together with the fact — established upstream (`Kernel/TsqUnit.lean` and
+`selmer_dual_structure`) — that the Selmer dual is
 `ℤ_[p]`-free of rank two, we read off the two headline conclusions
 (conventions §2.1):
 
@@ -32,15 +33,15 @@ Injectivity of `π` collapses the exact sequence: `ker π = ⊥`, hence
 `Sha` is a subsingleton. The rank statement is the equivalence `e` transported by
 `LinearEquiv.finrank_eq` and `Module.finrank_fin_fun`.
 
-This avoids `ℚ_[p]`-base-change and rank-additivity entirely (the board's fallback
-sketch), per the T03 audit recommendation.
+This avoids `ℚ_[p]`-base-change and rank-additivity entirely.
 
-## Interface consumption (contract for T31)
+## Interface consumption (contract for `prop_consequence`)
 
 The bundled corollary `sha_endgame_of_nonempty` takes the five exactness fields in
 the **exact shapes** of `FinShaRank2.SelmerData` (`ι`, `π`, `ι_inj`, `π_surj`,
-`mw_sha_exact`), followed by the `Nonempty (Sel ≃ₗ ℤ_p^2)` that T31 assembles from
-`IwasawaData.control` and `selmer_dual_structure` (T23). Hence T31 applies it to a
+`mw_sha_exact`), followed by the `Nonempty (Sel ≃ₗ ℤ_p^2)` that `prop_consequence` assembles from
+`IwasawaData.control` and `selmer_dual_structure` (`selmer_dual_structure`). Hence
+`prop_consequence` applies it to a
 `SelmerData` record's fields verbatim, with no adapter. Step 8 of
 `prop_consequence` (`Main/Consequence.lean`) is that call.
 -/
@@ -49,7 +50,8 @@ namespace FinShaRank2
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- **T27, `prop:consequence` Step 5.** Given the dualized descent data on
+/-- **`sha_endgame_of_nonempty`, Theorem B (Theorem 3.9) Step 5.** Given the dualized
+descent data on
 finitely generated `ℤ_[p]`-modules — an injection `ι : Sha ↪ Sel`, a surjection
 `π : Sel ↠ ℤ_p^2`, exactness `range ι = ker π`, and a rank-two identification
 `e : Sel ≃ ℤ_p^2` — the Shafarevich–Tate dual is a subsingleton and the Selmer
@@ -94,13 +96,15 @@ theorem sha_endgame
   · -- The rank statement transported along `e`.
     rw [e.finrank_eq, Module.finrank_fin_fun ℤ_[p]]
 
-/-- **Bundled corollary for T31** (`prop:consequence` Step 5, `Nonempty`-wrapped).
+/-- **Bundled corollary for `prop_consequence`** (Theorem B (Theorem 3.9) Step 5,
+`Nonempty`-wrapped).
 
 Identical to `sha_endgame` but taking the rank-two identification as
-`Nonempty (Sel ≃ₗ ℤ_p^2)` — the shape T31 obtains from `IwasawaData.control`
-composed with `selmer_dual_structure` (T23). The five preceding arguments are the
+`Nonempty (Sel ≃ₗ ℤ_p^2)` — the shape `prop_consequence` obtains from `IwasawaData.control`
+composed with `selmer_dual_structure` (`selmer_dual_structure`). The five preceding
+arguments are the
 `FinShaRank2.SelmerData` fields `ι`, `π`, `ι_inj`, `π_surj`, `mw_sha_exact` in that
-order, so T31 applies this to a `SelmerData` record with no glue. -/
+order, so `prop_consequence` applies this to a `SelmerData` record with no glue. -/
 theorem sha_endgame_of_nonempty
     {Sha Sel : Type} [AddCommGroup Sha] [Module ℤ_[p] Sha]
     [AddCommGroup Sel] [Module ℤ_[p] Sel]

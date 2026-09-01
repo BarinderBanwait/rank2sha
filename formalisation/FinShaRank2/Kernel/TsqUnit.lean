@@ -2,11 +2,11 @@ import Mathlib
 import FinShaRank2.Defs
 
 /-!
-# `T²`-unit factorisation kernel (task T21)
+# `T²`-unit factorisation kernel
 
 This file proves, as pure `mathlib`-only algebra over the Iwasawa algebra
 `Λ = ℤ_[p]⟦X⟧`, the elementary factorisation that drives Step 1 of the paper's
-`prop:consequence`: a power series whose first two coefficients vanish and whose
+Theorem B (Theorem 3.9): a power series whose first two coefficients vanish and whose
 second coefficient is a `ℤ_[p]`-unit is `X²` times a unit.
 
 ## Main result
@@ -27,7 +27,8 @@ The route is the one sketched on the board:
 
 Each of the four downstream facts is stated **twice**: once from the factored
 form `f = X² * ↑u` (`…_of_factored`) and once from the three coefficient
-hypotheses (`…_of_coeffs`). Downstream callers differ: T23/T31 consume the
+hypotheses (`…_of_coeffs`). Downstream callers differ: `selmer_dual_structure` and
+`prop_consequence` consume the
 `Associated` corollary, and `prop_consequence` consumes `MuZero`/`lambdaAn`.
 
 * order:      `order_eq_two_of_factored`,     `order_eq_two_of_coeffs`
@@ -40,9 +41,9 @@ the corresponding `_of_factored` form, so all three coefficient hypotheses are
 genuinely used.
 
 A small convenience `coeffs_X_sq` records the three coefficient facts for the
-concrete series `X²` itself (for the toy instantiation `Lp := X²`, task T40).
+concrete series `X²` itself (for the toy instantiation `Lp := X²`, `ToyTrivial`).
 
-## API notes for T31 / T40
+## API notes for `prop_consequence` / `ToyTrivial`
 
 * `PowerSeries.order` lands in `ℕ∞`; `order_eq_two_of_*` states
   `PowerSeries.order f = 2` with `(2 : ℕ∞)` (the `order_eq_nat`/`Nat.cast` gap is
@@ -82,11 +83,11 @@ private lemma coeffs_of_factored {f : Λ p} (u : (Λ p)ˣ) (hf : f = (X : Λ p) 
 
 /-! ### Main theorem -/
 
-/-- **T21 (main).** If the constant and linear coefficients of `f : Λ p` vanish
+/-- **`Kernel/TsqUnit.lean` (main).** If the constant and linear coefficients of `f : Λ p` vanish
 and the quadratic coefficient is a `ℤ_[p]`-unit, then `f = X² · u` for a genuine
 unit `u` of `Λ = ℤ_[p]⟦X⟧`.
 
-Paper: `prop:consequence`, Step 1 (the `X²`-unit factorisation of `L_p`). -/
+Paper: Theorem B (Theorem 3.9), Step 1 (the `X²`-unit factorisation of `L_p`). -/
 theorem tsq_factor {f : Λ p} (h0 : coeff 0 f = 0) (h1 : coeff 1 f = 0)
     (h2 : IsUnit (coeff 2 f)) : ∃ u : (Λ p)ˣ, f = (X : Λ p) ^ 2 * ↑u := by
   have hdvd : (X : Λ p) ^ 2 ∣ f := by
@@ -135,7 +136,8 @@ theorem lambdaAn_eq_two_of_factored {f : Λ p} (u : (Λ p)ˣ) (hf : f = (X : Λ 
     · exact hge
   exact le_antisymm (Nat.sInf_le hmem2) (key _ (Nat.sInf_mem ⟨2, hmem2⟩))
 
-/-- Associate corollary (factored form): `f` is associate to `X²`. Feeds T23/T31
+/-- Associate corollary (factored form): `f` is associate to `X²`. Feeds
+`selmer_dual_structure` and `prop_consequence`
 (their `Associated (∏ fᵢ) (X²)` / `Associated Lp (X²)` inputs). -/
 theorem associated_X_sq_of_factored {f : Λ p} (u : (Λ p)ˣ) (hf : f = (X : Λ p) ^ 2 * ↑u) :
     Associated f (X ^ 2 : Λ p) :=
@@ -167,11 +169,11 @@ theorem associated_X_sq_of_coeffs {f : Λ p} (h0 : coeff 0 f = 0) (h1 : coeff 1 
   obtain ⟨u, hf⟩ := tsq_factor h0 h1 h2
   exact associated_X_sq_of_factored u hf
 
-/-! ### Convenience for the toy instantiation `Lp := X²` (task T40) -/
+/-! ### Convenience for the toy instantiation `Lp := X²` -/
 
 /-- The three coefficient facts for the concrete series `X²` itself: the constant
 and linear coefficients vanish and the quadratic coefficient is a unit. Lets the
-toy instance `Lp := X²` (task T40) discharge the hypotheses of the corollaries
+toy instance `Lp := X²` discharge the hypotheses of the corollaries
 above directly. -/
 theorem coeffs_X_sq :
     coeff 0 (X ^ 2 : Λ p) = 0 ∧ coeff 1 (X ^ 2 : Λ p) = 0 ∧

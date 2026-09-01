@@ -4,24 +4,24 @@ import FinShaRank2.Main.Consequence
 import FinShaRank2.Statements
 
 /-!
-# `cor:horizontal` (= Theorem A) — horizontal control along the split primes (task R2b)
+# Theorem A (Corollary 3.10) — horizontal control along the split primes
 
-> **Corollary (`cor:horizontal`, = Theorem A).** *Let `E/ℚ` have CM by the maximal*
+> **Corollary (Theorem A, = Theorem A).** *Let `E/ℚ` have CM by the maximal*
 > *order `𝒪_K` of an imaginary quadratic field `K`, with `rank E(ℚ) = 2`,*
 > *`L(E,1) = 0` and `w(E) = +1` and with finitely many anomalous split primes, and*
-> *assume Conjecture `conj:weak`. Then horizontal control (Definition*
-> *`def:horizontal`) holds for `E` along the split primes of `K`.*
+> *assume Conjecture 3.5. Then horizontal control (Definition*
+> *Definition 2.1) holds for `E` along the split primes of `K`.*
 
 The paper's proof has two steps: every condition defining `S_E` other than
 anomalousness excludes only finitely many split primes, so `S_E` is finite; and
-`conj:weak` supplies the hypothesis of `prop:consequence` at all but finitely many
+Conjecture 3.5 supplies the hypothesis of Theorem B (Theorem 3.9) at all but finitely many
 split `p`. Only the second step has a counterpart here — see point 2 below.
 
 With this file the paper's three lettered results are all formalised: Theorem A
 here, Theorem B as `prop_consequence` (`Main/Consequence.lean`), Theorem C as
 `thm_reduction` (`Main/Reduction.lean`).
 
-## Translation conventions (`TASK_BOARD.md` §2)
+## Translation conventions
 
 * "horizontal control for `E` along a set `𝒫`" ↦ `HorizontalControl P shaVanishes`
   (`Statements.lean`), which unfolds to the finiteness of
@@ -29,9 +29,9 @@ here, Theorem B as `prop_consequence` (`Main/Consequence.lean`), Theorem C as
 * "the split primes of `K`" ↦ `{p | p.Prime ∧ p % 4 = 1}`. Throughout the project
   `K = ℚ(i)`, where a prime splits iff `p ≡ 1 (mod 4)`; `p % 4 = 1` is the same
   condition as the binder `hsplit` of every other statement.
-* "`Ш(E/ℚ)[p] = 0`" ↦ `Subsingleton (…).selmer.ShaDual` (conv. 1, dual side).
+* "`Ш(E/ℚ)[p] = 0`" ↦ `Subsingleton (…).selmer.ShaDual` (dual side).
   See point 1 below.
-* Conjecture `conj:weak` ↦ the hypothesis `hweak : ConjWeak H` (`Statements.lean`).
+* Conjecture 3.5 ↦ the hypothesis `hweak : ConjWeak H` (`Statements.lean`).
 * The `Fact p.Prime` instance that the `PrimeData` projections require is supplied
   inside the predicate from the binder `hp`, as in `ConjWeak`. Without it the
   projection `.selmer` does not elaborate: `p` is bound by the predicate, so no
@@ -39,10 +39,10 @@ here, Theorem B as `prop_consequence` (`Main/Consequence.lean`), Theorem C as
 
 ## Three points where this differs from the paper
 
-1. **`Ш[p]` versus `Ш[p^∞]`.** `def:horizontal` concludes `Ш(E/ℚ)[p] = 0`, while
+1. **`Ш[p]` versus `Ш[p^∞]`.** Definition 2.1 concludes `Ш(E/ℚ)[p] = 0`, while
    the predicate supplied here is `Subsingleton (…).selmer.ShaDual`, which renders
-   `Ш(E/ℚ)[p^∞] = 0` (conv. 1) and so is stronger. What is proved therefore implies
-   what `def:horizontal` states, not the other way round. The `HorizontalControl`
+   `Ш(E/ℚ)[p^∞] = 0` (dual side) and so is stronger. What is proved therefore implies
+   what Definition 2.1 states, not the other way round. The `HorizontalControl`
    docstring in `Statements.lean` records the same point at the definition.
 
 2. **Finiteness of `S_E` is free here.** The paper's `S_E` is a set that can be
@@ -60,19 +60,19 @@ here, Theorem B as `prop_consequence` (`Main/Consequence.lean`), Theorem C as
    They are not restated in the Lean statement. This is the standing convention of
    the project and applies to `prop_consequence` and `thm_reduction` equally.
 
-Paper labels rendered here: `cor:horizontal` (= `thm:A`), `def:horizontal`,
-`conj:weak`, `prop:consequence`, `eq:Sexc`.
+Paper statements rendered here: Theorem A, Definition 2.1,
+Conjecture 3.5, Theorem B, (7).
 -/
 
 namespace FinShaRank2
 
-/-- **`cor:horizontal` (= Theorem A)** — horizontal control for `E` along the split
-primes of `K`, conditional on `conj:weak`.
+/-- **Theorem A (Corollary 3.10)** — horizontal control for `E` along the split
+primes of `K`, conditional on Conjecture 3.5.
 
 > *Let `E/ℚ` have CM by the maximal order `𝒪_K` of an imaginary quadratic field*
 > *`K`, with `rank E(ℚ) = 2`, `L(E,1) = 0` and `w(E) = +1` and with finitely many*
-> *anomalous split primes, and assume Conjecture `conj:weak`. Then horizontal*
-> *control (Definition `def:horizontal`) holds for `E` along the split primes of*
+> *anomalous split primes, and assume Conjecture 3.5. Then horizontal*
+> *control (Definition 2.1) holds for `E` along the split primes of*
 > *`K`.*
 
 Assembly route. `ConjWeak H` supplies a finite set `T` such that every split

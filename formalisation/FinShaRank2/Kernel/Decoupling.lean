@@ -1,9 +1,9 @@
 import Mathlib
 
 /-!
-# Decoupling of the second jet (`lem:decoupling`, task T22)
+# Decoupling of the second jet (Lemma 4.3, `Kernel/Decoupling.lean`)
 
-Pure power-series algebra behind `lem:decoupling` of *Second derivatives of
+Pure power-series algebra behind Lemma 4.3 of *Second derivatives of
 p-adic L-functions and the Shafarevich–Tate group of rank-two CM elliptic
 curves*. The paper's decoupling step observes
 that when the low coefficients of one factor vanish, the second Taylor
@@ -11,7 +11,7 @@ coefficient of a product `A · B` collapses to a single term, so that
 "grade-two units" transfer between comparison partners.
 
 Everything here is **ring-generic** (`CommRing`) and mathlib-only. The results
-are consumed by `thm:reduction` (task T33), whose comparison field has the shape
+are consumed by Theorem C (Theorem 4.12), whose comparison field has the shape
 `Lp.map ι = (c : W) • (↑u * LKatz)` with `ι = algebraMap ℤ_[p] W` (a local,
 injective ring hom by `KatzData.algMap_isLocalHom` / `KatzData.algInj`).
 
@@ -20,20 +20,20 @@ Contents (all in namespace `FinShaRank2.Decoupling`):
 * `coeff_two_mul` — the grade-two product formula
   `c₂(AB) = c₀A·c₂B + c₁A·c₁B + c₂A·c₀B`.
 * `coeff_two_mul_of_snd_low` / `coeff_two_mul_of_fst_low` — its collapse when the
-  low coefficients of the second / first factor vanish (`lem:decoupling`
-  proper). The unit `u` of T33's comparison sits on the **left**, `LKatz` on the
-  right, so `_of_snd_low` (vanishing on the right factor) is the variant T33
+  low coefficients of the second / first factor vanish (Lemma 4.3
+  proper). The unit `u` of `thm_reduction`'s comparison sits on the **left**, `LKatz` on the
+  right, so `_of_snd_low` (vanishing on the right factor) is the variant `thm_reduction`
   applies.
 * `coeff_smul_eq_mul` — `cₙ(a • F) = a · cₙF` (scalar pushes through `coeff`).
 * `coeff_eq_zero_of_map_eq_zero` — downward low-coefficient transfer along an
   injective ring hom: `cₖ(f.map ι) = 0 → cₖ f = 0`.
 * `isUnit_coeff_two_map_iff` — unit transfer along a **local** ring hom:
   `IsUnit (c₂(f.map ι)) ↔ IsUnit (c₂ f)`.
-* `isUnit_coeff_two_of_comparison` — the fully composed forward transfer T33
+* `isUnit_coeff_two_of_comparison` — the fully composed forward transfer `thm_reduction`
   invokes: from a comparison `f.map ι = c • (↑u · G)` with `c₀G = c₁G = 0` and
   `IsUnit (c₂G)`, conclude `IsUnit (c₂ f)`.
 
-Paper labels quoted below: `lem:decoupling`, `lem:comparison`, `thm:reduction`.
+Paper statements quoted below: Lemma 4.3, Lemma 3.7, Theorem C.
 -/
 
 open PowerSeries
@@ -46,8 +46,8 @@ variable {R S : Type*} [CommRing R] [CommRing S]
 power series decouples into the three grade-two pairings of the factors:
 `coeff 2 (A * B) = coeff 0 A * coeff 2 B + coeff 1 A * coeff 1 B + coeff 2 A * coeff 0 B`.
 
-This is the ring-generic core of `lem:decoupling`; the antidiagonal of `2` is
-`{(0,2), (1,1), (2,0)}`. PAPER: `lem:decoupling`. -/
+This is the ring-generic core of Lemma 4.3; the antidiagonal of `2` is
+`{(0,2), (1,1), (2,0)}`. PAPER: Lemma 4.3. -/
 theorem coeff_two_mul (A B : PowerSeries R) :
     coeff 2 (A * B)
       = coeff 0 A * coeff 2 B + coeff 1 A * coeff 1 B + coeff 2 A * coeff 0 B := by
@@ -57,10 +57,10 @@ theorem coeff_two_mul (A B : PowerSeries R) :
 /-- **Decoupling, second factor.** If the constant and linear coefficients of the
 *right* factor vanish, then `coeff 2 (A * B) = coeff 0 A * coeff 2 B`.
 
-This is the shape `thm:reduction` (T33) uses: its comparison is
+This is the shape Theorem C (Theorem 4.12) (`thm_reduction`) uses: its comparison is
 `Lp.map ι = c • (↑u * LKatz)`, so with `A := ↑u`, `B := LKatz` (and
 `coeff 0 LKatz = coeff 1 LKatz = 0`) the grade-two coefficient of `↑u * LKatz`
-is `coeff 0 ↑u * coeff 2 LKatz`. PAPER: `lem:decoupling`. -/
+is `coeff 0 ↑u * coeff 2 LKatz`. PAPER: Lemma 4.3. -/
 theorem coeff_two_mul_of_snd_low (A B : PowerSeries R)
     (hB0 : coeff 0 B = 0) (hB1 : coeff 1 B = 0) :
     coeff 2 (A * B) = coeff 0 A * coeff 2 B := by
@@ -68,7 +68,7 @@ theorem coeff_two_mul_of_snd_low (A B : PowerSeries R)
 
 /-- **Decoupling, first factor** (mirror of `coeff_two_mul_of_snd_low`). If the
 constant and linear coefficients of the *left* factor vanish, then
-`coeff 2 (A * B) = coeff 2 A * coeff 0 B`. PAPER: `lem:decoupling`. -/
+`coeff 2 (A * B) = coeff 2 A * coeff 0 B`. PAPER: Lemma 4.3. -/
 theorem coeff_two_mul_of_fst_low (A B : PowerSeries R)
     (hA0 : coeff 0 A = 0) (hA1 : coeff 1 A = 0) :
     coeff 2 (A * B) = coeff 2 A * coeff 0 B := by
@@ -77,7 +77,7 @@ theorem coeff_two_mul_of_fst_low (A B : PowerSeries R)
 /-- A scalar pushes through `coeff`: `coeff n (a • F) = a * coeff n F`, since
 `coeff n` is `R`-linear and `R` acts on itself by multiplication.
 
-Item (b) for T33: it turns the constant `c` of the comparison
+Item (b) for `thm_reduction`: it turns the constant `c` of the comparison
 `Lp.map ι = c • (↑u * LKatz)` into an honest ring multiplication when reading off
 coefficients. -/
 theorem coeff_smul_eq_mul (n : ℕ) (a : R) (F : PowerSeries R) :
@@ -87,7 +87,7 @@ theorem coeff_smul_eq_mul (n : ℕ) (a : R) (F : PowerSeries R) :
 /-- **Downward low-coefficient transfer along an injective ring hom.** If
 `coeff k (f.map ι) = 0` and `ι` is injective, then `coeff k f = 0`.
 
-Item (a) for T33: combined with `coeff_smul_eq_mul` and the constant-coefficient
+Item (a) for `thm_reduction`: combined with `coeff_smul_eq_mul` and the constant-coefficient
 bookkeeping on the unit series `u`, this pushes `coeff 0 Lp = coeff 1 Lp = 0`
 through the comparison to `coeff 0 LKatz = coeff 1 LKatz = 0`. -/
 theorem coeff_eq_zero_of_map_eq_zero (ι : R →+* S) (hι : Function.Injective ι)
@@ -99,7 +99,7 @@ theorem coeff_eq_zero_of_map_eq_zero (ι : R →+* S) (hι : Function.Injective 
 `ι : R →+* S` that is a local hom (`IsLocalHom`),
 `IsUnit (coeff 2 (f.map ι)) ↔ IsUnit (coeff 2 f)`.
 
-This is the unit-transfer corollary of `lem:decoupling`. `thm:reduction` (T33)
+This is the unit-transfer corollary of Lemma 4.3. Theorem C (Theorem 4.12) (`thm_reduction`)
 applies it with `R := ℤ_[p]`, `S := W`, `ι := algebraMap ℤ_[p] W`, taking the
 `IsLocalHom` instance from `KatzData.algMap_isLocalHom`; the equivalence then
 moves grade-two unit-ness between `LKatz` (via `coeff_two_mul_of_snd_low`) and
@@ -109,7 +109,7 @@ theorem isUnit_coeff_two_map_iff (ι : R →+* S) [IsLocalHom ι] (f : PowerSeri
   rw [coeff_map]
   exact isUnit_map_iff ι (coeff 2 f)
 
-/-- **Fully composed grade-two transfer** for `thm:reduction` (T33). Given a
+/-- **Fully composed grade-two transfer** for Theorem C (Theorem 4.12) (`thm_reduction`). Given a
 comparison `f.map ι = c • (↑u * G)` with `ι` a local ring hom, `c : Sˣ`,
 `u : (S⟦X⟧)ˣ`, the low coefficients of `G` vanishing (`coeff 0 G = coeff 1 G =
 0`), and `IsUnit (coeff 2 G)`, one concludes `IsUnit (coeff 2 f)`.
@@ -120,9 +120,9 @@ unit, `coeff 0 ↑u` a unit since `u` is a unit series, `coeff 2 G` a unit), so 
 product is a unit, and `isUnit_coeff_two_map_iff` transfers it back to `f`.
 
 The derivation of the hypotheses `coeff 0 G = coeff 1 G = 0` — the
-constant-coefficient bookkeeping on the unit series `u` — is left to T33 (it
+constant-coefficient bookkeeping on the unit series `u` — is left to `thm_reduction` (it
 combines `coeff_eq_zero_of_map_eq_zero`, `coeff_smul_eq_mul`, and `map_mul` on
-`constantCoeff`). PAPER: `lem:decoupling`, `lem:comparison`, `thm:reduction`. -/
+`constantCoeff`). PAPER: Lemma 4.3, Lemma 3.7, Theorem C. -/
 theorem isUnit_coeff_two_of_comparison (ι : R →+* S) [IsLocalHom ι]
     (f : PowerSeries R) (G : PowerSeries S) (c : Sˣ) (u : (PowerSeries S)ˣ)
     (hmap : f.map ι = (c : S) • ((u : PowerSeries S) * G))

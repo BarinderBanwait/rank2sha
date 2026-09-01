@@ -2,10 +2,10 @@ import FinShaRank2.Toy.Iwasawa
 import FinShaRank2.Toy.ShaAnalytic
 
 /-!
-# Anti-vacuity Iwasawa / descent layers (task T41): `Toy.shaSelmer`, `Toy.shaIwasawa`
+# Anti-vacuity Iwasawa / descent layers: `Toy.shaSelmer`, `Toy.shaIwasawa`
 
 The Λ-module and descent layers of the anti-vacuity instance `ToySha`. Where the
-T40 layers (`Toy/Iwasawa.lean`) took `X := (Λ/(X))²` and a *trivial* `ShaDual`,
+`ToyTrivial` layers (`Toy/Iwasawa.lean`) took `X := (Λ/(X))²` and a *trivial* `ShaDual`,
 here the elementary divisors of `X` are forced by `Lp = C p · X²`:
 
 * `shaF := ![X, X, C p]`, so `∏ᵢ shaF i = X · X · C p = Lp` **on the nose**;

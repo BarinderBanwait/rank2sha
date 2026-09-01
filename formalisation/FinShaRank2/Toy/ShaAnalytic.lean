@@ -1,10 +1,10 @@
 import FinShaRank2.Toy.Analytic
 
 /-!
-# Anti-vacuity analytic layer (task T41): `Toy.shaAnalytic`
+# Anti-vacuity analytic layer: `Toy.shaAnalytic`
 
 The **anti-vacuity** instance `ToySha` (`Toy/ShaTrivial.lean`) is the tripwire
-complementary to the non-vacuity instance `ToyTrivial` of task T40: it witnesses
+complementary to the non-vacuity instance `ToyTrivial` of `ToyTrivial`: it witnesses
 that `ClassicalInputs` alone does **not** entail the headline conclusion
 `Subsingleton ShaDual`. This file supplies its **analytic** layer.
 
@@ -25,7 +25,7 @@ non-unit, so `Lp = X²` is impossible here.
 
 Every other analytic field is unchanged in substance: `constantCoeff Lp = 0`
 still gives `interp` (with `modularSymbol0 = 0`), and the functional equation
-is the T40 one multiplied by the constant `C p`.
+is the `ToyTrivial` one multiplied by the constant `C p`.
 -/
 
 open PowerSeries
@@ -39,7 +39,7 @@ variable {p : ℕ} [Fact p.Prime]
 /-! ### The anti-vacuity p-adic L-function `C p · X²` -/
 
 /-- The anti-vacuity toy L-function `Lp = C p · X²`. Its second coefficient is
-`p`, a non-unit — the whole point of task T41. -/
+`p`, a non-unit — the whole point of `ToySha`. -/
 noncomputable def shaLp (p : ℕ) [Fact p.Prime] : Λ p := C (p : ℤ_[p]) * X ^ 2
 
 /-- `coeff 2 (C p · X²) = p`. -/
@@ -49,7 +49,7 @@ theorem coeff_two_shaLp : coeff 2 (shaLp p) = (p : ℤ_[p]) := by
 /-- `C p · X²` has vanishing constant term. -/
 theorem constantCoeff_shaLp : constantCoeff (shaLp p) = 0 := by simp [shaLp]
 
-/-- **The toy functional equation for `C p · X²`**: the T40 witness `U` for `X²`
+/-- **The toy functional equation for `C p · X²`**: the `ToyTrivial` witness `U` for `X²`
 works verbatim, since `subst σ` fixes the constant `C p`. -/
 theorem functionalEquation_shaLp :
     ∃ U : Λ p, IsUnit U ∧ constantCoeff U = 1 ∧ (shaLp p).subst σ = U * shaLp p := by

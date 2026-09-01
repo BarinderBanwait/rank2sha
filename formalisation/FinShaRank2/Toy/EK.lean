@@ -4,22 +4,20 @@ import FinShaRank2.Interface.EK
 # Toy Eisenstein–Kronecker layer: `Toy.toyEK`
 
 The `EKPackage` field of both `ClassicalInputs` instances — the non-vacuity
-instance `ToyTrivial` (T40) and the anti-vacuity instance `ToySha` (T41). The
+instance `ToyTrivial` (`ToyTrivial`) and the anti-vacuity instance `ToySha` (`ToySha`). The
 package is a global datum, independent of the prime and of the per-prime layers,
 so one witness serves both.
 
 The witness is the cheapest one: a one-point divisor over `ℚ`, all six sections
-of `eq:jetpackage` constantly `1`, the trivial valuation at every rational prime,
+of (13) constantly `1`, the trivial valuation at every rational prime,
 empty support. The four instance fields of `EKPackage` are synthesised.
 
 `δ_E(c)` is then not a datum but the def `EKPackage.deltaE`, and on this package
 it computes: the divisor is a single point, so `δ_E(c) = ∑ᵢ cᵢ` transported along
 `algebraMap ℚ ℚ`, and `δ_E(c) ≠ 0` iff that sum is nonzero (`deltaE_sum`,
-`deltaE_ne_zero`). Nothing downstream needs the computation — `thm:reduction`
+`deltaE_ne_zero`). Nothing downstream needs the computation — Theorem C (Theorem 4.12)
 consumes the package through `Fc`, `D`, `v` and `supp` only — but it is what
 makes the layer a witness rather than a restatement.
-
-Drafted in `Scratch/R1gammaWork.lean` (task R1γ); lifted here by R2a.
 
 ## Do not unfold the package in a goal
 

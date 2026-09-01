@@ -1,7 +1,7 @@
 import FinShaRank2.Interface.Katz
 
 /-!
-# Toy Katz layer (task T40): `Toy.toyKatz`
+# Toy Katz layer: `Toy.toyKatz`
 
 The Katz-measure layer of the non-vacuity instance. The toy world takes the
 unramified coefficient ring to be `W := ℤ_[p]` itself (unramified of degree one

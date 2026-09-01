@@ -1,10 +1,10 @@
 import FinShaRank2.Toy.Heights
 
 /-!
-# Anti-vacuity height layer (task T41): `Toy.shaHeight`
+# Anti-vacuity height layer: `Toy.shaHeight`
 
 The height / p-adic-BSD layer of the anti-vacuity instance `ToySha`. Compared
-with the T40 layer (`Toy/Heights.lean`) the Ш-order proxy is the **non-unit**
+with the `ToyTrivial` layer (`Toy/Heights.lean`) the Ш-order proxy is the **non-unit**
 
 `shaOrd := p`,
 
@@ -22,7 +22,7 @@ The two `spr_*` fields then balance:
   left, and `IsPUnit shaOrd` fails on the right — so it holds by
   `iff_of_false`.
 
-`Reg_γ := 1` and `heightNondeg := True` as in T40.
+`Reg_γ := 1` and `heightNondeg := True` as in `ToyTrivial`.
 -/
 
 namespace FinShaRank2

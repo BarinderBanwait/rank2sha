@@ -1,10 +1,10 @@
 import FinShaRank2.Defs
 
 /-!
-# Functional-equation coefficient lemma (task T20)
+# Functional-equation coefficient lemma
 
 Ring-generic kernel lemma behind the vanishing of the linear coefficient
-`c₁(p)` of the p-adic L-function (paper `lem:c0c1`). Nothing here mentions the
+`c₁(p)` of the p-adic L-function (paper Lemma 3.1). Nothing here mentions the
 paper's interface; the file is `mathlib`-only and reasons purely about power
 series over a commutative ring.
 
@@ -15,7 +15,7 @@ Over any commutative ring `R` we form the functional-equation substitution
 `PowerSeries.mk` as `FinShaRank2.σ` (which is fixed at `R = ℤ_[p]`). Over
 `ℤ_[p]` the two series are **definitionally equal** (`σ = σR ℤ_[p]` by `rfl`),
 so the ℤ_[p]-specialisation at the end phrases everything against the `σ` of
-`Defs.lean` that the interface (`AnalyticData.funct_eq`, task T11) uses.
+`Defs.lean` that the interface (`AnalyticData.funct_eq`, `AnalyticData`) uses.
 
 ## Main results
 
@@ -26,7 +26,7 @@ so the ℤ_[p]-specialisation at the end phrases everything against the `σ` of
 * `coeff_one_eq_zero_of_functionalEquation` (ring-generic main theorem): if
   `constantCoeff U = 1`, `f.subst σ_R = U * f` and `coeff 0 f = 0`, then
   `coeff 1 f = 0`, provided `R` is 2-torsion-free.
-* `coeff_one_Lp_eq_zero` (ℤ_[p] specialisation, consumed verbatim by task T30):
+* `coeff_one_Lp_eq_zero` (ℤ_[p] specialisation, consumed verbatim by `c0_eq_zero`/`c1_eq_zero`):
   the same conclusion phrased against `FinShaRank2.σ`, with the 2-torsion-freeness
   discharged internally (`ℤ_[p]` is a characteristic-zero domain).
 
@@ -42,7 +42,7 @@ exactly what the final step needs — the functional equation forces
 
 `σR`, `constantCoeff_σR`, `coeff_one_σR`, `hasSubst_σR` and the characterising
 identity `oneAddX_mul_σR : (1 + X) * σ_R = −X` are all ring-generic and reusable;
-in particular `oneAddX_mul_σR` is the `(1 + X)⁻¹` handle that task T40's toy
+in particular `oneAddX_mul_σR` is the `(1 + X)⁻¹` handle that `ToyTrivial`'s toy
 functional equation (`subst σ (X²) = X²·(1 + X)⁻²`) will want.
 -/
 
@@ -77,7 +77,7 @@ theorem hasSubst_σR : HasSubst (σR R) :=
 
 /-- Characterising identity `(1 + X) · σ_R = −X`, i.e. `σ_R = (1 + X)⁻¹ − 1`
 exactly. Ring-generic analogue of `FinShaRank2.oneAddX_mul_σ`; a self-contained
-algebraic handle on `σ_R` (reusable for task T40's `(1 + X)⁻¹` reasoning). -/
+algebraic handle on `σ_R` (reusable for `ToyTrivial`'s `(1 + X)⁻¹` reasoning). -/
 theorem oneAddX_mul_σR : (1 + X) * (σR R) = -X := by
   rw [add_mul, one_mul]
   ext n
@@ -112,7 +112,7 @@ theorem coeff_one_subst_σR (f : PowerSeries R) :
     finsum_eq_single _ 1 fun d hd => by rw [coeff_one_σR_pow_of_ne hd, smul_zero]]
   simp only [pow_one, coeff_one_σR, smul_eq_mul, mul_neg_one]
 
-/-- **Ring-generic functional-equation coefficient lemma** (paper `lem:c0c1`).
+/-- **Ring-generic functional-equation coefficient lemma** (paper Lemma 3.1).
 
 If `R` is 2-torsion-free, `U` has constant term `1`, the functional equation
 `f.subst σ_R = U * f` holds, and `coeff 0 f = 0`, then `coeff 1 f = 0`.
@@ -149,8 +149,8 @@ theorem coeff_one_eq_zero_of_functionalEquation
 end Generic
 
 /-- **ℤ_[p]-specialisation of the functional-equation lemma**, phrased against the
-`σ` of `Defs.lean` (paper `lem:c0c1`, the `c₁(p) = 0` half). This is the exact
-statement task T30 consumes: from the `AnalyticData.funct_eq` data
+`σ` of `Defs.lean` (paper Lemma 3.1, the `c₁(p) = 0` half). This is the exact
+statement `c0_eq_zero`/`c1_eq_zero` consumes: from the `AnalyticData.funct_eq` data
 `constantCoeff U = 1` and `Lp.subst σ = U * Lp`, together with `constantCoeff Lp = 0`
 (the `c₀(p) = 0` output of the interpolation half), it concludes `coeff 1 Lp = 0`.
 
