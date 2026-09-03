@@ -30,8 +30,8 @@ conductor $N = 12544$, rank $2$, torsion $\mathbb{Z}/2$, $\prod_v c_v = 4$,
 root number $w(E) = +1$; split primes $p \equiv 1 \pmod 4$).
 
 The paper's three lettered results are all formalized. Theorem~A is
-\texttt{cor:horizontal} (Chapter~\ref{ch:horizontal}), Theorem~B is
-\texttt{prop:consequence} (Chapter~\ref{ch:consequence}), and Theorem~C is
+\texttt{prop:consequence} (Chapter~\ref{ch:consequence}), Corollary~B is
+\texttt{cor:horizontal} (Chapter~\ref{ch:horizontal}), and Theorem~C is
 \texttt{thm:reduction} (Chapter~\ref{ch:reduction}).
 
 \section{What is machine-checked, and what is assumed}
@@ -46,7 +46,7 @@ global \texttt{axiom} declarations. There is a second, strictly smaller
 category: the paper's conjectural inputs. \texttt{hyp:sinnott} and
 \texttt{conj:EK} occur only as hypotheses of \texttt{thm\_reduction} and
 \texttt{thm\_reduction\_of\_conjEK} and nowhere else; \texttt{conj:weak},
-which is the paper's own hypothesis for Theorem~A, occurs only as a
+which is the paper's own hypothesis for Corollary~B, occurs only as a
 hypothesis of \texttt{cor\_horizontal}. Neither \texttt{prop:consequence}
 nor \texttt{prop:dictionary} depends on a conjecture.
 
@@ -223,31 +223,28 @@ for an oversight.
   \leanok
   \uses{def:c2tilde, def:deltaE}
   Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $\rank E(\Q) = 2 = \ord_{s=1} L(E,s)$. There exist a
-  nonzero $\delta_E \in \Qbar^\times$, expressible through the
-  Eisenstein--Kronecker numbers of the CM lattice of $E$, and a finite
-  explicit set $\Sigma$ of primes, such that $\tilde c_2(p) \in \Z_p$ for
-  every split $p \notin \Sigma$, and $\tilde c_2(p) \in \Z_p^\times$ for
-  every split $p \notin \Sigma$ with $\fp \nmid \delta_E$.
+  field $K$, with $\rank E(\Q) = 2 = \ord_{s=1} L(E,s)$; let $S_E$ be the
+  excluded set, and let $\delta_E(c)$, $c \in K^6$, be the invariants of
+  Definition~\ref{def:deltaE}. Then $\tilde c_2(p) \in \Z_p$ for every
+  split $p \notin S_E$, and for every nonzero $c \in K^6$,
+  $\tilde c_2(p) \in \Z_p^\times$ for every split
+  $p \notin S_E \cup \operatorname{supp}(c)$ with $\fp \nmid \delta_E(c)$.
 \end{conjecture}
 \begin{proof}[Lean]
   \leanok
-  \texttt{ConjStrong H} is rendered as the existential the conjecture
-  states: there are $\delta$ in \texttt{H.ek.L} --- the paper's $\Qbar$, the
-  value field of the Eisenstein--Kronecker package
-  (Assumption~\ref{eq:jetpackage}) --- and a \texttt{Finset} \texttt{Sig} of
-  primes with $\delta \ne 0$ and,
-  for every split $p \notin H.S$ with $p \notin \texttt{Sig}$ and
-  $\fp \nmid \delta$, $\tilde c_2(p) \in \Z_p^\times$. The paper's $\Sigma$
-  is $H.S \cup \texttt{Sig}$: $H.S$ is the standing exclusion of every
-  statement about $H$. \texttt{thm:reduction} witnesses the existential with
-  $\delta := \texttt{H.ek.deltaE c}$ and $\texttt{Sig} := \texttt{H.ek.supp c}$,
-  which is the paper's $\Sigma = S_E \cup \operatorname{supp}(c)$.
+  \texttt{ConjStrong H} is rendered as the universal statement the
+  conjecture makes: for every nonzero \texttt{c}, \texttt{ConjStrongAt H c},
+  which asserts $\tilde c_2(p) \in \Z_p^\times$ for every split
+  $p \notin H.S$ with $p \notin \texttt{H.ek.supp c}$ and
+  $\texttt{H.ek.v p (H.ek.deltaE c)} = 1$. The paper's $\Sigma$ is
+  $H.S \cup \texttt{H.ek.supp c}$: $H.S$ is the standing exclusion of every
+  statement about $H$. What is quantified over is the package \texttt{H.ek}
+  itself (Assumption~\ref{eq:jetpackage}), not an unconstrained element of
+  its value field. \texttt{thm:reduction} proves \texttt{ConjStrongAt H c} at
+  a single vector, not \texttt{ConjStrong H}.
 
-  Until 2026-08-29 the predicate pinned $\delta$ and $\Sigma$ to fields of
-  \texttt{ClassicalInputs}, which discharged the existential by fiat.
-
-  The divisibility condition is \texttt{H.ek.v p \(\delta\) = 1}, not a
+  The divisibility condition is
+  \texttt{H.ek.v p (H.ek.deltaE c) = 1}, not a
   statement about a rational number: mathlib's \texttt{Valuation} is
   multiplicative, so the paper's $v_\fp(x) = 0$ reads as $v(x) = 1$ here.
 
@@ -356,7 +353,7 @@ for an oversight.
 \chapter{The arithmetic consequence of a unit second jet}
 \label{ch:consequence}
 
-\begin{theorem}[$=$ Theorem B]
+\begin{theorem}[$=$ Theorem A]
   \label{prop:consequence}
   \lean{FinShaRank2.prop_consequence, FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv}
   \leanok
@@ -436,7 +433,7 @@ for an oversight.
 \chapter{Horizontal control along the split primes}
 \label{ch:horizontal}
 
-\begin{corollary}[$=$ Theorem A]
+\begin{corollary}[$=$ Corollary B]
   \label{cor:horizontal}
   \lean{FinShaRank2.cor_horizontal}
   \leanok
@@ -950,11 +947,14 @@ $\varpi := p$ inside \texttt{thm\_reduction}.
   step downstream of \texttt{hEK}/\texttt{hsin} is sorry-free; nothing about
   the conjectural hypotheses is discharged, only consumed.
 
-  \texttt{hEK} is what witnesses the $\delta \ne 0$ conjunct of
-  \texttt{ConjStrong H}. At an individual prime it would be free, by
-  Lemma~\ref{lem:resultantstep}; but Conjecture~\ref{conj:strong} asserts a
-  single nonzero $\delta_E$ valid at every prime at once, and that is what
-  \texttt{hEK} supplies.
+  \texttt{\_hEK} renders input (i) of Theorem~C. The conclusions rendered
+  here do not consume it: at each prime $\fp \nmid \delta_E(c)$ already
+  forces $\delta_E(c) \ne 0$, by Lemma~\ref{lem:resultantstep}. What
+  consumes it in the paper is Theorem~C's final clause, that
+  Conjecture~\ref{conj:weak} holds for $E$ when $S_E$ is finite, and that
+  clause is not rendered: deriving it needs
+  $\{p : \fp \mid \delta_E(c)\}$ to be finite, and \texttt{EKPackage.v} is
+  an abstract family of valuations with no such field.
 
   \texttt{thm\_reduction\_of\_conjEK} is the same statement with
   \texttt{hEK} replaced by \texttt{ConjEK H} and the nonzeroness
@@ -964,17 +964,11 @@ $\varpi := p$ inside \texttt{thm\_reduction}.
   \texttt{conj:EK}. It is the only declaration in the project that mentions
   \texttt{ConjEK}.
 
-  \textbf{Three points of shape.} The paper's last assertion is conditional
-  on $S_E$ being finite; \texttt{H.S} is a \texttt{Finset}, so the condition
-  holds by construction and disappears. The per-prime conclusion reports
+  \textbf{Two points of shape.} The per-prime conclusion reports
   \texttt{MuZero} alongside $\lambda_{\mathrm{an}} = 2$, the two being
   paired throughout because \texttt{lambdaAn} is junk-valued without it. And
-  \texttt{ConjStrong} omits the integrality clause of
+  \texttt{ConjStrongAt} omits the integrality clause of
   Conjecture~\ref{conj:strong}, for the reason given there.
-
-  Until 2026-08-29 this theorem also carried the residual arithmetic
-  hypothesis $p = 5 \Rightarrow a_p = -2$; the interface field
-  \texttt{ClassicalInputs.notAnomalous} removed it.
 \end{proof}
 
 % ===========================================================================

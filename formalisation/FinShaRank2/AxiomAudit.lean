@@ -41,8 +41,8 @@ of `Kernel/`, the headline theorems of `Main/`, and both toy instances under
 `Toy/` — grouped by layer, so a regression pinpoints the layer it came from.
 
 `Main/` carries no incomplete signature: all five headline declarations are
-audited, and the three lettered results of the paper are among them — Theorem A
-is `cor_horizontal`, Theorem B is `prop_consequence`, Theorem C is
+audited, and the three lettered results of the paper are among them — Corollary B
+is `cor_horizontal`, Theorem A is `prop_consequence`, Theorem C is
 `thm_reduction`.
 
 Note the gate also fails on a *missing* declaration, so this list doubles as a
@@ -54,7 +54,7 @@ def auditedDecls : List Name :=
    ``FinShaRank2.isUnit_one_sub_alphaInv_iff, ``FinShaRank2.isPUnit_one_sub_alphaInv_iff,
    ``FinShaRank2.ap_ne_one_of_hasse, ``FinShaRank2.neg_two_ne_one_zmod_five,
    ``FinShaRank2.two_dvd_ap, ``FinShaRank2.noAnomalous,
-  -- decoupling (Lemma 4.3)
+  -- decoupling (Lemma 5.3)
    ``FinShaRank2.Decoupling.coeff_two_mul, ``FinShaRank2.Decoupling.coeff_two_mul_of_snd_low,
    ``FinShaRank2.Decoupling.coeff_two_mul_of_fst_low, ``FinShaRank2.Decoupling.coeff_smul_eq_mul,
    ``FinShaRank2.Decoupling.coeff_eq_zero_of_map_eq_zero,
@@ -65,7 +65,7 @@ def auditedDecls : List Name :=
    ``FinShaRank2.hasSubst_σR, ``FinShaRank2.oneAddX_mul_σR,
    ``FinShaRank2.coeff_one_σR_pow_of_ne, ``FinShaRank2.coeff_one_subst_σR,
    ``FinShaRank2.coeff_one_eq_zero_of_functionalEquation, ``FinShaRank2.coeff_one_Lp_eq_zero,
-  -- grading valuation (Proposition 4.2(2))
+  -- grading valuation (Proposition 5.2(2))
    ``FinShaRank2.dvd_of_pow_mul_mem_span_pow_succ,
    ``FinShaRank2.isUnit_iff_residue_ne_zero_of_grading_congr,
   -- Λ-module structure kernel (highest-risk item)
@@ -75,7 +75,7 @@ def auditedDecls : List Name :=
   -- normalisation
    ``FinShaRank2.isPUnit_c2tilde_iff, ``FinShaRank2.eq_five_or_thirteen_le,
    ``FinShaRank2.isPUnit_one_sub_alphaInv_of_split, ``FinShaRank2.isPUnit_c2tilde_iff_of_split,
-  -- Sha endgame (Theorem B (Theorem 3.9) Step 5)
+  -- Sha endgame (Theorem A (Theorem 4.9) Step 5)
    ``FinShaRank2.sha_endgame, ``FinShaRank2.sha_endgame_of_nonempty,
   -- T²-unit factorisation
    ``FinShaRank2.tsq_factor, ``FinShaRank2.order_eq_two_of_factored,
@@ -87,9 +87,9 @@ def auditedDecls : List Name :=
    ``FinShaRank2.c0_eq_zero, ``FinShaRank2.c1_eq_zero,
    ``FinShaRank2.prop_consequence, ``FinShaRank2.prop_dictionary,
    ``FinShaRank2.thm_reduction,
-  -- the (7) non-anomality clause, bridged to Proposition 3.3
+  -- the (10) non-anomality clause, bridged to Proposition 4.3
    ``FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv,
-  -- Theorem A, and Theorem C with its first input from Conjecture 4.11
+  -- Corollary B, and Theorem C with its first input from Conjecture 5.9
    ``FinShaRank2.cor_horizontal, ``FinShaRank2.thm_reduction_of_conjEK,
   -- non-vacuity: ClassicalInputs is satisfiable, layer by layer
    ``FinShaRank2.Toy.toyAnalytic, ``FinShaRank2.Toy.toySelmer, ``FinShaRank2.Toy.toyIwasawa,
@@ -101,15 +101,15 @@ def auditedDecls : List Name :=
    ``FinShaRank2.ToySha, ``FinShaRank2.interface_does_not_force_sha_trivial,
    ``FinShaRank2.toySha_conclusions_fail, ``FinShaRank2.toySha_fails_c2_5_certificate,
    ``FinShaRank2.ToyTrivial,
-  -- resultant valuation step (Theorem C (Theorem 4.12) proof)
+  -- resultant valuation step (Theorem C (Theorem 5.10) proof)
    ``FinShaRank2.Resultant.forall_eq_one_of_prod_eq_one,
    ``FinShaRank2.Resultant.prod_ne_zero_of_prod_eq_one,
-  -- orbit criterion (Lemma 4.9)
+  -- orbit criterion (Lemma 3.2)
    ``FinShaRank2.Orbit.prod_mem_range_algebraMap,
    ``FinShaRank2.Orbit.forall_eq_zero_of_exists_eq_zero,
   -- anomalous primes at split p (Lemma 2.3(2))
    ``FinShaRank2.anomalous_iff_five,
-  -- the Eisenstein–Kronecker package (Definition 4.8, (13))
+  -- the Eisenstein–Kronecker package (Definition 3.1, (7))
    ``FinShaRank2.jetIndex_image, ``FinShaRank2.jetIndex_injective,
    ``FinShaRank2.EKPackage.deltaE_ne_zero_iff, ``FinShaRank2.EKPackage.deltaE_singleton]
 

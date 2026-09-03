@@ -5,7 +5,7 @@
 \\ Backs paper/v2 Sec. 6.7 (ssec:exactness), which records that at working
 \\ precision 1600 digits naive rational reconstruction "produced spurious
 \\ factorisations of resultants in the table exhibiting 17, 281 and 349 -- all
-\\ three split, all three among the 508 primes of Sec. 5.3".  That is the paper's
+\\ three split, all three among the 1611 primes of Sec. 5.3".  That is the paper's
 \\ reason for certifying the resultants by a forced {2,7}-denominator and an
 \\ explicit rounding gate instead.  No record of the artefact was in the
 \\ repository; this script reproduces the naive route and reports what it gives.
@@ -20,7 +20,7 @@
 \\ value; the line reports that.
 \\ Each reconstructed rational is trial-divided by every prime 3 <= q <= 20000
 \\ other than 7, and the divisors found are reported, split ones marked, and
-\\ tested against the 508-prime scan list of ../data/all_primes_vreg.txt.  The
+\\ tested against the 1611-prime scan list of ../data/all_primes_vreg.txt.  The
 \\ certified small-prime support of the six resultants is
 \\   R[E1*], R[wp], R[wp'], R[E1*wp + wp'/2]: none besides 2 and 7
 \\   R[E1*^2 - wp]: 2239        R[E1*^3 - 3E1*wp - wp']: 3 and 5039
@@ -67,7 +67,7 @@ say(Str("PARI/GP       ", version()[1], ".", version()[2], ".", version()[3]));
 say("status        reproduces a failure mode; asserts nothing about E");
 say("");
 
-\\ --- the 508-prime scan list ------------------------------------------------
+\\ --- the 1611-prime scan list ------------------------------------------------
 scanp = List();
 {my(ls = readstr("../data/all_primes_vreg.txt"));
  for(i = 1, #ls,
@@ -138,7 +138,7 @@ ALLSPUR = List();
 NREC = 0;      \\ reconstructions attempted
 NCLEAN = 0;    \\ of these, those whose small-prime support is the certified one
 NSPUR = 0;     \\ of these, those reporting at least one prime that is not
-NSCAN = 0;     \\ of these, those reporting a spurious prime from the 508-prime scan
+NSCAN = 0;     \\ of these, those reporting a spurious prime from the 1611-prime scan
 
 \\ Odd primes q <= 20000, q != 7, dividing the numerator or denominator of r.
 smallprimes(r) = {
@@ -185,7 +185,7 @@ smallprimes(r) = {
          my(q = spur[i][1]);
          s = Str(s, if(i > 1, ", ", ""), q,
                  if(q % 4 == 1, " (split", " (inert"),
-                 if(setsearch(scanset, q), ", in the 508-prime scan)", ")")));
+                 if(setsearch(scanset, q), ", in the 1611-prime scan)", ")")));
        say(Str("                 SPURIOUS: ", s)),
        say("                 SPURIOUS: none"))));}
 
@@ -194,7 +194,7 @@ say("");
 {say(Str("Reconstructions attempted (6 resultants x ", NB, " bounds): ", NREC));}
 say(Str("  small-prime support equal to the certified one : ", NCLEAN));
 say(Str("  reporting at least one prime that is not        : ", NSPUR));
-say(Str("  reporting one from the 508-prime scan           : ", NSCAN));
+say(Str("  reporting one from the 1611-prime scan           : ", NSCAN));
 say("");
 SPUR = Set(Vec(ALLSPUR));
 {say(Str("Spurious primes over all six resultants and all ", NB, " bounds: ",
@@ -204,7 +204,7 @@ SPUR = Set(Vec(ALLSPUR));
    if(SPUR[i] % 4 == 1, listput(sp, SPUR[i]));
    if(setsearch(scanset, SPUR[i]), listput(sc, SPUR[i])));
  say(Str("  of these, split (= 1 mod 4)      : ", if(#sp == 0, "NONE", Str(Vec(sp)))));
- say(Str("  of these, in the 508-prime scan  : ", if(#sc == 0, "NONE", Str(Vec(sc)))));}
+ say(Str("  of these, in the 1611-prime scan  : ", if(#sc == 0, "NONE", Str(Vec(sc)))));}
 say("");
 {my(want = [17, 281, 349], got = List(), miss = List());
  say("The three primes named in Sec. 6.7 are 17, 281, 349.");
@@ -213,7 +213,7 @@ say("");
    if(setsearch(SPUR, q), listput(got, q), listput(miss, q));
    say(Str("  ", q, ": ", if(q % 4 == 1, "split", "inert"),
            ", ", if(setsearch(scanset, q), "in", "not in"),
-           " the 508-prime scan, ",
+           " the 1611-prime scan, ",
            if(setsearch(SPUR, q), "reproduced here", "not reproduced here"))));
  say(Str("  reproduced here : ", if(#got == 0, "NONE", Str(Vec(got)))));
  say(Str("  not reproduced  : ", if(#miss == 0, "NONE", Str(Vec(miss)))));}

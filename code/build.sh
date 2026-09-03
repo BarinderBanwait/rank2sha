@@ -27,7 +27,7 @@
 #   python3 runs code/sage/check_agreement.py, which needs no library.
 #
 # NOT RUN HERE, because of cost:
-#   code/gp/scan.gp     508 primes, about 6 minutes
+#   code/gp/scan.gp     1611 primes, about 12 minutes on eight cores
 #   code/gp/deltaE.gp   209.7 s on the reference machine
 #   code/sage/run.sh    the full control; 25 s at p = 5, 5778 s at p = 13
 # The smoke test recomputes a sample of what those produce and compares it with
@@ -209,12 +209,8 @@ check_file() {   # check_file <relative path> <role>
     fail "$1" "missing ($2)"
   fi
 }
-check_file data/all_primes_vreg.txt "input to gp/deltaE.gp"
+check_file data/all_primes_vreg.txt "output of gp/scan.gp, input to gp/deltaE.gp"
 check_file data/lmfdb_iwasawa.txt   "input to sage/check_agreement.py, check C7"
-check_file data/res_1.txt           "output of gp/scan.gp, segment 1"
-check_file data/res_2.txt           "output of gp/scan.gp, segment 2"
-check_file data/res_3.txt           "output of gp/scan.gp, segment 3"
-check_file data/res_4.txt           "output of gp/scan.gp, segment 4"
 check_file data/deltaE_phase2.txt   "output of gp/deltaE.gp"
 check_file data/cert_5.out          "output of sage/run.sh at p = 5"
 check_file data/cert_13.out         "output of sage/run.sh at p = 13"
@@ -258,61 +254,61 @@ else
   skip "S1 PARI v_fp(Reg_fp) = 2 at p = 5, 13, 101" "no PARI/GP"
 fi
 
-# S2 -- the committed scan output parses and totals 508 lines.
+# S2 -- the committed scan output parses, totals 1611 lines and is complete.
 if [ -n "$PY_BIN" ]; then
   cat > "$WORK/checkscan.py" <<'PYEOF'
 import sys, os
 data = sys.argv[1]
-segments = [("res_1.txt", 335), ("res_2.txt", 77),
-            ("res_3.txt", 54), ("res_4.txt", 42)]
-def isprime(n):
-    if n < 2: return False
-    if n % 2 == 0: return n == 2
-    d = 3
-    while d * d <= n:
-        if n % d == 0: return False
-        d += 2
-    return True
-total, bad, flagged = 0, [], 0
-allp = []
-for name, expected in segments:
-    path = os.path.join(data, name)
-    if not os.path.exists(path):
-        print("MISSING %s" % name); sys.exit(1)
-    lines = [l.split() for l in open(path).read().split("\n") if l.strip()]
-    if len(lines) != expected:
-        bad.append("%s has %d lines, expected %d" % (name, len(lines), expected))
-    for f in lines:
-        if len(f) > 2:
-            flagged += 1
-            continue
-        p, v = int(f[0]), int(f[1])
-        allp.append(p)
-        if not isprime(p): bad.append("%s: %d not prime" % (name, p))
-        if p % 4 != 1:     bad.append("%s: %d not 1 mod 4" % (name, p))
-        if v != 2:         bad.append("%s: v_fp(Reg_fp) = %d at p = %d" % (name, v, p))
-    total += len(lines)
+EXPECTED, LO, HI = 1611, 5, 30000
+def sieve(limit):
+    f = bytearray([1]) * limit
+    f[0] = f[1] = 0
+    i = 2
+    while i * i < limit:
+        if f[i]:
+            f[i*i::i] = bytearray(len(range(i*i, limit, i)))
+        i += 1
+    return f
+IS_PRIME = sieve(HI)
+path = os.path.join(data, "all_primes_vreg.txt")
+if not os.path.exists(path):
+    print("MISSING all_primes_vreg.txt"); sys.exit(1)
+lines = [l.split() for l in open(path).read().split("\n") if l.strip()]
+bad, flagged, allp = [], 0, []
+for f in lines:
+    if len(f) > 2:
+        flagged += 1
+        continue
+    p, v = int(f[0]), int(f[1])
+    allp.append(p)
+    if p >= HI or not IS_PRIME[p]: bad.append("%d not a prime below %d" % (p, HI))
+    if p % 4 != 1:                 bad.append("%d not 1 mod 4" % p)
+    if v != 2:                     bad.append("v_fp(Reg_fp) = %d at p = %d" % (v, p))
 if flagged: bad.append("%d escalation-flagged line(s)" % flagged)
-if total != 508: bad.append("total %d lines, expected 508" % total)
-ap = os.path.join(data, "all_primes_vreg.txt")
-if os.path.exists(ap):
-    concat = [int(l.split()[0]) for l in open(ap).read().split("\n") if l.strip()]
-    if concat != allp:
-        bad.append("all_primes_vreg.txt is not the concatenation of res_1..4")
+if len(lines) != EXPECTED:
+    bad.append("total %d lines, expected %d" % (len(lines), EXPECTED))
+if allp != sorted(set(allp)):
+    bad.append("primes are not strictly increasing")
+expected = [p for p in range(LO, HI) if IS_PRIME[p] and p % 4 == 1]
+if allp != expected:
+    missing = sorted(set(expected) - set(allp))[:5]
+    extra = sorted(set(allp) - set(expected))[:5]
+    bad.append("range incomplete: missing %r extra %r" % (missing, extra))
 if bad:
     for b in bad: print("BAD %s" % b)
     sys.exit(1)
-print("SCANOK %d primes, %d to %d" % (total, min(allp), max(allp)))
+print("SCANOK %d primes, %d to %d, every split prime below %d" %
+      (len(allp), min(allp), max(allp), HI))
 PYEOF
   SCANOUT="$(python3 "$WORK/checkscan.py" "$DATA" 2>&1)"
   if echo "$SCANOUT" | grep -q "^SCANOK"; then
-    pass "S2 committed scan parses, 508 lines, all v = 2" "${SCANOUT#SCANOK }"
+    pass "S2 committed scan parses, 1611 lines, all v = 2" "${SCANOUT#SCANOK }"
   else
-    fail "S2 committed scan parses, 508 lines, all v = 2" ""
+    fail "S2 committed scan parses, 1611 lines, all v = 2" ""
     echo "$SCANOUT" | sed 's/^/      /'
   fi
 else
-  skip "S2 committed scan parses, 508 lines, all v = 2" "no python3"
+  skip "S2 committed scan parses, 1611 lines, all v = 2" "no python3"
 fi
 
 # S3 -- the recorded Eisenstein-Kronecker sums match the paper's table.
@@ -417,7 +413,7 @@ fi
 # the smoke test rather than in the list of things too costly to run.
 if [ -n "$PY_BIN" ] && [ -f "$SAGEDIR/verify_scan.py" ]; then
   if (cd "$SAGEDIR" && python3 verify_scan.py >"$WORK/v.txt" 2>&1); then
-    pass "S9 sage/verify_scan.py on the committed scan" "508 primes, $(grep -c "\[PASS\]" "$WORK/v.txt") checks pass, 0 fail"
+    pass "S9 sage/verify_scan.py on the committed scan" "1611 primes, $(grep -c "\[PASS\]" "$WORK/v.txt") checks pass, 0 fail"
   else
     fail "S9 sage/verify_scan.py on the committed scan" ""
     sed -n 's/^/      /p' "$WORK/v.txt" | grep -i fail | head -8
@@ -440,7 +436,7 @@ fi
 # ---------------------------------------------------------------------------
 head2 "5. Scripts not exercised here"
 # ---------------------------------------------------------------------------
-for s in gp/scan.gp:"508 primes in four windows, about 6 minutes; produces data/res_*.txt" \
+for s in gp/scan.gp:"1611 primes, every split prime below 30000; produces data/all_primes_vreg.txt" \
          gp/deltaE.gp:"209.7 s on the reference machine; produces data/deltaE_phase2.txt, and must be run from code/gp, its data paths being relative" \
          sage/run.sh:"the full control; 25 s at p = 5, 5778 s at p = 13" \
          gp/excluded_set.gp:"the discharge of S_E, Section 5.1; seconds" \

@@ -4,15 +4,15 @@ import FinShaRank2.Defs
 /-!
 # Eisenstein–Kronecker interface: `EKPackage`
 
-The archimedean side of Definition 4.8. `EKPackage` bundles the divisor `D_E` of (12),
-the six-function package `𝓡_E` of (13), a multiplicative valuation at each
-rational prime, and the support function `supp` of Hypothesis 4.10. On top of that data,
+The archimedean side of Definition 3.1. `EKPackage` bundles the divisor `D_E` of (6),
+the six-function package `𝓡_E` of (7), a multiplicative valuation at each
+rational prime, and the support function `supp` of Hypothesis 5.8. On top of that data,
 `δ_E(c)` is a **definition**, not an assumed datum:
 
     EKPackage.Fc     P c t = ∑ i, c i • P.r i t
     EKPackage.deltaE P c   = ∏ t ∈ P.D, P.Fc c t
 
-The product is written out, so Definition 4.8 is discharged by unfolding, and the only
+The product is written out, so Definition 3.1 is discharged by unfolding, and the only
 data assumed are the objects the paper itself constructs: `D_E`, `𝓡_E`, `v_𝔭`, `supp`.
 
 ## The valuation normalisation is multiplicative — read this before comparing with the paper
@@ -27,7 +27,7 @@ with zero, so the order runs opposite to the paper's additive `v_𝔭`. The dict
 | `v_𝔭(x) > 0` (`𝔭 ∣ x`) | `P.v p x < 1` |
 | `v_𝔭(x) = ∞` (`x = 0`) | `P.v p x = 0` |
 
-Every inequality of Hypothesis 4.10 and Theorem C (Theorem 4.12) therefore reads
+Every inequality of Hypothesis 5.8 and Theorem C (Theorem 5.10) therefore reads
 reversed in the Lean.
 `AddValuation` would preserve the direction but has no product lemma at this mathlib pin, and
 `δ_E(c)` is a product, so the multiplicative encoding is the one used.
@@ -37,25 +37,25 @@ the choice of `Γ`.
 
 ## `δ_E(c)` lands in `L`, not in `K`
 
-`L` is the paper's `Q̄`. That `δ_E(c) ∈ K` is Lemma 4.9(1), which the paper proves only after
+`L` is the paper's `Q̄`. That `δ_E(c) ∈ K` is Lemma 3.2(1), which the paper proves only after
 granting the equivariance `r_{a,b}(σ t) = σ(r_{a,b}(t))`, an input it uses rather than proves.
-Theorem C does not use Lemma 4.9, and `δ_E(c)` is not proved rational
+Theorem C does not use Lemma 3.2, and `δ_E(c)` is not proved rational
 (`deltaE.tex`, after Theorem C), so the divisibility condition `𝔭 ∤ δ_E(c)` is not
 symmetric in `𝔭` and `𝔭̄`. Testing it with `padicValRat`, as the structure being replaced did,
 asserts a rationality that is not available.
 
-Paper statements quoted below: (12), (13), Definition 4.8, Lemma 4.9,
-Hypothesis 4.10, Theorem C.
+Paper statements quoted below: (6), (7), Definition 3.1, Lemma 3.2,
+Hypothesis 5.8, Theorem C.
 -/
 
 namespace FinShaRank2
 
-/-- The six slots of (13), as the pairs `(a, b)` with `a ≥ 0`, `b ≥ 1`, `a + b ≤ 3`,
+/-- The six slots of (7), as the pairs `(a, b)` with `a ≥ 0`, `b ≥ 1`, `a + b ≤ 3`,
 in the order the paper lists them (graded by `a + b - 1`).
 
 `EKPackage.r` is indexed by `Fin 6` rather than by pairs, so this def records which slot is
 which. `jetIndex_image` checks that the enumeration is exactly the paper's index set.
-PAPER: (13) (`eq:jetpackage`). STATUS: definition. -/
+PAPER: (7) (`eq:jetpackage`). STATUS: definition. -/
 def jetIndex : Fin 6 → ℕ × ℕ
   | 0 => (0, 1)
   | 1 => (0, 2)
@@ -64,7 +64,7 @@ def jetIndex : Fin 6 → ℕ × ℕ
   | 4 => (1, 2)
   | 5 => (2, 1)
 
-/-- `jetIndex` enumerates the index set of (13) — the pairs `(a, b)` with `b ≥ 1`
+/-- `jetIndex` enumerates the index set of (7) — the pairs `(a, b)` with `b ≥ 1`
 and `a + b ≤ 3` — without repetition. -/
 theorem jetIndex_image :
     (Finset.univ.image jetIndex) =
@@ -74,11 +74,11 @@ theorem jetIndex_image :
 /-- `jetIndex` is injective, so the six `Fin 6` slots are six distinct pairs `(a, b)`. -/
 theorem jetIndex_injective : Function.Injective jetIndex := by decide
 
-/-- **Eisenstein–Kronecker package for a CM elliptic curve `E/ℚ`** (paper §4.4).
+/-- **Eisenstein–Kronecker package for a CM elliptic curve `E/ℚ`** (paper §3.2).
 
-The data of Definition 4.8 other than the coefficient vector: the divisor `D_E` of (12),
-the six functions `r_{a,b}` of (13), the valuation `v_𝔭` at each rational prime, and
-the support function of Hypothesis 4.10. The invariant `δ_E(c)` is then the def
+The data of Definition 3.1 other than the coefficient vector: the divisor `D_E` of (6),
+the six functions `r_{a,b}` of (7), the valuation `v_𝔭` at each rational prime, and
+the support function of Hypothesis 5.8. The invariant `δ_E(c)` is then the def
 `EKPackage.deltaE`, not a field.
 
 The carrier types are in `Type` and their algebraic instances are bundled as instance fields,
@@ -87,9 +87,9 @@ re-exported by the `attribute [instance]` line below, so that `P.K`, `P.L` and `
 `KatzData` (`Interface/Katz.lean`). -/
 structure EKPackage where
   /-- The imaginary quadratic field `K` by which `E` has complex multiplication; the
-  coefficient vectors `c` of Definition 4.8 are elements of `K⁶`.
+  coefficient vectors `c` of Definition 3.1 are elements of `K⁶`.
   SOURCE: the paper's own definition.
-  PAPER:  Definition 4.8 (`def:deltaE`) (`c = (c_{a,b}) ∈ K⁶`). STATUS: data. -/
+  PAPER:  Definition 3.1 (`def:deltaE`) (`c = (c_{a,b}) ∈ K⁶`). STATUS: data. -/
   K : Type
   /-- `K` is a field. STATUS: classical (structure instance). -/
   [fieldK : Field K]
@@ -99,7 +99,7 @@ structure EKPackage where
   SOURCE: Bannai–Kobayashi [K. Bannai and S. Kobayashi, *Algebraic theta functions and the
   p-adic interpolation of Eisenstein–Kronecker numbers*, Duke Math. J. 153 (2010), no. 2,
   229–295], Thm. 2.9 and Cor. 2.11 (algebraicity of the section values).
-  PAPER:  (13) (`eq:jetpackage`) (`r_{a,b} : D_E → Q̄`). STATUS: data. -/
+  PAPER:  (7) (`eq:jetpackage`) (`r_{a,b} : D_E → Q̄`). STATUS: data. -/
   L : Type
   /-- `L` is a field. STATUS: classical (structure instance). -/
   [fieldL : Field L]
@@ -116,16 +116,16 @@ structure EKPackage where
   [ordΓ : LinearOrderedCommMonoidWithZero Γ]
   /-- The type indexing the points of the divisor. The paper takes the points to be the ray
   classes themselves; `ι` is left abstract because nothing below uses the group structure.
-  SOURCE: the paper's own definition. PAPER: (12) (`eq:DEdef`). STATUS: data. -/
+  SOURCE: the paper's own definition. PAPER: (6) (`eq:DEdef`). STATUS: data. -/
   ι : Type
   /-- The divisor `D_E := Cl_𝔣(K) = (O_K/𝔣)^× / μ_K`, the ray class group of conductor `𝔣`,
   as a finite set of points. Finiteness is what makes `Res(F_c, D_E)` a finite product.
   SOURCE: classical (finiteness of the ray class group).
-  PAPER:  (12) (`eq:DEdef`). STATUS: data. -/
+  PAPER:  (6) (`eq:DEdef`). STATUS: data. -/
   D : Finset ι
   /-- `D_E` is nonempty: it is a group, so it contains the trivial class.
   SOURCE: classical (a ray class group is a nonempty finite abelian group).
-  PAPER:  (12) (`eq:DEdef`). STATUS: classical. -/
+  PAPER:  (6) (`eq:DEdef`). STATUS: classical. -/
   D_nonempty : D.Nonempty
   /-- The package `𝓡_E` of six functions `r_{a,b} : D_E → Q̄`, indexed by `Fin 6` through
   `jetIndex`: the grade-`≤ 2` jet of the reduced theta function evaluated along the
@@ -133,24 +133,24 @@ structure EKPackage where
   The functions are defined on all of `ι`, not only on `D`; only their values on `D` are used.
   SOURCE: Bannai–Kobayashi [op. cit.], (15) and Thm. 1.17 (the coefficients `e^*_{a,b}`),
   Thm. 2.9 and Cor. 2.11 (algebraicity after division by `A(Γ)^a`).
-  PAPER:  (13) (`eq:jetpackage`). STATUS: data. -/
+  PAPER:  (7) (`eq:jetpackage`). STATUS: data. -/
   r : Fin 6 → ι → L
   /-- The valuation `v_𝔭` on `L`, indexed by the rational prime `p`; `𝔭` is the prime of `Q̄`
   determined by the embedding `ι_p` fixed in §2.1. **Multiplicative**: `v_𝔭(x) = 0`
   in the paper is `P.v p x = 1` here, and `v_𝔭(x) ≥ 0` is `P.v p x ≤ 1`. See the module
   docstring.
   SOURCE: classical (valuation theory).
-  PAPER:  §2.1 (§2.1); used in Hypothesis 4.10 (`hyp:sinnott`) and Theorem C (Theorem
-  4.12, `thm:reduction`). STATUS: data. -/
+  PAPER:  §2.1 (§2.1); used in Hypothesis 5.8 (`hyp:sinnott`) and Theorem C (Theorem
+  5.10, `thm:reduction`). STATUS: data. -/
   v : ℕ → Valuation L Γ
   /-- `supp(c)`: the finite set of rational primes lying below a prime of `Q̄` at which some
-  entry of `c` is not a unit. Left opaque. Theorem C (Theorem 4.12) uses it only through
+  entry of `c` is not a unit. Left opaque. Theorem C (Theorem 5.10) uses it only through
   the exclusion
   `p ∉ supp(c)`, and the paper's bound on it — that the entries of the expected `c` are roots of
   unity times Gauss sums times rationals supported on `{2, 3}`, so that `supp(c)` adds no split
   prime to `S_E` — is stated there as an expectation, not a theorem.
   SOURCE: the paper's own definition.
-  PAPER:  Hypothesis 4.10 (`hyp:sinnott`) (the definition of `supp(c)`). STATUS: data. -/
+  PAPER:  Hypothesis 5.8 (`hyp:sinnott`) (the definition of `supp(c)`). STATUS: data. -/
   supp : (Fin 6 → K) → Finset ℕ
 
 attribute [instance] EKPackage.fieldK EKPackage.fieldL EKPackage.algKL EKPackage.ordΓ
@@ -160,23 +160,23 @@ namespace EKPackage
 variable (P : EKPackage) (c : Fin 6 → P.K)
 
 /-- `F_c := ∑_{a,b} c_{a,b} r_{a,b}`, the coefficient vector `c` applied to the package `𝓡_E`.
-PAPER: Definition 4.8 (`def:deltaE`). STATUS: definition. -/
+PAPER: Definition 3.1 (`def:deltaE`). STATUS: definition. -/
 def Fc (t : P.ι) : P.L := ∑ i, c i • P.r i t
 
-/-- `δ_E(c) := Res(F_c, D_E) = ∏_{t ∈ D_E} F_c(t)`, the candidate invariant of Definition 4.8.
+/-- `δ_E(c) := Res(F_c, D_E) = ∏_{t ∈ D_E} F_c(t)`, the candidate invariant of Definition 3.1.
 
-It lands in `P.L`, the paper's `Q̄`. That it lies in `K` is Lemma 4.9(1), which needs the
-equivariance input the paper does not prove; Theorem C (Theorem 4.12) does not use it.
-PAPER: Definition 4.8 (`def:deltaE`). STATUS: definition. -/
+It lands in `P.L`, the paper's `Q̄`. That it lies in `K` is Lemma 3.2(1), which needs the
+equivariance input the paper does not prove; Theorem C (Theorem 5.10) does not use it.
+PAPER: Definition 3.1 (`def:deltaE`). STATUS: definition. -/
 def deltaE : P.L := ∏ t ∈ P.D, P.Fc c t
 
 theorem Fc_def (t : P.ι) : P.Fc c t = ∑ i, c i • P.r i t := rfl
 
 theorem deltaE_def : P.deltaE c = ∏ t ∈ P.D, P.Fc c t := rfl
 
-/-- `δ_E(c) ≠ 0` exactly when `F_c` vanishes at no point of `D_E`. Immediate from Definition 4.8
+/-- `δ_E(c) ≠ 0` exactly when `F_c` vanishes at no point of `D_E`. Immediate from Definition 3.1
 once `δ_E(c)` is the product rather than assumed data.
-PAPER: the sentence following Definition 4.8 (`def:deltaE`). STATUS: definition
+PAPER: the sentence following Definition 3.1 (`def:deltaE`). STATUS: definition
 (consequence of unfolding). -/
 theorem deltaE_ne_zero_iff : P.deltaE c ≠ 0 ↔ ∀ t ∈ P.D, P.Fc c t ≠ 0 := by
   rw [deltaE_def, Finset.prod_ne_zero_iff]

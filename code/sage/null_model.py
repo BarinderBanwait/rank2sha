@@ -8,7 +8,7 @@ number of exceptions is then approximately Poisson with mean
 
     lambda = sum over the scanned primes of 1/p,
 
-the sum being taken over the 508 primes of ../data/all_primes_vreg.txt.  The
+the sum being taken over the 1611 primes of ../data/all_primes_vreg.txt.  The
 three hypotheses of Section 5.4 assign a clean scan the probabilities
 
     (H1) Conjecture conj:strong                       1
@@ -43,17 +43,17 @@ EXTENSION_BOUND = 10 ** 6
 
 # the values printed in Section 5.4, for comparison
 PAPER = {
-    "count": "508",
-    "lambda": "0.803...",
-    "clean_H2": "0.45",
-    "clean_H3_c5": "0.018",
-    "ratio_H1_H2": "2.2",
-    "ratio_H1_H3_c5": "55",
-    "ratio_H1_H3_c1": "2.2",
+    "count": "1611",
+    "lambda": "0.880...",
+    "clean_H2": "0.41",
+    "clean_H3_c5": "0.012",
+    "ratio_H1_H2": "2.4",
+    "ratio_H1_H3_c5": "82",
+    "ratio_H1_H3_c1": "2.4",
     "lambda_1e6": "1.03",
     "clean_1e6": "0.36",
     "ratio_1e6": "2.8",
-    "five_or_more": "1.4e-03",
+    "five_or_more": "2.1e-03",
 }
 
 _log = []
@@ -100,7 +100,7 @@ def main():
 
     say("the scanned set")
     row("number of primes", "%d" % len(primes), PAPER["count"])
-    row("smallest, largest", "%d, %d" % (primes[0], primes[-1]), "5, 16889")
+    row("smallest, largest", "%d, %d" % (primes[0], primes[-1]), "5, 29989")
     row("lambda = sum 1/p", "%.6f" % lam, PAPER["lambda"])
     say("")
 

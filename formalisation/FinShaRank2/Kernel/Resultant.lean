@@ -4,16 +4,16 @@ import Mathlib
 # Unit factors of a unit resultant)
 
 This file proves, as pure `mathlib`-only valuation theory over an abstract valued field, the
-valuation step in the proof of the paper's Theorem C (Theorem 4.12). Nothing here
+valuation step in the proof of the paper's Theorem C (Theorem 5.10). Nothing here
 mentions the paper's
 interface: the argument is carried over a bare `Valuation v : L → Γ`, so the instantiation
 `L := Q̄`, `v := v_𝔭` performed downstream is a substitution.
 
 ## Mathematical content
 
-Definition 4.8 sets `δ_E(c) = ∏_{t ∈ D_E} F_c(t)`. The proof of Theorem C
+Definition 3.1 sets `δ_E(c) = ∏_{t ∈ D_E} F_c(t)`. The proof of Theorem C
 argues: each
-factor `F_c(t)` is `𝔭`-integral by Hypothesis 4.10(i), so `v_𝔭(δ_E(c)) = ∑_{t ∈ D_E} v_𝔭(F_c(t))`
+factor `F_c(t)` is `𝔭`-integral by Hypothesis 5.8(i), so `v_𝔭(δ_E(c)) = ∑_{t ∈ D_E} v_𝔭(F_c(t))`
 is a sum of nonnegative terms; hence `𝔭 ∤ δ_E(c)` forces `v_𝔭(F_c(t)) = 0` for every
 `t ∈ D_E`. `forall_eq_one_of_prod_eq_one` is that implication.
 
@@ -56,7 +56,7 @@ this step, and because `Γ` nontrivial is an extra assumption.
 `resultant_link`, which asserted its conclusion outright; the integrality it rested on is
 now the hypothesis `SinnottHyp.integral`, where the paper puts it.
 
-Paper statements: Theorem C, Definition 4.8, Hypothesis 4.10(i), §2.1.
+Paper statements: Theorem C, Definition 3.1, Hypothesis 5.8(i), §2.1.
 -/
 
 namespace FinShaRank2.Resultant
@@ -74,7 +74,7 @@ Recall the sign convention of the module docstring: `v x ≤ 1` is the paper's `
 The proof distributes `v` over the product (`map_prod`, available because `Valuation` is a
 `MonoidWithZeroHomClass`) and applies `Finset.prod_eq_one_iff_of_le_one'`: in an ordered
 commutative monoid a product of elements `≤ 1` equals `1` exactly when every factor equals `1`.
-PAPER: Theorem C (Theorem 4.12, `thm:reduction`), proof; Hypothesis 4.10 (`hyp:sinnott`)(i). -/
+PAPER: Theorem C (Theorem 5.10, `thm:reduction`), proof; Hypothesis 5.8 (`hyp:sinnott`)(i). -/
 theorem forall_eq_one_of_prod_eq_one (v : Valuation L Γ) (D : Finset ι) (F : ι → L)
     (hint : ∀ t ∈ D, v (F t) ≤ 1) (hδ : v (∏ t ∈ D, F t) = 1) :
     ∀ t ∈ D, v (F t) = 1 := by
@@ -84,10 +84,10 @@ theorem forall_eq_one_of_prod_eq_one (v : Valuation L Γ) (D : Finset ι) (F : �
 /-- **A unit product is nonzero.** If `v (∏ t ∈ D, F t) = 1` and the value monoid `Γ` is
 nontrivial, then `∏ t ∈ D, F t ≠ 0`.
 
-Theorem C (Theorem 4.12) assumes `δ_E(c) ≠ 0` separately from `𝔭 ∤ δ_E(c)`; at the point where the
+Theorem C (Theorem 5.10) assumes `δ_E(c) ≠ 0` separately from `𝔭 ∤ δ_E(c)`; at the point where the
 valuation argument is made, the first follows from the second. A valuation sends `0` to `0`
 (`Valuation.ne_zero_iff`), and `1 ≠ 0` in a nontrivial `Γ`. PAPER: Theorem C,
-Definition 4.8. -/
+Definition 3.1. -/
 theorem prod_ne_zero_of_prod_eq_one [Nontrivial Γ] (v : Valuation L Γ) (D : Finset ι)
     (F : ι → L) (hδ : v (∏ t ∈ D, F t) = 1) :
     (∏ t ∈ D, F t) ≠ 0 :=

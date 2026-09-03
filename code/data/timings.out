@@ -9,10 +9,10 @@ hardware          : timings are hardware-dependent; the paper's were
                     measured on an Apple M1 Pro (arm64), 16 GB RAM
 
        p   n             runs (ms)       min    median    paper
-     101   6             [7, 5, 4]      4 ms      5 ms    5 ms
-    1009   6          [99, 97, 96]     96 ms     97 ms    97 ms
-    5003   5       [540, 535, 533]    533 ms    535 ms    0.55 s
-   16889   4    [2323, 2287, 2283]   2283 ms   2287 ms    2.3 s
+     101   6             [5, 4, 5]      4 ms      5 ms    5 ms
+    1009   6          [99, 97, 97]     97 ms     97 ms    97 ms
+    5003   5       [539, 537, 534]    534 ms    537 ms    0.55 s
+   29989   4    [4986, 4830, 4841]   4830 ms   4841 ms    4.9 s
 
-Each of the four calls returned v_fp(Reg_fp) = 2, as the scan files record.
+Each of the four calls returned v_fp(Reg_fp) = 2, as the scan file records.
 TIMINGSDONE

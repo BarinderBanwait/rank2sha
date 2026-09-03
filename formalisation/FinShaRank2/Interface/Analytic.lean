@@ -9,7 +9,7 @@ elliptic curves*.
 
 `AnalyticData p hsplit` bundles the Mazur–Tate–Teitelbaum (MTT) p-adic
 L-function `L_p(E, T)` of the testbed curve `E : y² = x³ − 56x` together with
-the small set of classical facts about it that the paper's Lemma 3.1 and
+the small set of classical facts about it that the paper's Lemma 4.1 and
 Lemma 2.3 consume: the interpolation formula at the trivial character,
 the p-adic functional equation with sign `w(E) = +1`, the unit-root data of the
 Frobenius polynomial `X² − a_p X + p`, the CM evenness of `a_p`, and the Hasse
@@ -34,8 +34,8 @@ instance juggling at every call site. The hypothesis is a standing side
 condition of the whole structure and is not consumed by any individual field
 type.
 
-Paper statements quoted below: §2.1, Lemma 3.1, Definition 3.2,
-Remark 3.6, Lemma 2.3, §5.1.
+Paper statements quoted below: §2.1, Lemma 4.1, Definition 4.2,
+Remark 4.8, Lemma 2.3, §6.1.
 -/
 
 open PowerSeries
@@ -45,13 +45,13 @@ namespace FinShaRank2
 /-- **Analytic data at a split prime `p`.**
 
 The Mazur–Tate–Teitelbaum p-adic L-function of the testbed curve together with
-the classical facts about it consumed by Lemma 3.1 and Lemma 2.3. The
+the classical facts about it consumed by Lemma 4.1 and Lemma 2.3. The
 split hypothesis `hsplit : p % 4 = 1` is the paper's standing assumption on `p`
 (splitness in `K = ℚ(i)`); see the module docstring for the binder rationale.
 
 SOURCE: Mazur–Tate–Teitelbaum, Invent. math. 84 (1986), 1–48; Stein–Wuthrich,
 Math. Comp. 82 (2013), no. 283, 1757–1792.
-PAPER:  §2.1 (`ssec:notation`), Lemma 3.1 (`lem:c0c1`), Lemma 2.3 (`lem:noanomalous`).
+PAPER:  §2.1 (`ssec:notation`), Lemma 4.1 (`lem:c0c1`), Lemma 2.3 (`lem:noanomalous`).
 STATUS: interface aggregate (per-field SOURCE/PAPER/STATUS below). -/
 structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
   /-- The MTT p-adic L-function `L_p(E, T) ∈ Λ = ℤ_[p]⟦X⟧` of the testbed curve,
@@ -60,12 +60,12 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
   coefficients lie in `ℤ_[p]`) holds for all split `p` outside an explicit finite
   set, by integrality of the modular symbols of `E` at primes of irreducible
   residual representation — for split CM curves the mod-`𝔭` representation is
-  irreducible for all but finitely many split `𝔭` (Remark 3.6);
+  irreducible for all but finitely many split `𝔭` (Remark 4.8);
   encoded here by the field type `Λ p` landing in `ℤ_[p]⟦X⟧`.
 
   SOURCE: Mazur–Tate–Teitelbaum, Invent. math. 84 (1986), 1–48 (construction);
           Stein–Wuthrich, Math. Comp. 82 (2013) (normalisation).
-  PAPER:  §2.1 (`ssec:notation`) (definition of `L_p`); Remark 3.6 (`rmk:integrality`)
+  PAPER:  §2.1 (`ssec:notation`) (definition of `L_p`); Remark 4.8 (`rmk:integrality`)
   (integrality).
   STATUS: data. -/
   Lp : Λ p
@@ -93,7 +93,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: classical (Hensel factorization at a good ordinary prime; MTT,
           Invent. math. 84 (1986)).
-  PAPER:  §2.1 (`ssec:notation`); Definition 3.2 (`def:c2tilde`) (`α_p` the unit root of
+  PAPER:  §2.1 (`ssec:notation`); Definition 4.2 (`def:c2tilde`) (`α_p` the unit root of
   `X² − a_pX + p`).
   STATUS: classical. -/
   alpha_root : (α : ℤ_[p]) ^ 2 - (ap : ℤ_[p]) * (α : ℤ_[p]) + (p : ℤ_[p]) = 0
@@ -104,7 +104,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: classical (modular symbol `L(E,1)/Ω_E`); Stein–Wuthrich, Math. Comp. 82
           (2013).
-  PAPER:  Lemma 3.1 (`lem:c0c1`); §5.1 (`ssec:testbed`) (exact evaluation).
+  PAPER:  Lemma 4.1 (`lem:c0c1`); §6.1 (`ssec:testbed`) (exact evaluation).
   STATUS: data. -/
   modularSymbol0 : ℚ
   /-- **MTT interpolation at the trivial character**, as a data-equation: the constant coefficient of `L_p` equals
@@ -118,7 +118,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: Mazur–Tate–Teitelbaum, Invent. math. 84 (1986), 1–48 (interpolation
           formula at the trivial character).
-  PAPER:  Lemma 3.1 (`lem:c0c1`) (`c₀(p) = L_p(E,0) = (1 − α_p⁻¹)² L(E,1)/Ω_E`).
+  PAPER:  Lemma 4.1 (`lem:c0c1`) (`c₀(p) = L_p(E,0) = (1 − α_p⁻¹)² L(E,1)/Ω_E`).
   STATUS: classical (rendered as a data-equation, a data-equation, not a bare proposition). -/
   interp : ((constantCoeff Lp : ℤ_[p]) : ℚ_[p])
       = (1 - ((α : ℤ_[p]) : ℚ_[p])⁻¹) ^ 2 * (modularSymbol0 : ℚ_[p])
@@ -131,7 +131,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: exact computation for `E : y² = x³ − 56x` (eclib/Sage modular symbols,
           cross-checked in PARI/GP).
-  PAPER:  Lemma 3.1 (`lem:c0c1`) (hypothesis `L(E,1) = 0`); §5.1 (`ssec:testbed`) (certification).
+  PAPER:  Lemma 4.1 (`lem:c0c1`) (hypothesis `L(E,1) = 0`); §6.1 (`ssec:testbed`) (certification).
   STATUS: certificate. -/
   msymb_zero : modularSymbol0 = 0
   /-- **MTT p-adic functional equation** with the root number `w(E) = +1` folded
@@ -144,7 +144,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: Mazur–Tate–Teitelbaum, Invent. math. 84 (1986), 1–48 (p-adic functional
           equation).
-  PAPER:  Lemma 3.1 (`lem:c0c1`) (`L_p(E,(1+T)⁻¹−1) = w(E)·U(T)·L_p(E,T)`, `w(E) = +1`).
+  PAPER:  Lemma 4.1 (`lem:c0c1`) (`L_p(E,(1+T)⁻¹−1) = w(E)·U(T)·L_p(E,T)`, `w(E) = +1`).
   STATUS: classical. -/
   funct_eq : ∃ U : Λ p, IsUnit U ∧ constantCoeff U = 1 ∧ Lp.subst σ = U * Lp
   /-- **CM evenness of `a_p`.** For `E` with CM by `ℤ[i]` and `p` split, complex

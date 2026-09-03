@@ -1,11 +1,11 @@
 \\ Phase two: delta_E for E: y^2 = x^3 - 56x  (CM by Z[i], f = (56), N = 12544)
 \\ ---------------------------------------------------------------------------
-\\ Computes the Eisenstein--Kronecker grade-<=2 jet package of Definition 4.5 (def:deltaE)
+\\ Computes the Eisenstein--Kronecker grade-<=2 jet package of def:deltaE
 \ and equation eq:jetpackage, computed for the testbed curve in Section 6:
 \\   * the canonical class-invariant twisted sums S_{a,b} (exact integers), and
 \\   * the resultant-norms over D_E (products over the 384 primary 56-division
 \\     points) of each jet section,
-\\ then intersects all prime supports with the 508-prime regulator scan.
+\\ then intersects all prime supports with the 1611-prime regulator scan.
 \\
 \\ Conventions (verified against Bannai-Kobayashi, Duke 153 (2010)):
 \\   - lattice L = w1*Z[i], A = area/pi = w1^2/Pi; s2 = e*_{0,2}(L) = 0 by CM
@@ -104,13 +104,13 @@ report(name, x, A2, B7) = {
   my(v2 = valuation(r,2) - A2, v7 = valuation(r,7) - B7);
   my(odd = abs(r)/2^valuation(r,2)/7^valuation(r,7));
   my(hits = List(), scanhits = List(), rem = odd);
-  forprime(q = 3, 20000, if(q == 7, next);
+  forprime(q = 3, 30000, if(q == 7, next);
     my(v = valuation(rem, q)); if(v, rem /= q^v; listput(hits, [q, v])));
   for(i = 1, #hits, if(setsearch(scanset, hits[i][1]), listput(scanhits, hits[i])));
   print(name, " = sgn ", sign(r), " * 2^", v2, " * 7^", v7, " * ", Vec(hits), " * C[", if(rem == 1, "1", Str(#digits(rem), "dig")), "]   SCAN HITS: ", if(#scanhits == 0, "NONE", Vec(scanhits)));
   write(TMP, "== ", name, " ==");
   write(TMP, "sign ", sign(r), "  v2 ", v2, "  v7 ", v7, "  smallprimes ", Vec(hits), "  scanhits ", if(#scanhits == 0, "NONE", Str(Vec(scanhits))));
-  write(TMP, "cofactor(all prime factors > 20000): ", rem);
+  write(TMP, "cofactor(all prime factors > 30000): ", rem);
   NOK++;
 };
 

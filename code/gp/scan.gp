@@ -5,10 +5,10 @@
 \\ pairing on the Mordell-Weil basis P1 = (8,8), P2 = (9,15), obtained from the
 \\ p-adic sigma function of Mazur-Stein-Tate through PARI's ellpadicregulator.
 \\
-\\ Backs: paper Section 5.3 (ssec:scan), the table of four segments and the
-\\ statement "508 primes; zero exceptions; zero escalations".  By
-\\ Proposition prop:scaneq a prime with v_fp(Reg_fp) = 2 and p < 30000 has
-\\ tilde c_2(p) in Z_p^*.
+\\ Backs: paper Section 5.3 (ssec:scan), the statement "1611 primes; zero
+\\ exceptions; zero escalations".  By Proposition prop:scaneq a prime with
+\\ v_fp(Reg_fp) = 2 and p < 30000 has tilde c_2(p) in Z_p^*, so the scanned
+\\ range is exactly the range in which the scan verifies.
 \\
 \\ Precision rule, verbatim from Section 5.3:
 \\     n = 6  (p < 2000),  n = 5  (2000 <= p < 10^4),  n = 4  (p >= 10^4).
@@ -21,20 +21,17 @@
 \\     HI   upper end of the closed interval, default 8000
 \\     OUT  results file, default ../data/scan_<LO>_<HI>.txt
 \\     LOG  run record, default ../data/scan.out
-\\ The four segments of the paper are reproduced by
-\\     LO=5     HI=5113  OUT=../data/res_1.txt  gp -q scan.gp
-\\     LO=8009  HI=9349  OUT=../data/res_2.txt  gp -q scan.gp
-\\     LO=12517 HI=13513 OUT=../data/res_3.txt  gp -q scan.gp
-\\     LO=16001 HI=16889 OUT=../data/res_4.txt  gp -q scan.gp
-\\ The first of these was interrupted at 5113; 5113 is where the run stopped,
-\\ not a chosen bound.
+\\ The scan of the paper is reproduced by
+\\     LO=5 HI=29999 OUT=../data/all_primes_vreg.txt  gp -q scan.gp
+\\ which computes every split prime below 30000.  Splitting that interval into
+\\ chunks and running them in parallel gives the same 1611 lines once they are
+\\ concatenated in increasing order of p.
 \\
 \\ The results file is written one line per split prime, "p v", with the flags
 \\ appended when the escalation rule fires, and is closed by a JOBDONE line
-\\ recording the interval.  The committed files ../data/res_1..4.txt carry the
-\\ data lines only and no JOBDONE line, as does their concatenation
-\\ ../data/all_primes_vreg.txt.  Compare a re-run against them on the data
-\\ lines.
+\\ recording the interval.  The committed file ../data/all_primes_vreg.txt
+\\ carries the data lines only and no JOBDONE line.  Compare a re-run against
+\\ it on the data lines.
 \\
 \\ Results are appended line by line, so that an interrupted run keeps what it
 \\ computed.  The script therefore refuses to start if the results file already

@@ -4,7 +4,7 @@ import FinShaRank2.Defs
 # Functional-equation coefficient lemma
 
 Ring-generic kernel lemma behind the vanishing of the linear coefficient
-`c₁(p)` of the p-adic L-function (paper Lemma 3.1). Nothing here mentions the
+`c₁(p)` of the p-adic L-function (paper Lemma 4.1). Nothing here mentions the
 paper's interface; the file is `mathlib`-only and reasons purely about power
 series over a commutative ring.
 
@@ -112,7 +112,7 @@ theorem coeff_one_subst_σR (f : PowerSeries R) :
     finsum_eq_single _ 1 fun d hd => by rw [coeff_one_σR_pow_of_ne hd, smul_zero]]
   simp only [pow_one, coeff_one_σR, smul_eq_mul, mul_neg_one]
 
-/-- **Ring-generic functional-equation coefficient lemma** (paper Lemma 3.1).
+/-- **Ring-generic functional-equation coefficient lemma** (paper Lemma 4.1).
 
 If `R` is 2-torsion-free, `U` has constant term `1`, the functional equation
 `f.subst σ_R = U * f` holds, and `coeff 0 f = 0`, then `coeff 1 f = 0`.
@@ -149,7 +149,7 @@ theorem coeff_one_eq_zero_of_functionalEquation
 end Generic
 
 /-- **ℤ_[p]-specialisation of the functional-equation lemma**, phrased against the
-`σ` of `Defs.lean` (paper Lemma 3.1, the `c₁(p) = 0` half). This is the exact
+`σ` of `Defs.lean` (paper Lemma 4.1, the `c₁(p) = 0` half). This is the exact
 statement `c0_eq_zero`/`c1_eq_zero` consumes: from the `AnalyticData.funct_eq` data
 `constantCoeff U = 1` and `Lp.subst σ = U * Lp`, together with `constantCoeff Lp = 0`
 (the `c₀(p) = 0` output of the interpolation half), it concludes `coeff 1 Lp = 0`.

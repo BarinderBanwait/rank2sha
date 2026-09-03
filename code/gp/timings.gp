@@ -1,8 +1,8 @@
 \\ timings.gp -- the four per-prime timings quoted in paper Section 5.3.
 \\ ---------------------------------------------------------------------------
 \\ Section 5.3 (ssec:scan) states: "Timings per prime were 5 ms at p = 101
-\\ (n = 6), 97 ms at p = 1009, 0.55 s at p = 5003 (n = 5) and 2.3 s at
-\\ p = 16889 (n = 4)."  This script measures those four calls, at those
+\\ (n = 6), 97 ms at p = 1009, 0.55 s at p = 5003 (n = 5) and 4.9 s at
+\\ p = 29989 (n = 4)."  This script measures those four calls, at those
 \\ precisions, on the Mordell-Weil basis P1 = (8,8), P2 = (9,15) of
 \\ tab:testbed, and prints the paper's value beside each measurement.
 \\
@@ -12,8 +12,8 @@
 \\ What is timed is one call to ellpadicregulator(E, p, n, G), the call the
 \\ scan makes.  Each is repeated three times on a freshly initialised curve,
 \\ and the wall-clock minimum and median are reported.  The valuation returned
-\\ is printed as well: it is 2 at all four primes, as ../data/res_1.txt,
-\\ res_2.txt and res_4.txt record.
+\\ is printed as well: it is 2 at all four primes, as
+\\ ../data/all_primes_vreg.txt records.
 \\
 \\ Timings are hardware-dependent.  The paper's figures were measured on an
 \\ Apple M1 Pro (arm64), 16 GB RAM, with PARI/GP 2.17.2 (Section 1.8,
@@ -33,7 +33,7 @@ REPEATS = 3;
 G = [[8,8],[9,15]];
 
 \\ p, n, the paper's printed timing, and that timing in milliseconds
-CASES = [[101, 6, "5 ms", 5], [1009, 6, "97 ms", 97], [5003, 5, "0.55 s", 550], [16889, 4, "2.3 s", 2300]];
+CASES = [[101, 6, "5 ms", 5], [1009, 6, "97 ms", 97], [5003, 5, "0.55 s", 550], [29989, 4, "4.9 s", 4900]];
 
 median3(v) = vecsort(v)[2];
 pad(s, w) = {my(t = Str(s)); while(#t < w, t = Str(" ", t)); t};
@@ -62,6 +62,6 @@ say(Str(pad("p", 8), pad("n", 4), pad("runs (ms)", 22), pad("min", 10), pad("med
    if(v != 2, say(Str("    WARNING: v_fp(Reg_fp) = ", v, " at p = ", p, "; the scan records 2"))));}
 
 say("");
-say("Each of the four calls returned v_fp(Reg_fp) = 2, as the scan files record.");
+say("Each of the four calls returned v_fp(Reg_fp) = 2, as the scan file records.");
 say("TIMINGSDONE");
 quit

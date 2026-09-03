@@ -4,11 +4,11 @@ import FinShaRank2.Interface.Global
 import FinShaRank2.Statements
 
 /-!
-# Proposition 3.13 — the height/analytic dictionary
+# Proposition 4.13 — the height/analytic dictionary
 
 The paper's statement, which `prop_dictionary` below renders:
 
-> **Proposition (Dictionary, Proposition 3.13).** *Let `p ∉ S` be a non-anomalous
+> **Proposition (Dictionary, Proposition 4.13).** *Let `p ∉ S` be a non-anomalous
 > split prime. The following are equivalent:*
 > *(1) `c̃₂(p) ∈ ℤ_p^×`;*
 > *(2) the cyclotomic `p`-adic height pairing on `E(ℚ)` is nondegenerate with*
@@ -30,7 +30,7 @@ The paper's statement, which `prop_dictionary` below renders:
 ## Why no non-anomality hypothesis appears
 
 The paper states the dictionary at non-anomalous `p` because its proof routes
-through Theorem B (Theorem 3.9) and Proposition 3.3. Against the frozen
+through Theorem A (Theorem 4.9) and Proposition 4.3. Against the frozen
 interface, however, both directions are available from the Schneider/Perrin-Riou
 consequence-forms alone:
 
@@ -43,7 +43,7 @@ consequence-forms alone:
 `ClassicalInputs`
   proxy-meaning assignment.
 
-No anomality-sensitive step (Proposition 3.3, which converts between
+No anomality-sensitive step (Proposition 4.3, which converts between
 `c̃₂` and `c₂`) is needed, so no `h5`/non-anomality hypothesis is carried here.
 This is a *strengthening* relative to the paper's statement, not a weakening: the
 formal proposition holds at every split `p ∉ S`. `prop_dictionary` may instead route through
@@ -52,14 +52,14 @@ with both factors of norm `≤ 1`, so the product is a unit iff both are), which
 the valuation-arithmetic route sketched on the board; both routes are open and the
 signature is agnostic between them.
 
-Paper statements rendered here: Proposition 3.13, (6).
+Paper statements rendered here: Proposition 4.13, (9).
 -/
 
 open PowerSeries
 
 namespace FinShaRank2
 
-/-- **Proposition 3.13** at a split prime `p ∉ H.S`.
+/-- **Proposition 4.13** at a split prime `p ∉ H.S`.
 
 > *The following are equivalent: (1) `c̃₂(p) ∈ ℤ_p^×`; (2) the cyclotomic `p`-adic*
 > *height pairing on `E(ℚ)` is nondegenerate with `v_p(Reg_γ) = 0`, and*

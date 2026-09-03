@@ -17,14 +17,14 @@ and the Shafarevich–Tate group of rank-two CM elliptic curves*.
 welds them together with the **definitional tie-equations** each layer leaves
 open, so that the layers can be read one at a time. `ClassicalInputs` then quantifies
 `PrimeData` over
-every split prime outside the excluded set (7), together with the global
+every split prime outside the excluded set (10), together with the global
 Eisenstein–Kronecker package `ek` and the rational datum `(#tors)²/∏cᵥ`.
 
 Nothing here is a global axiom: `ClassicalInputs` is a structure consumed as a
 hypothesis `H` by the main theorems. The conjectural content
-(Hypothesis 4.10, Conjecture 4.11) stays out — it lives only in `SinnottHyp`
+(Hypothesis 5.8, Conjecture 5.9) stays out — it lives only in `SinnottHyp`
 (hypothesis-position) and in the hypothesis `H.ek.deltaE c ≠ 0` of
-Theorem C (Theorem 4.12).
+Theorem C (Theorem 5.10).
 
 ## Aggregation vs. `extends`
 
@@ -50,7 +50,7 @@ The standalone `HeightData` layer exposes two `ℚ_[p]` proxies (`c2norm`,
   torsSqOverTam`, with `alphaInv := ((α : ℤ_[p]) : ℚ_[p])⁻¹` **verbatim** per the
   `AnalyticData` elaboration note; the double coercion `((… : ℤ_[p]) : ℚ_[p])` is mandatory
   (the single-coercion form mis-elaborates — `AnalyticData` gotcha). This routes the height
-  dictionary (Proposition 3.13) onto the analytic jet.
+  dictionary (Proposition 4.13) onto the analytic jet.
 * `shaOrd_tie` : `IsPUnit height.shaOrd ↔ Subsingleton selmer.ShaDual` — a p-power
   order factor is a p-adic unit iff it is `1` iff Ш`[p^∞]` vanishes. This is a
   **proxy-meaning assignment**, documented as such: it touches conclusion vocabulary
@@ -68,8 +68,8 @@ weld: Theorem C reads `H.ek.deltaE c` directly, and its
 `H.ek.v p (H.ek.deltaE c) = 1`. The rational factor `torsSqOverTam` is a
 `PrimeData` parameter.
 
-Paper statements quoted below: (7), Definition 3.2, Proposition 3.13,
-(6), Definition 4.8, Definition 2.2, Theorem B (Theorem 3.9),
+Paper statements quoted below: (10), Definition 4.2, Proposition 4.13,
+(9), Definition 3.1, Definition 2.2, Theorem A (Theorem 4.9),
 Theorem C.
 -/
 
@@ -86,8 +86,8 @@ Parameterized over the split hypothesis `hsplit : p % 4 = 1` (threaded into
 
 SOURCE: aggregate of `AnalyticData` (`AnalyticData`), `SelmerData`/`IwasawaData` (`IwasawaData`),
 `HeightData`/`KatzData` (`KatzData`); per-field citations live in those layers.
-PAPER:  Theorem B (Theorem 3.9, `prop:consequence`), Proposition 3.13
-(`prop:dictionary`), Theorem C (Theorem 4.12, `thm:reduction`) (the per-prime
+PAPER:  Theorem A (Theorem 4.9, `prop:consequence`), Proposition 4.13
+(`prop:dictionary`), Theorem C (Theorem 5.10, `thm:reduction`) (the per-prime
         hypotheses these theorems consume).
 STATUS: interface aggregate (two welded data-equations; per-layer STATUS in the
         component structures). -/
@@ -96,37 +96,37 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   /-- The analytic layer: the MTT p-adic L-function `Lp` and its classical facts
   (`AnalyticData`, `AnalyticData`). Supplies the genuine `Lp : Λ p` reused by `iwasawa` and
   `katz`.
-  SOURCE: `AnalyticData` (`AnalyticData`). PAPER: Lemma 3.1 (`lem:c0c1`), Lemma 2.3
+  SOURCE: `AnalyticData` (`AnalyticData`). PAPER: Lemma 4.1 (`lem:c0c1`), Lemma 2.3
   (`lem:noanomalous`).
   STATUS: interface (see `AnalyticData`). -/
   analytic : AnalyticData p hsplit
   /-- The descent layer: the Selmer/Ш duals and the dualized Mordell–Weil
   sequence (`SelmerData`, `IwasawaData`). Supplies the single `SelDual` reused by `iwasawa`.
-  SOURCE: `SelmerData` (`IwasawaData`). PAPER: Theorem B (Theorem 3.9, `prop:consequence`) Step 5.
+  SOURCE: `SelmerData` (`IwasawaData`). PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 5.
   STATUS: interface (see `SelmerData`). -/
   selmer : SelmerData p
   /-- The Iwasawa layer over the shared `analytic.Lp` and `selmer.SelDual`
   (`IwasawaData`, `IwasawaData`). Sharing `selmer.SelDual` here is the `IwasawaData` contract that
   lets `control` and `mw_sha_exact` speak about one object with no bridge equiv.
-  SOURCE: `IwasawaData` (`IwasawaData`). PAPER: Theorem B (Theorem 3.9,
+  SOURCE: `IwasawaData` (`IwasawaData`). PAPER: Theorem A (Theorem 4.9,
   `prop:consequence`) Steps 3–4.
   STATUS: interface (see `IwasawaData`). -/
   iwasawa : IwasawaData p analytic.Lp selmer.SelDual
   /-- The height / p-adic-BSD layer (`HeightData`, `KatzData`). Its `ℚ_[p]` proxies
   `c2norm`, `shaOrd` are tied to the genuine objects by `c2norm_tie`, `shaOrd_tie`.
-  SOURCE: `HeightData` (`KatzData`). PAPER: Proposition 3.13 (`prop:dictionary`), (6)
+  SOURCE: `HeightData` (`KatzData`). PAPER: Proposition 4.13 (`prop:dictionary`), (9)
   (`eq:padicbsd`).
   STATUS: interface (see `HeightData`). -/
   height : HeightData p
   /-- The Katz-measure / δ_E layer over the shared `analytic.Lp` (`KatzData`,
   `KatzData`). Reusing `analytic.Lp` is the `KatzData` contract that makes `comparison` relate
   the real MTT `L_p` to `LKatz` with no divergent copy.
-  SOURCE: `KatzData` (`KatzData`). PAPER: Lemma 3.7 (`lem:comparison`), Proposition 4.2
-  (`prop:grading`), Definition 4.8 (`def:deltaE`).
+  SOURCE: `KatzData` (`KatzData`). PAPER: Lemma 4.4 (`lem:comparison`), Proposition 5.2
+  (`prop:grading`), Definition 3.1 (`def:deltaE`).
   STATUS: interface (see `KatzData`). -/
   katz : KatzData p analytic.Lp
-  /-- **Tie-equation for the second-jet proxy** (`ClassicalInputs` mandate; Definition 3.2,
-  Proposition 3.13(1)): the height-side proxy `c2norm` equals the normalised
+  /-- **Tie-equation for the second-jet proxy** (`ClassicalInputs` mandate; Definition 4.2,
+  Proposition 4.13(1)): the height-side proxy `c2norm` equals the normalised
   analytic jet `c̃₂(p)` built from the genuine `coeff 2 Lp`, the inverse unit root
   `alphaInv = ((α : ℤ_[p]) : ℚ_[p])⁻¹` (`AnalyticData` verbatim instantiation), and the
   global rational factor `torsSqOverTam`.
@@ -134,15 +134,15 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   The double coercion `((coeff 2 analytic.Lp : ℤ_[p]) : ℚ_[p])` is mandatory: the
   single-coercion form mis-elaborates (`AnalyticData` gotcha, `NOTES/MathlibAudit.md`). This
   routes the `HeightData` dictionary onto the analytic jet so that
-  Proposition 3.13 about `c2norm` becomes a statement about `coeff 2 Lp`.
-  SOURCE: Definition 3.2 (`def:c2tilde`) (the normalisation) tying the `KatzData` proxy
+  Proposition 4.13 about `c2norm` becomes a statement about `coeff 2 Lp`.
+  SOURCE: Definition 4.2 (`def:c2tilde`) (the normalisation) tying the `KatzData` proxy
   to the `AnalyticData` jet.
-  PAPER:  Definition 3.2 (`def:c2tilde`), Proposition 3.13 (`prop:dictionary`)(1).
+  PAPER:  Definition 4.2 (`def:c2tilde`), Proposition 4.13 (`prop:dictionary`)(1).
   STATUS: data (definitional tie-equation). -/
   c2norm_tie : height.c2norm
       = c2tilde ((PowerSeries.coeff 2 analytic.Lp : ℤ_[p]) : ℚ_[p])
           (((analytic.α : ℤ_[p]) : ℚ_[p])⁻¹) torsSqOverTam
-  /-- **Tie-equation for the Ш-order proxy** (`ClassicalInputs` mandate; (6)): the
+  /-- **Tie-equation for the Ш-order proxy** (`ClassicalInputs` mandate; (9)): the
   height-side proxy `shaOrd` is a p-adic unit exactly when the Selmer-dual Ш
   vanishes. Since `shaOrd` is the group order `#Ш(E/ℚ)[p^∞]` (a power of `p`) cast
   to `ℚ_[p]`, it is a p-adic unit iff it equals `1` iff `Ш[p^∞] = 0` iff
@@ -154,7 +154,7 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   theorem. `ToySha` (`ToySha`) stays constructible — a non-unit `shaOrd` with a
   nontrivial `ShaDual` satisfies this iff.
   SOURCE: proxy-meaning assignment tying the `KatzData` proxy to `SelmerData.ShaDual`.
-  PAPER:  (6) (`eq:padicbsd`) (`#Ш(E/ℚ)[p^∞]` factor).
+  PAPER:  (9) (`eq:padicbsd`) (`#Ш(E/ℚ)[p^∞]` factor).
   STATUS: data (definitional tie-equation; `KatzData` proxy-meaning, the
   conclusion-vocabulary ban exception). -/
   shaOrd_tie : IsPUnit height.shaOrd ↔ Subsingleton selmer.ShaDual
@@ -163,20 +163,20 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
 consumed by every headline theorem. It quantifies the
 per-prime bundle `PrimeData` over all split primes outside the excluded set,
 carries the global Eisenstein–Kronecker package, pins the rational factor of the
-normalisation, and records the non-anomality content of (7).
+normalisation, and records the non-anomality content of (10).
 
 No global axioms: this is an ordinary structure; the main theorems are literal
 implications `theorem … (H : ClassicalInputs) … : …`. The conjectural content of
 the paper is *not* here (it stays in `SinnottHyp` / the `H.ek.deltaE c ≠ 0`
 hypothesis).
 
-SOURCE: the paper's standing hypotheses ((7) (`eq:Sexc`); `#tors²/∏cᵥ = 1` for the
-        testbed; the Eisenstein–Kronecker data of Definition 4.8).
-PAPER:  (7) (`eq:Sexc`), Definition 4.8 (`def:deltaE`), Theorem B (Theorem 3.9,
-`prop:consequence`), Theorem C (Theorem 4.12, `thm:reduction`).
+SOURCE: the paper's standing hypotheses ((10) (`eq:Sexc`); `#tors²/∏cᵥ = 1` for the
+        testbed; the Eisenstein–Kronecker data of Definition 3.1).
+PAPER:  (10) (`eq:Sexc`), Definition 3.1 (`def:deltaE`), Theorem A (Theorem 4.9,
+`prop:consequence`), Theorem C (Theorem 5.10, `thm:reduction`).
 STATUS: interface aggregate. -/
 structure ClassicalInputs where
-  /-- The **excluded set** `S ⊆ ℕ` of (7). Downstream code uses `p ∉ S`
+  /-- The **excluded set** `S ⊆ ℕ` of (10). Downstream code uses `p ∉ S`
   together with `notAnomalous` below; the five membership reasons are recorded
   here for the referee.
 
@@ -187,38 +187,38 @@ structure ClassicalInputs where
      `K = ℚ(i)` this excludes no split prime — Lemma 2.3);
   3. `S_red`: the residual representation `ρ̄_{E,p}` is **reducible** (a rational
      `p`-isogeny exists — finitely many `p`, none for `p ∈ {5, 13}`);
-  4. `S_cmp`: `p` lies in the finite set of Lemma 3.7 (where the comparison
+  4. `S_cmp`: `p` lies in the finite set of Lemma 4.4 (where the comparison
      constant `c_p` could fail to be a `p`-adic unit; for the testbed the period
      ratio is supported on `{2, 7}`, so this excludes no split `p`);
   5. `S_cl`: `p ∣ #Cl_𝔣(K)`, the order of the ray class group of `K` modulo the
      conductor `𝔣`.
 
   Only clause 2 has formal content downstream; it is carried by `notAnomalous`.
-  SOURCE: (7) (`eq:Sexc`) (explicit definition of `S` for the fixed curve `E`).
-  PAPER:  (7) (`eq:Sexc`); Theorem B (Theorem 3.9, `prop:consequence`) (quantifies over `p ∉ S`).
+  SOURCE: (10) (`eq:Sexc`) (explicit definition of `S` for the fixed curve `E`).
+  PAPER:  (10) (`eq:Sexc`); Theorem A (Theorem 4.9, `prop:consequence`) (quantifies over `p ∉ S`).
   STATUS: data. -/
   S : Finset ℕ
-  /-- The **Eisenstein–Kronecker package** of Definition 4.8: the divisor `D_E`
-  ((12)), the six-function package `𝓡_E` ((13)), the valuations
-  `v_𝔭`, and the support function of Hypothesis 4.10. The candidate invariant
+  /-- The **Eisenstein–Kronecker package** of Definition 3.1: the divisor `D_E`
+  ((6)), the six-function package `𝓡_E` ((7)), the valuations
+  `v_𝔭`, and the support function of Hypothesis 5.8. The candidate invariant
   `δ_E(c)` is the def `EKPackage.deltaE ek c`, not a datum; its nonvanishing is
-  Conjecture 4.11, appearing only as a hypothesis of Theorem C (Theorem 4.12) — never asserted
+  Conjecture 5.9, appearing only as a hypothesis of Theorem C (Theorem 5.10) — never asserted
   here.
   SOURCE: `EKPackage` (`Interface/EK.lean`); per-field citations live there.
-  PAPER:  Definition 4.8 (`def:deltaE`), (12) (`eq:DEdef`), (13) (`eq:jetpackage`),
-  Conjecture 4.11 (`conj:EK`), Theorem C.
+  PAPER:  Definition 3.1 (`def:deltaE`), (6) (`eq:DEdef`), (7) (`eq:jetpackage`),
+  Conjecture 5.9 (`conj:EK`), Theorem C.
   STATUS: data. -/
   ek : EKPackage
-  /-- The global rational factor `(#E(ℚ)_tors)² / ∏_v c_v` of Definition 3.2,
+  /-- The global rational factor `(#E(ℚ)_tors)² / ∏_v c_v` of Definition 4.2,
   pinned `= 1` for the testbed curve by `torsSqOverTam_eq`.
-  SOURCE: Definition 3.2 (`def:c2tilde`); testbed data `#tors = 2`, `∏c_v = 4`, so `4/4 = 1`.
-  PAPER:  Definition 3.2 (`def:c2tilde`), §5.1 (`ssec:testbed`).
+  SOURCE: Definition 4.2 (`def:c2tilde`); testbed data `#tors = 2`, `∏c_v = 4`, so `4/4 = 1`.
+  PAPER:  Definition 4.2 (`def:c2tilde`), §6.1 (`ssec:testbed`).
   STATUS: data (value pinned by `torsSqOverTam_eq`). -/
   torsSqOverTam : ℚ
-  /-- **Defining equation** pinning `torsSqOverTam = 1` (Definition 3.2, testbed
+  /-- **Defining equation** pinning `torsSqOverTam = 1` (Definition 4.2, testbed
   data `(#tors)²/∏cᵥ = 2²/4 = 1`). Kept as a separate field (data + equation, conv.
   3) so the normalisation value is a checkable datum rather than baked in.
-  SOURCE: testbed arithmetic `2² / 4 = 1`. PAPER: Definition 3.2 (`def:c2tilde`), §5.1
+  SOURCE: testbed arithmetic `2² / 4 = 1`. PAPER: Definition 4.2 (`def:c2tilde`), §6.1
   (`ssec:testbed`).
   STATUS: data (defining equation). -/
   torsSqOverTam_eq : torsSqOverTam = 1
@@ -229,24 +229,24 @@ structure ClassicalInputs where
   membership `p ∉ S` are explicit arrows, composing with `AnalyticData`'s binder
   design (`AnalyticData`).
   SOURCE: aggregate of the per-prime interface layers.
-  PAPER:  Theorem B (Theorem 3.9, `prop:consequence`), Theorem C (Theorem 4.12,
+  PAPER:  Theorem A (Theorem 4.9, `prop:consequence`), Theorem C (Theorem 5.10,
   `thm:reduction`) (quantified over split `p ∉ S`).
   STATUS: interface aggregate. -/
   dataAt : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1), p ∉ S →
     @PrimeData p (Fact.mk hp) hsplit torsSqOverTam
-  /-- The `S_an` clause of (7): no prime outside `S` is anomalous. Stated
+  /-- The `S_an` clause of (10): no prime outside `S` is anomalous. Stated
   in the spelling of `Kernel/Anomalous.isUnit_one_sub_alphaInv_iff`, so it feeds
   that lemma with no adapter.
 
-  This is the one membership reason of (7) with formal content downstream.
+  This is the one membership reason of (10) with formal content downstream.
   Without it `p ∉ S` says nothing — `S` is opaque `Finset` data — and every
   headline theorem had to carry the curve-specific residual hypothesis
   `p = 5 → a_p = −2` in its place. Lemma 2.3(2), formalised as
   `Kernel/Anomalous.anomalous_iff_five`, proves this clause outright at every
   split `p ≥ 13` and reduces it at `p = 5` to `a₅ ≠ −4`, so what is assumed here
   beyond the proved lemma is a single numerical value.
-  SOURCE: (7) (`eq:Sexc`) (`S_an`), Definition 2.2 (`def:anomalous`).
-  PAPER:  (7) (`eq:Sexc`), Definition 2.2 (`def:anomalous`), Lemma 2.3 (`lem:noanomalous`).
+  SOURCE: (10) (`eq:Sexc`) (`S_an`), Definition 2.2 (`def:anomalous`).
+  PAPER:  (10) (`eq:Sexc`), Definition 2.2 (`def:anomalous`), Lemma 2.3 (`lem:noanomalous`).
   STATUS: data (a clause of the definition of `S`). -/
   notAnomalous : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ S),
     letI : Fact p.Prime := ⟨hp⟩

@@ -5,7 +5,7 @@ import FinShaRank2.Defs
 # Λ-module structure kernel
 
 This file proves, as pure `mathlib`-only algebra, Steps 3–4 of the paper's
-Theorem B (Theorem 3.9): the structural core of the passage from the fused
+Theorem A (Theorem 4.9): the structural core of the passage from the fused
 Rubin ⊕ structure-theorem datum on the Selmer dual `X` to the two facts the
 Sha endgame consumes — that the cyclotomic variable acts as zero on `X`, and
 that `X` is `ℤ_[p]`-free of rank two.
@@ -15,7 +15,7 @@ are supplied alongside it, being the links between this file's output and the
 neighbouring interface fields: `FinShaRank2.quotient_collapse` and
 `FinShaRank2.rank_lower_bound` (final section).
 
-## Internal split (paper Theorem B Steps 3–4)
+## Internal split (paper Theorem A Steps 3–4)
 
 * **(a)** `PowerSeries.X` is prime in `Λ` (`PowerSeries.X_prime`), and the
   quotients `Λ ⧸ (Xᵏ)` are `ℤ_[p]`-linearly the free modules `Fin k → ℤ_[p]`
@@ -114,9 +114,9 @@ private lemma quotSpan_of_dvd_Xsq (g : Λ p) (hg : g ∣ (X : Λ p) ^ 2) :
   obtain ⟨e⟩ := quotXpow_linEquiv (p := p) k
   exact ⟨((Submodule.quotEquivOfEq _ _ hspan).restrictScalars ℤ_[p]).trans e⟩
 
-/-! ### Main structure theorem (Theorem B (Theorem 3.9) Steps 3–4) -/
+/-! ### Main structure theorem (Theorem A (Theorem 4.9) Steps 3–4) -/
 
-/-- **`selmer_dual_structure`.** Steps 3–4 of Theorem B (Theorem 3.9) as pure algebra.
+/-- **`selmer_dual_structure`.** Steps 3–4 of Theorem A (Theorem 4.9) as pure algebra.
 
 Given a finitely generated `Λ`-module `X` (the Selmer dual) with no nonzero
 finite `Λ`-submodule (`hnofin`, Greenberg), a Rubin ⊕ structure-theorem map

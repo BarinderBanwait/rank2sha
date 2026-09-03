@@ -69,24 +69,24 @@ marker, so a clean run leaves evidence of being clean.
 
 ### The horizontal regulator scan (§5.3)
 
-The interval is given by the environment. The paper's four windows are
+The interval is given by the environment. The paper scans every split prime
+below 30,000, which is the range in which `prop:scaneq` makes a clean prime a
+verification:
 
 ```bash
 cd gp
-LO=5     HI=5113  OUT=../data/res_1.txt  gp -q scan.gp
-LO=8009  HI=9349  OUT=../data/res_2.txt  gp -q scan.gp
-LO=12517 HI=13513 OUT=../data/res_3.txt  gp -q scan.gp
-LO=16001 HI=16889 OUT=../data/res_4.txt  gp -q scan.gp
+LO=5 HI=29999 OUT=../data/all_primes_vreg.txt gp -q scan.gp
 ```
 
-(the script refuses to start if the output file exists, so move the committed
-ones aside first). Together that is 508 split primes and about **six minutes** on
-an Apple M1 Pro — 83, 85, 91 and 95 seconds for the four windows — and it
-reproduces `data/res_1.txt` … `data/res_4.txt` and their concatenation
+(the script refuses to start if the output file exists, so move the committed one
+aside first). That is 1611 split primes, and it reproduces
 `data/all_primes_vreg.txt` byte for byte. Per-prime cost runs from 5 ms at
-$p = 101$ to 2.3 s at $p = 16889$.
+$p = 101$ to 4.9 s at $p = 29989$, so the single interval is over an hour;
+splitting it into seven chunks run in parallel brought the last 1103 primes in
+under **13 minutes** on an eight-core Apple M1 Pro. Chunks concatenated in
+increasing order of $p$ give the committed file.
 
-A re-run writes a terminal `JOBDONE` line that the committed files do not carry,
+A re-run writes a terminal `JOBDONE` line that the committed file does not carry,
 so compare on the data lines.
 
 The working precision follows the rule stated in §5.3: $n = 6$ below 2000,
@@ -157,8 +157,8 @@ about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
 |---|---|---|
 | Table 1, the invariants of $E$ | — | quoted from LMFDB `12544.g1` |
 | The discharge of $S_E$, eq. `eq:Sexc` | `gp/excluded_set.gp` | `data/excluded_set.out` |
-| $v_\mathfrak{p}(\operatorname{Reg}_\mathfrak{p}) = 2$ at 508 primes | `gp/scan.gp` | `data/res_{1,2,3,4}.txt`, `data/all_primes_vreg.txt` |
-| The re-verification of those four files | `sage/verify_scan.py` | `data/verify_scan.out` |
+| $v_\mathfrak{p}(\operatorname{Reg}_\mathfrak{p}) = 2$ at 1611 primes | `gp/scan.gp` | `data/all_primes_vreg.txt` |
+| The re-verification of that file | `sage/verify_scan.py` | `data/verify_scan.out` |
 | The per-prime timings | `gp/timings.gp` | `data/timings.out` |
 | The $p = 5, 13$ control | `sage/run.sh` | `data/cert_5.out`, `data/cert_13.out` |
 | §5.4, $\lambda$ and the likelihood ratios | `sage/null_model.py` | `data/null_model.out` |
@@ -179,17 +179,15 @@ about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
 
 ## Reading the output files
 
-- `res_1.txt` … `res_4.txt` — one line per split prime, `p v`, with ` ESC` and
-  ` MAXED` appended if the escalation rule fired. The four windows are
-  $[5, 5113]$, $[8009, 9349]$, $[12517, 13513]$, $[16001, 16889]$, of 335, 77, 54
-  and 42 primes. The first window ends at 5113 because the run was interrupted
-  there, not because 5113 was chosen.
-- `all_primes_vreg.txt` — the four concatenated, in order. 508 lines.
+- `all_primes_vreg.txt` — one line per split prime, `p v`, with ` ESC` and
+  ` MAXED` appended if the escalation rule fired. 1611 lines: every prime
+  $p \equiv 1 \bmod 4$ with $5 \le p \le 29989$, in increasing order, and no
+  other. No line carries a flag and every $v$ is 2.
 - `deltaE_phase2.txt` — the six class-invariant sums, then one block per section
-  giving the sign, the 2- and 7-valuations, the small primes below 20000, whether
-  any of them is among the 508 scanned primes, and the residual cofactor in full.
+  giving the sign, the 2- and 7-valuations, the small primes below 30000, whether
+  any of them is among the 1611 scanned primes, and the residual cofactor in full.
   The three cofactors have 400, 912 and 1243 decimal digits and are unfactored:
-  nothing is claimed about them beyond having no prime factor at or below 20000.
+  nothing is claimed about them beyond having no prime factor at or below 30000.
 - `cert_5.out`, `cert_13.out` — the full transcript of a control run, header
   first, then the four stages, then the verdict. `MACHINE` lines carry the
   $p$-adic expansions in a fixed format so that the cross-checks compare digits

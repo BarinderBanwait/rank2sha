@@ -6,7 +6,7 @@ import FinShaRank2.Defs
 
 This file proves, as pure `mathlib`-only algebra over the Iwasawa algebra
 `Λ = ℤ_[p]⟦X⟧`, the elementary factorisation that drives Step 1 of the paper's
-Theorem B (Theorem 3.9): a power series whose first two coefficients vanish and whose
+Theorem A (Theorem 4.9): a power series whose first two coefficients vanish and whose
 second coefficient is a `ℤ_[p]`-unit is `X²` times a unit.
 
 ## Main result
@@ -87,7 +87,7 @@ private lemma coeffs_of_factored {f : Λ p} (u : (Λ p)ˣ) (hf : f = (X : Λ p) 
 and the quadratic coefficient is a `ℤ_[p]`-unit, then `f = X² · u` for a genuine
 unit `u` of `Λ = ℤ_[p]⟦X⟧`.
 
-Paper: Theorem B (Theorem 3.9), Step 1 (the `X²`-unit factorisation of `L_p`). -/
+Paper: Theorem A (Theorem 4.9), Step 1 (the `X²`-unit factorisation of `L_p`). -/
 theorem tsq_factor {f : Λ p} (h0 : coeff 0 f = 0) (h1 : coeff 1 f = 0)
     (h2 : IsUnit (coeff 2 f)) : ∃ u : (Λ p)ˣ, f = (X : Λ p) ^ 2 * ↑u := by
   have hdvd : (X : Λ p) ^ 2 ∣ f := by
