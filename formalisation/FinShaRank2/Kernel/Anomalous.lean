@@ -10,7 +10,7 @@ Frobenius unit root `α_p` satisfies `α_p ≢ 1 (mod 𝔭)`, equivalently the l
 factor `1 − α_p⁻¹` that appears in the interpolation / normalisation is a
 `p`-adic unit. This is exactly the input that discharges the non-anomalous
 hypothesis carried by every theorem about `c2tilde` (see `Defs.lean`), used by
-`isPUnit_c2tilde_iff` (Proposition 4.3) and `prop_consequence` (Theorem A (Theorem 4.9)).
+`isPUnit_c2tilde_iff` (Proposition 3.3) and `prop_consequence` (Theorem A (Theorem 3.8)).
 
 The argument has four gap-free pieces, matching the paper's proof:
 
@@ -62,7 +62,7 @@ elliptic curve with complex multiplication, so part (1) is not formalised. The
 formalised statements above cover part (2), the split case, which is the case
 every downstream theorem uses.
 
-Paper statements: Lemma 2.3, Definition 4.2, Proposition 4.3.
+Paper statements: Lemma 2.3, Definition 3.2, Proposition 3.3.
 -/
 
 namespace FinShaRank2
@@ -243,7 +243,7 @@ theorem two_dvd_ap {p : ℕ} {a : ℤ}
 
 /-! ### Composed non-anomality (the `prop_consequence` deliverable) -/
 
-/-- **Non-anomality, composed for Theorem A (Theorem 4.9) (`prop_consequence`).** Package (i)–(iv):
+/-- **Non-anomality, composed for Theorem A (Theorem 3.8) (`prop_consequence`).** Package (i)–(iv):
 from the `AnalyticData` fields `hasse` (`a² ≤ 4p`), `ap_from_CM`
 (`a = 2·Re(π)`, `N(π) = p`) and `alpha_root` (`α² − a·α + p = 0`), together with
 the split-prime case split `13 ≤ p ∨ (p = 5 ∧ a = −2)`, conclude that the local

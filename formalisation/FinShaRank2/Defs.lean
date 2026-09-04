@@ -17,15 +17,15 @@ Contents:
 * `Λ p` — the Iwasawa algebra `ℤ_[p]⟦X⟧` (mathlib `PowerSeries ℤ_[p]`).
 * `σ` — the functional-equation substitution representing `(1 + T)⁻¹ − 1`,
   with the coefficient facts and the `HasSubst` witness that `Kernel/FunctionalEquation.lean` (the
-  functional-equation coefficient lemma, paper Lemma 4.1) consumes.
+  functional-equation coefficient lemma, paper Lemma 3.1) consumes.
 * `IsPUnit` — the p-adic unit predicate `‖x‖ = 1` on `ℚ_[p]`.
 * `MuZero`, `lambdaAn` — the Iwasawa μ = 0 predicate and analytic λ-invariant of
-  a power series (paper Theorem A (Theorem 4.9), Step 2).
-* `c2tilde` — the normalised second jet Definition 4.2.
+  a power series (paper Theorem A (Theorem 3.8), Step 2).
+* `c2tilde` — the normalised second jet Definition 3.2.
 * `corank` — the `ℤ_[p]`-corank abbreviation (`Module.finrank ℤ_[p] ·`) used to
   phrase the Selmer-corank conclusions (conventions §2.1).
 
-Paper statements quoted below: Definition 4.2, Proposition 4.3, Lemma 4.1,
+Paper statements quoted below: Definition 3.2, Proposition 3.3, Lemma 3.1,
 Theorem A.
 
 ## API notes for downstream tasks
@@ -60,7 +60,7 @@ as the power series `Σₙ₌₁^∞ (−1)ⁿ Tⁿ = −T + T² − T³ + ⋯`.
 
 Substituting `σ` into `L_p(E, T)` realises the change of variable `s ↦ 2 − s` on
 the cyclotomic line that underlies the Mazur–Tate–Teitelbaum functional equation
-with sign `w(E) = +1`; this is the input to Lemma 4.1 (see `oneAddX_mul_σ` and
+with sign `w(E) = +1`; this is the input to Lemma 3.1 (see `oneAddX_mul_σ` and
 `FinShaRank2.hasSubst_σ`). -/
 noncomputable def σ : Λ p := PowerSeries.mk fun n => if n = 0 then 0 else (-1) ^ n
 
@@ -73,7 +73,7 @@ theorem constantCoeff_σ : constantCoeff (σ : Λ p) = 0 := by
 /-- The linear coefficient of `σ` is `−1` (the leading term of `(1 + T)⁻¹ − 1`).
 Task `Kernel/FunctionalEquation.lean` uses this to turn the functional equation into `c₁
 = −c₁`, forcing
-`c₁ = 0` (Lemma 4.1). -/
+`c₁ = 0` (Lemma 3.1). -/
 theorem coeff_one_σ : coeff 1 (σ : Λ p) = -1 := by
   simp [σ, coeff_mk]
 
@@ -102,19 +102,19 @@ theorem oneAddX_mul_σ : (1 + X) * (σ : Λ p) = -X := by
 /-- `x : ℚ_[p]` is a **p-adic unit** when `‖x‖ = 1`. For `x` in the ring of
 integers this is genuine invertibility (`isPUnit_coe_iff`); phrasing it on
 `ℚ_[p]` lets `c2tilde` — which lives in `ℚ_[p]` — be tested directly.
-Paper: the unit condition `\tilde c_2(p) ∈ ℤ_p^×` of Conjecture 4.7 and Theorem C. -/
+Paper: the unit condition `\tilde c_2(p) ∈ ℤ_p^×` of Conjecture 5.1 and Theorem C. -/
 def IsPUnit (x : ℚ_[p]) : Prop := ‖x‖ = 1
 
 /-- For an integral element, `IsPUnit` of its image in `ℚ_[p]` is exactly
 `IsUnit` in `ℤ_[p]`. This bridges the norm-phrased conclusion to the ring-theoretic
-`IsUnit (coeff 2 L_p)` that `isPUnit_c2tilde_iff` (Proposition 4.3) extracts.
+`IsUnit (coeff 2 L_p)` that `isPUnit_c2tilde_iff` (Proposition 3.3) extracts.
 Tools: `PadicInt.padic_norm_e_of_padicInt`, `PadicInt.isUnit_iff`. -/
 theorem isPUnit_coe_iff {x : ℤ_[p]} : IsPUnit (x : ℚ_[p]) ↔ IsUnit x := by
   rw [IsPUnit, PadicInt.padic_norm_e_of_padicInt, PadicInt.isUnit_iff]
 
 /-- Vanishing of the Iwasawa μ-invariant, phrased on the Pontryagin-dual side as:
 some coefficient of `f` is a `ℤ_[p]`-unit (equivalently, not every coefficient
-lies in the maximal ideal `(p)`). Paper: Theorem A (Theorem 4.9), Step 2.
+lies in the maximal ideal `(p)`). Paper: Theorem A (Theorem 3.8), Step 2.
 
 Kept **paired** with `lambdaAn` in downstream statements (conventions §2.5): the
 λ-invariant is meaningful only where `MuZero` holds. -/
@@ -130,7 +130,7 @@ pair `lambdaAn f = 2` with `MuZero f`. The coefficient ring of `PowerSeries.coef
 is implicit in this mathlib release. -/
 noncomputable def lambdaAn (f : Λ p) : ℕ := sInf {n | IsUnit (PowerSeries.coeff n f)}
 
-/-- The **normalised second jet** `\tilde c_2(p)` of Definition 4.2:
+/-- The **normalised second jet** `\tilde c_2(p)` of Definition 3.2:
 `\tilde c_2(p) = c_2(p) · (1 − α_p⁻¹)⁻² · (#E(ℚ)_tors)² / ∏_v c_v`,
 with `α_p` the unit root of `X² − a_p X + p`.
 
@@ -141,7 +141,7 @@ This is a standalone function of its data:
   testbed curve; pinned as data in `ClassicalInputs`).
 
 This file mentions no interface structure: `Interface/` supplies the arguments,
-and `isPUnit_c2tilde_iff` (Proposition 4.3) proves `IsPUnit (c2tilde …) ↔ IsUnit (coeff 2 L_p)`
+and `isPUnit_c2tilde_iff` (Proposition 3.3) proves `IsPUnit (c2tilde …) ↔ IsUnit (coeff 2 L_p)`
 under the non-anomalous hypothesis.
 
 **Junk-value convention** (conventions §2.5): `c2tilde` is total. At an anomalous

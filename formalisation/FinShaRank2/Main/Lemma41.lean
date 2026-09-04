@@ -4,11 +4,11 @@ import FinShaRank2.Interface.Analytic
 import FinShaRank2.Kernel.FunctionalEquation
 
 /-!
-# Lemma 4.1 — vanishing of the first two Taylor coefficients
+# Lemma 3.1 — vanishing of the first two Taylor coefficients
 
 The paper's statement, which `c0_eq_zero` and `c1_eq_zero` below render:
 
-> **Lemma 4.1.** *Assume `L(E,1) = 0` and `w(E) = +1`. Then for every good
+> **Lemma 3.1.** *Assume `L(E,1) = 0` and `w(E) = +1`. Then for every good
 > ordinary `p`, `c₀(p) = c₁(p) = 0`.*
 
 Both hypotheses of the paper's lemma are already discharged inside `AnalyticData`:
@@ -33,17 +33,17 @@ Both hypotheses of the paper's lemma are already discharged inside `AnalyticData
 These two are stated over a bare `AnalyticData p hsplit`, *not* over
 `ClassicalInputs` — they are the minimal-hypothesis form, consuming only the three
 fields (`interp`, `msymb_zero`, `funct_eq`) that the paper's proof uses.
-Downstream (Theorem A (Theorem 4.9), `prop_consequence`) they are applied to
+Downstream (Theorem A (Theorem 3.8), `prop_consequence`) they are applied to
 `(H.dataAt p hp hsplit hpS).analytic`.
 
-Paper statements rendered here: Lemma 4.1.
+Paper statements rendered here: Lemma 3.1.
 -/
 
 open PowerSeries
 
 namespace FinShaRank2
 
-/-- **Lemma 4.1, first half — `c₀(p) = 0`.**
+/-- **Lemma 3.1, first half — `c₀(p) = 0`.**
 
 > *`c₀(p) = L_p(E,0) = (1 − α_p⁻¹)² · L(E,1)/Ω_E = 0`.*
 
@@ -62,7 +62,7 @@ theorem c0_eq_zero {p : ℕ} [Fact p.Prime] {hsplit : p % 4 = 1}
   simp only [Rat.cast_zero, mul_zero] at h
   exact PadicInt.coe_eq_zero.mp h
 
-/-- **Lemma 4.1, second half — `c₁(p) = 0`.**
+/-- **Lemma 3.1, second half — `c₁(p) = 0`.**
 
 > *For good `p` there is a unit power series `U(T) ∈ Λ^×` with `U(0) = 1` such
 > that `L_p(E,(1+T)⁻¹−1) = w(E)·U(T)·L_p(E,T)`; with `w(E) = +1`, comparing linear

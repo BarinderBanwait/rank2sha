@@ -4,7 +4,7 @@ import FinShaRank2.Defs
 /-!
 # `IwasawaData p` and `SelmerData p`
 
-The Iwasawa-theoretic and descent inputs to the proof of Theorem A (Theorem 4.9) in
+The Iwasawa-theoretic and descent inputs to the proof of Theorem A (Theorem 3.8) in
 *Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
 rank-two CM elliptic curves*.
 
@@ -27,7 +27,7 @@ Everything is phrased on the **Pontryagin-dual side** as finitely generated
 The paper's discrete statements translate as
 `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2 ↔ Module.finrank ℤ_[p] SelDual = 2` and
 `Ш(E/ℚ)[p^∞] = 0 ↔ Subsingleton ShaDual`. **Neither translation appears in any
-field type below** (convention §2.4, no conclusion vocabulary): the fields carry
+field type below** (no conclusion vocabulary): the fields carry
 only the *inputs* the proof consumes, and the conclusions are theorems
 `prop_consequence` and `cor_horizontal`
 derive from them.
@@ -65,7 +65,7 @@ structure on the quotient is inferred from the tower via
 * `control` is provided as *data* (an actual `LinearEquiv`), faithful to Mazur's
   control theorem, which produces the isomorphism, and convenient for `prop_consequence`.
 
-Paper statements quoted below: Theorem A (Steps 3–4), Remark 4.11.
+Paper statements quoted below: Theorem A (Steps 3–4), Remark 3.9.
 -/
 
 open PowerSeries
@@ -74,7 +74,7 @@ namespace FinShaRank2
 
 /-- **Iwasawa-module data at `p`** (dual side): the finitely generated
 `Λ = ℤ_[p]⟦T⟧`-module `X = Sel_{p^∞}(E/ℚ_∞)^∨` together with the two structural
-inputs Steps 3–4 of Theorem A (Theorem 4.9) extract from the literature and the
+inputs Steps 3–4 of Theorem A (Theorem 3.8) extract from the literature and the
 Mazur-control isomorphism onto the Selmer dual `SelDual`.
 
 Parameterized over `Lp : Λ p` (the p-adic L-function, whose characteristic-ideal
@@ -108,7 +108,7 @@ structure IwasawaData (p : ℕ) [Fact p.Prime] (Lp : Λ p)
   `p ∤ #E(ℚ)_tors`; equivalently Prop. 4.15(ii) applies with ramification
   index `e_{v_0} = 1 ≤ p − 2`) — are recorded here and discharged for the
   testbed curve by the surrounding data.
-  PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 3.
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 3.
   STATUS: classical. -/
   no_finite_submodule : ∀ N : Submodule (Λ p) X, Finite N → N = ⊥
   /-- **Fused structure input**: a pseudo-isomorphism of `X` onto a product of
@@ -132,7 +132,7 @@ structure IwasawaData (p : ℕ) [Fact p.Prime] (Lp : Λ p)
 
   SOURCE: Washington GTM 83, Thm. 13.12, fused with Rubin, Invent. math. 103
   (1991), Thm. 12.3 (via Yager).
-  PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 2 (characteristic ideal) feeding Step 3.
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 2 (characteristic ideal) feeding Step 3.
   STATUS: classical. -/
   rubin_structure : ∃ (n : ℕ) (f : Fin n → Λ p)
       (φ : X →ₗ[Λ p] Π i, (Λ p) ⧸ Ideal.span {f i}),
@@ -154,7 +154,7 @@ structure IwasawaData (p : ℕ) [Fact p.Prime] (Lp : Λ p)
   `c_v` (here `= 1`, as `p ∉ S`), and non-anomalicity at `p`
   (`Ẽ(𝔽_p)[p^∞] = 0`) — are recorded here and supplied by the surrounding
   data for the testbed curve.
-  PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 4 (the isomorphism `X_Γ ≅
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 4 (the isomorphism `X_Γ ≅
   Sel_{p^∞}(E/ℚ)^∨`).
   STATUS: classical (consequence form). -/
   control : (X ⧸ (Ideal.span {(PowerSeries.X : Λ p)} • (⊤ : Submodule (Λ p) X)))
@@ -195,7 +195,7 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   SOURCE: Pontryagin dual of the descent sequence
   `0 → E(ℚ)⊗ℚ_p/ℤ_p → Sel_{p^∞}(E/ℚ) → Ш(E/ℚ)[p^∞] → 0`.
-  PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 5 (the exact sequence of coranks).
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 5 (the exact sequence of coranks).
   STATUS: classical. -/
   ι : ShaDual →ₗ[ℤ_[p]] SelDual
   /-- The surjection `Sel^∨ ↠ (E(ℚ)⊗ℚ_p/ℤ_p)^∨ ≅ ℤ_p^2` (dual of the inclusion
@@ -209,7 +209,7 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   SOURCE: Pontryagin dual of the descent sequence; rank from 2-descent +
   saturation of `E(ℚ)`.
-  PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 5; `main.tex` §6 (rank-2 testbed).
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 5; `main.tex` §6 (rank-2 testbed).
   STATUS: classical (rank from certified data). -/
   π : SelDual →ₗ[ℤ_[p]] (Fin 2 → ℤ_[p])
   /-- `ι` is injective. SOURCE / PAPER / STATUS as for `ι`. -/
@@ -220,7 +220,7 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   SOURCE: exactness of the dualized descent sequence (Pontryagin duality is
   exact).
-  PAPER: Theorem A (Theorem 4.9, `prop:consequence`) Step 5.
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 5.
   STATUS: classical. -/
   mw_sha_exact : LinearMap.range ι = LinearMap.ker π
 

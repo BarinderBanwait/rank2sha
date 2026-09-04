@@ -9,13 +9,13 @@ package is a global datum, independent of the prime and of the per-prime layers,
 so one witness serves both.
 
 The witness is the cheapest one: a one-point divisor over `ℚ`, all six sections
-of (7) constantly `1`, the trivial valuation at every rational prime,
+of (11) constantly `1`, the trivial valuation at every rational prime,
 empty support. The four instance fields of `EKPackage` are synthesised.
 
 `δ_E(c)` is then not a datum but the def `EKPackage.deltaE`, and on this package
 it computes: the divisor is a single point, so `δ_E(c) = ∑ᵢ cᵢ` transported along
 `algebraMap ℚ ℚ`, and `δ_E(c) ≠ 0` iff that sum is nonzero (`deltaE_sum`,
-`deltaE_ne_zero`). Nothing downstream needs the computation — Theorem C (Theorem 5.10)
+`deltaE_ne_zero`). Nothing downstream needs the computation — Theorem C (Theorem 7.10)
 consumes the package through `Fc`, `D`, `v` and `supp` only — but it is what
 makes the layer a witness rather than a restatement.
 

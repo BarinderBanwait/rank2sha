@@ -2,7 +2,7 @@ import Mathlib
 import FinShaRank2.Defs
 
 /-!
-# Sha endgame — Theorem A (Theorem 4.9) Step 5
+# Sha endgame — Theorem A (Theorem 3.8) Step 5
 
 This file proves, as pure `ℤ_[p]`-module algebra, the final step of the paper's
 Theorem A: from the dualized descent sequence
@@ -50,7 +50,7 @@ namespace FinShaRank2
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- **`sha_endgame_of_nonempty`, Theorem A (Theorem 4.9) Step 5.** Given the dualized
+/-- **`sha_endgame_of_nonempty`, Theorem A (Theorem 3.8) Step 5.** Given the dualized
 descent data on
 finitely generated `ℤ_[p]`-modules — an injection `ι : Sha ↪ Sel`, a surjection
 `π : Sel ↠ ℤ_p^2`, exactness `range ι = ker π`, and a rank-two identification
@@ -96,7 +96,7 @@ theorem sha_endgame
   · -- The rank statement transported along `e`.
     rw [e.finrank_eq, Module.finrank_fin_fun ℤ_[p]]
 
-/-- **Bundled corollary for `prop_consequence`** (Theorem A (Theorem 4.9) Step 5,
+/-- **Bundled corollary for `prop_consequence`** (Theorem A (Theorem 3.8) Step 5,
 `Nonempty`-wrapped).
 
 Identical to `sha_endgame` but taking the rank-two identification as

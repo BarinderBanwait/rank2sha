@@ -204,6 +204,103 @@ about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
   `check_agreement.py` for its last check. Corroboration only: the control does
   not depend on it, and the check reports itself skipped if the file is absent.
 
+## Notes on the runs
+
+These are the details behind the numbers the paper quotes. The paper states what
+the computations establish; what follows is how they behave, and what was found
+along the way.
+
+### The unit character, re-determined (`gp/epsilon_check.gp`)
+
+The unit character $\varepsilon$ of $\psi_E$ was not assumed. It was read off
+class by class from Deuring's relation $a_p = \psi_E(\mathfrak{p}) +
+\overline{\psi_E(\mathfrak{p})}$ and found to agree with the inverse quartic
+residue symbol $(56/\cdot)_4^{-1}$ at every split prime tested.
+
+The script as shipped records the unit class the first time it is determined for
+a residue class and never re-examines it, so as it stands it assigns
+$\varepsilon$ rather than certifying it. The agreement was therefore checked
+separately, by re-running the determination without that first-write guard and
+comparing every prime against the stored class, over 3018 split primes and with
+no conflict.
+
+### The reconstruction artefact (`gp/reconstruction_artefact.gp`)
+
+The obvious way to assert that a product of 384 transcendental numbers *is* a
+given rational is to hand the computed real number to a best-rational-approximation
+routine with a denominator bound. It is unsafe, and this is not hypothetical.
+
+Applied at working precision 1600 digits to the six resultants, over a range of
+denominator bounds, it produced a spurious factorisation in 19 of 48
+reconstructions. In 16 of those the spurious support included a prime among the
+1611 of the horizontal scan: the artefact took the shape of the result the
+computation was meant to test. Which primes appear is not stable. They are read
+off the last digits of a floating-point product of 384 transcendental factors,
+and they move with the working precision, with the denominator bound and with
+the order of the product; across those 48 reconstructions 22 distinct primes of
+the scan occurred.
+
+This is why the paper's exactness claims rest on forced integrality and on an
+explicit rounding gate against a denominator fixed in advance, and never on a
+reconstruction.
+
+### Why $R[E_1^*\wp + \tfrac12\wp'] = R[E_1^*]\,R[\wp]$ (`gp/deltaE.gp`)
+
+The paper records this identity as a test of the arithmetic. It holds for the
+following reason. Since $s_2 = 0$ the quasi-period map is $\eta(\gamma) =
+\bar\gamma/A$, so $E_1^*$ is $\Gamma$-periodic as well as odd; hence
+$E_1^*(\,\cdot + \omega/2) - E_1^*$ is elliptic and odd with simple poles of
+residue $+1$ at $\omega/2$ and $-1$ at $0$. Take $\omega/2 = (1+i)\omega_1/2$,
+the half-period at which $\wp$ vanishes, multiplication by $i$ fixing it modulo
+$\Gamma$ and sending $\wp$ to $-\wp$, so that $\wp$ has a double zero there
+and $\tfrac12\wp'/\wp$ has exactly the same poles, residues and parity. The
+two elliptic functions therefore agree:
+
+$$E_1^*\wp + \tfrac12\wp' = \wp \cdot E_1^*(\,\cdot + \omega/2),$$
+
+and $D_E$ is stable under the corresponding translation $g \mapsto g + 28(1+i)$,
+which preserves primarity ($28(1+i) = 14(2+2i)$) and coprimality to
+$\mathfrak{f}$ ($7 \mid 28$). Multiplying over $D_E$ gives the relation. Two
+independently computed products of 384 transcendental factors reproduce an exact
+relation of this size, so the check tests the rounding; it is not independent
+information about the cofactor $C_1$.
+
+### The 3135 near-miss (`gp/deltaE.gp`)
+
+The number $\mathrm{N}\mathfrak{f} - 1 = 3135 = 3 \cdot 5 \cdot 11 \cdot 19$
+divides no entry of the resultant table. This was worth checking because an early
+wrong reading of $M_2$, mixing $(x+y-2)^2$ in raw rather than Katz coordinates,
+produced $144(\mathrm{N}\mathfrak{f} - 1)$ and with it the split prime 5. That
+reading is excluded by the coordinate inversion of Bannai–Kobayashi Def. 3.8, but
+a wrong combination's prime support need not resemble the right one's, which is
+the point of the check.
+
+### The bracket run (`gp/m2_w1.gp`, `gp/m2_gtest.gp`)
+
+Cost grows like $p^4$: about 2 seconds at $p = 5$ and 519 seconds at $p = 37$,
+and it rises faster still once the class sums outgrow the working precision.
+Five primes are reported rather than a range for that reason.
+
+Each class sum is recognised as an element of $K$ and accepted only if the
+residual is below $2^{-400}$; each came out rational, with denominator prime to
+$p$, and the worst residual observed was $2^{-985}$. The Euler factors are
+computed in $\mathbb{Z}_p$ to $O(p^{4p+12})$, far beyond the modulus $p^3$ at
+which $v_\mathfrak{p}(B(\mathfrak{p})) = 2$ is decided. The script writes its
+data file only if every gate passes: eleven of eleven at $p = 5, 13, 17$ and
+eight of eight at $p = 29, 37$.
+
+One observation from the run is worth recording, since nothing forces it. The
+divisibility by $p^2$ is termwise at $p = 5, 13, 17, 37$, each of the three terms
+of the bracket having valuation 2, and is not termwise at $p = 29$, where the
+three valuations are 3, 2, 3.
+
+`gp/m2_gtest.gp` tests the class-sum form of the collapse lemma at $p = 13$. For
+each of the six sections and each of the $p-1$ nonzero $\mathfrak{p}$-torsion
+translates, the translated class sum differs from the untranslated one by a
+quantity of valuation exactly $1/(p-1)$ or $2/(p-1)$: positive, as the lemma
+requires, and of the size its proof predicts, $\zeta_p - 1$ having valuation
+$1/(p-1)$.
+
 ## A note on `cert_13.out`
 
 `cert_13.out` was produced before the scripts were put on the paper's

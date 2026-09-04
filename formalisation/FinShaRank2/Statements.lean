@@ -15,12 +15,12 @@ rendering of `v_𝔭`).
 
 * "`Ш(E/ℚ)[p^∞] = 0`" ⇔ `Subsingleton (…).selmer.ShaDual` (dual side).
 * "`c̃₂(p) ∈ ℤ_p^×`" ⇔ `IsPUnit (…).c2tilde` — the p-adic unit predicate `‖·‖ = 1`
-  on `ℚ_[p]` (`Defs.IsPUnit`), applied to the normalised second jet Definition 4.2.
+  on `ℚ_[p]` (`Defs.IsPUnit`), applied to the normalised second jet Definition 3.2.
 * "`𝔭 ∤ δ`", i.e. `v_𝔭(ι_p δ) = 0` (§2.1), ⇔ `H.ek.v p δ = 1`. Mathlib's
   `Valuation` is multiplicative, so the paper's `v_𝔭(x) = 0` is `v x = 1` here; see
   the module docstring of `Interface/EK.lean`.
 
-Paper statements rendered here: Definition 2.1, Conjecture 4.7, Conjecture 5.9; and
+Paper statements rendered here: Definition 2.1, Conjecture 5.1, Conjecture 7.9; and
 `ConjStrong`, the strong form of the conjecture withdrawn from the paper on 2026-09-03.
 -/
 
@@ -28,20 +28,20 @@ open PowerSeries
 
 namespace FinShaRank2
 
-/-- The normalised second jet `c̃₂(p)` (Definition 4.2) attached to a `PrimeData`
+/-- The normalised second jet `c̃₂(p)` (Definition 3.2) attached to a `PrimeData`
 value, built from that value's own genuine analytic data.
 
 Unfolds to `c2tilde ((coeff 2 Lp : ℤ_[p]) : ℚ_[p]) (((α : ℤ_[p]) : ℚ_[p])⁻¹) tst`
 with `Lp = D.analytic.Lp`, `α = D.analytic.α`, and `tst = D.torsSqOverTam` (the
-`PrimeData` parameter). This is exactly Definition 4.2 applied to `D`'s MTT
+`PrimeData` parameter). This is exactly Definition 3.2 applied to `D`'s MTT
 L-function; the double coercion `((… : ℤ_[p]) : ℚ_[p])` is mandatory (the
 single-coercion form mis-elaborates — `AnalyticData` gotcha, `NOTES/MathlibAudit.md`).
 
 By `PrimeData.c2norm_tie` this equals the height-side proxy `D.height.c2norm`, so
 statements phrased through this jet transfer to the height dictionary
-(Proposition 4.13) and back with a single rewrite.
+(Proposition 4.2) and back with a single rewrite.
 
-TRANSLATION: `c̃₂(p)` of Definition 4.2 on the dual/analytic side. -/
+TRANSLATION: `c̃₂(p)` of Definition 3.2 on the dual/analytic side. -/
 noncomputable def PrimeData.c2tilde {p : ℕ} [Fact p.Prime] {hsplit : p % 4 = 1}
     {tst : ℚ} (D : PrimeData p hsplit tst) : ℚ_[p] :=
   _root_.FinShaRank2.c2tilde ((PowerSeries.coeff 2 D.analytic.Lp : ℤ_[p]) : ℚ_[p])
@@ -63,7 +63,7 @@ gives a stronger conclusion than Definition 2.1 asks for.
 
 The definition is deliberately standalone and general — Definition 2.1 in the
 paper precedes all interface data — so any concrete triviality predicate can be
-substituted. Theorem A (Theorem 4.9) supplies the concrete `shaVanishes` through the
+substituted. Theorem A (Theorem 3.8) supplies the concrete `shaVanishes` through the
 Selmer-dual layer.
 
 TRANSLATION: `𝒫 ↦ P`; "`Ш(E/ℚ)[p] = 0`" ↦ `shaVanishes p`; "all but finitely many"
@@ -74,7 +74,7 @@ def HorizontalControl (P : Set ℕ) (shaVanishes : ℕ → Prop) : Prop :=
 /-- The **unit condition at a single coefficient vector** `c`:
 `c̃₂(p) ∈ ℤ_p^×` at every split `p ∉ S_E ∪ supp(c)` with `𝔭 ∤ δ_E(c)`.
 
-This is the display of Theorem C (Theorem 5.10), proved at the vector Hypothesis 5.8(i)
+This is the display of Theorem C (Theorem 7.10), proved at the vector Hypothesis 7.8(i)
 presents. `ConjStrong` quantifies it over every nonzero `c`: the strong form of the
 conjecture, withdrawn from the paper on 2026-09-03.
 
@@ -91,8 +91,8 @@ def ConjStrongAt (H : ClassicalInputs) (c : Fin 6 → H.ek.K) : Prop :=
 relative to the fixed classical inputs `H`: kept as a definition, proved by no
 declaration, rendering no statement of the paper. The withdrawn statement read:
 
-> *Let `S_E` be the set (10), and let `δ_E(c)`, `c ∈ K⁶`, be the invariants of*
-> *Definition 3.1. Then `c̃₂(p) ∈ ℤ_p` for every split `p ∉ S_E`, and for every*
+> *Let `S_E` be the set (7), and let `δ_E(c)`, `c ∈ K⁶`, be the invariants of*
+> *Definition 6.2. Then `c̃₂(p) ∈ ℤ_p` for every split `p ∉ S_E`, and for every*
 > *nonzero `c ∈ K⁶`, `c̃₂(p) ∈ ℤ_p^×` for every split `p ∉ S_E ∪ supp(c)` with*
 > *`𝔭 ∤ δ_E(c)`.*
 
@@ -102,26 +102,26 @@ what is quantified over is the package `H.ek` itself and not an unconstrained fi
 element.
 
 The integrality clause "`c̃₂(p) ∈ ℤ_p`" is *not* part of this predicate: by
-Remark 4.8 integrality is classical (modular-symbol integrality for `p ∉ S`), so
+Remark 3.4 integrality is classical (modular-symbol integrality for `p ∉ S`), so
 only the unit assertion has content. This predicate captures the unit assertion,
-which is what the arithmetic consequences (Theorem A (Theorem 4.9)) and Theorem C
+which is what the arithmetic consequences (Theorem A (Theorem 3.8)) and Theorem C
 consume.
 
-Theorem C (Theorem 5.10) proves `ConjStrongAt H c` at one vector, not `ConjStrong H`.
+Theorem C (Theorem 7.10) proves `ConjStrongAt H c` at one vector, not `ConjStrong H`.
 
 TRANSLATION: `c ∈ K⁶` ↦ `c : Fin 6 → H.ek.K`; "every nonzero `c`" ↦ `∀ c, c ≠ 0 → …`;
 the per-vector assertion ↦ `ConjStrongAt`. -/
 def ConjStrong (H : ClassicalInputs) : Prop :=
   ∀ c : Fin 6 → H.ek.K, c ≠ 0 → ConjStrongAt H c
 
-/-- **Conjecture 4.7 — horizontal rigidity**, relative to `H`.
+/-- **Conjecture 5.1 — horizontal rigidity**, relative to `H`.
 
 > *`c̃₂(p) ∈ ℤ_p^×` for all but finitely many split primes `p` of good reduction.*
 
 Rendered as: there is a finite exceptional set `T` such that every split prime
 `p ∉ S` (good reduction is subsumed by `p ∉ S`) outside `T` has `c̃₂(p)` a p-adic
 unit. This is the `∃ finite T, ∀ p ∉ T`-form of "for all but finitely many split
-primes", the form Theorem A (Theorem 4.9)'s proof consumes ("Conjecture 4.7 supplies
+primes", the form Theorem A (Theorem 3.8)'s proof consumes ("Conjecture 5.1 supplies
 `c̃₂(p) ∈ ℤ_p^×` at all but finitely many split `p`").
 
 `ConjStrong H` implies this whenever `H.S` is finite and `H.ek.deltaE c ≠ 0` for some
@@ -139,11 +139,11 @@ def ConjWeak (H : ClassicalInputs) : Prop :=
       letI : Fact p.Prime := ⟨hp⟩
       IsPUnit (H.dataAt p hp hsplit _hpS).c2tilde
 
-/-- **Conjecture 5.9 — Eisenstein–Kronecker nonvanishing**, relative to `H`.
+/-- **Conjecture 7.9 — Eisenstein–Kronecker nonvanishing**, relative to `H`.
 
 > *Let `E/ℚ` have CM by the maximal order `𝒪_K` of an imaginary quadratic field*
 > *`K`, with `L(E,1) = 0`, `w(E) = +1` and `#Cl_𝔣(K) ≥ 6`, and let `δ_E(c)` be the*
-> *invariants of Definition 3.1. Then `δ_E(c) ≠ 0` for every nonzero*
+> *invariants of Definition 6.2. Then `δ_E(c) ≠ 0` for every nonzero*
 > *`c ∈ K⁶`.*
 
 `δ_E(c)` is the def `EKPackage.deltaE H.ek c` (`Interface/EK.lean`), so the
@@ -160,7 +160,7 @@ for that `c`. In this encoding `EKPackage.D` is an abstract `Finset` with no cla
 group and no equivariance, so the hypothesis has nothing to attach to. Dropping it
 widens what `ConjEK` asserts: a package with `#D < 6` makes `ConjEK` false, and
 nothing in this encoding rules such a package out. `ConjEK H` therefore renders
-Conjecture 5.9 only for those `H` whose package meets the paper's hypothesis.
+Conjecture 7.9 only for those `H` whose package meets the paper's hypothesis.
 
 `ConjEK` is conjectural. It occurs in hypothesis position of
 `thm_reduction_of_conjEK` and nowhere else: it is not a field of any structure and

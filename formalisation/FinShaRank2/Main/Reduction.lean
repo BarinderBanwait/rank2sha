@@ -11,28 +11,28 @@ import FinShaRank2.Main.Consequence
 import FinShaRank2.Statements
 
 /-!
-# Theorem C (Theorem 5.10) — Conjecture 5.9 + Hypothesis 5.8 ⟹ the unit condition outside an explicit set
+# Theorem C (Theorem 7.10) — Conjecture 7.9 + Hypothesis 7.8 ⟹ the unit condition outside an explicit set
 
-`thm_reduction` is the paper's theorem, taking one instance of Conjecture 5.9;
+`thm_reduction` is the paper's theorem, taking one instance of Conjecture 7.9;
 `thm_reduction_of_conjEK` is the same statement with that instance
 supplied by the conjecture.
 
-> **Theorem (Reduction, Theorem C).** *Assume Hypothesis 5.8 for*
+> **Theorem (Reduction, Theorem C).** *Assume Hypothesis 7.8 for*
 > *`E`, let `c` be a vector as in its part (i), and assume `δ_E(c) ≠ 0`. Then for*
 > *every split `p ≥ 5` of good reduction with `p ∉ S_E ∪ supp(c)` and*
 > *`𝔭 ∤ δ_E(c)`: `c̃₂(p) ∈ ℤ_p^×`, `λ_an(𝔭) = 2`, `Ш(E/ℚ)[p^∞] = 0`. If*
-> *`S_E` is finite, Conjecture 4.7 holds for `E`.*
+> *`S_E` is finite, Conjecture 5.1 holds for `E`.*
 
 ## The epistemic firewall
 
-**Conjecture 5.9 and Hypothesis 5.8 occur in this file and nowhere else.** Both appear
+**Conjecture 7.9 and Hypothesis 7.8 occur in this file and nowhere else.** Both appear
 strictly in hypothesis position:
 
-* `hEK` = one instance of Conjecture 5.9, the nonvanishing of the Eisenstein–Kronecker
-  invariant Definition 3.1; formally `H.ek.deltaE c ≠ 0`. The conjecture itself is
+* `hEK` = one instance of Conjecture 7.9, the nonvanishing of the Eisenstein–Kronecker
+  invariant Definition 6.2; formally `H.ek.deltaE c ≠ 0`. The conjecture itself is
   `ConjEK H` (`Statements.lean`) and is a hypothesis of `thm_reduction_of_conjEK`
   below, which is the only declaration that mentions it;
-* `hsin` = Hypothesis 5.8, formally the `Prop`-structure `SinnottHyp` quantified
+* `hsin` = Hypothesis 7.8, formally the `Prop`-structure `SinnottHyp` quantified
   over every split `p ∉ H.S ∪ supp(c)`.
 
 Neither occurs in `prop_consequence`, `prop_dictionary` or `cor_horizontal`: those
@@ -71,29 +71,29 @@ of conjecture.
 kept adjacent); the
    paper's display names only `c̃₂(p) ∈ ℤ_p^×`, `λ_an(𝔭) = 2` and `Ш = 0`.
 4. `ConjStrongAt` carries no integrality clause; integrality is classical
-   (Remark 4.8), see the docstring in `Statements.lean`.
+   (Remark 3.4), see the docstring in `Statements.lean`.
 
-Paper statements rendered here: Theorem C, Conjecture 5.9, Hypothesis 5.8,
-Definition 3.1, Theorem A (Theorem 4.9).
+Paper statements rendered here: Theorem C, Conjecture 7.9, Hypothesis 7.8,
+Definition 6.2, Theorem A (Theorem 3.8).
 -/
 
 open PowerSeries
 
 namespace FinShaRank2
 
-/-- **Theorem C (Theorem 5.10)** — the paper's reduction of horizontal rigidity to
-Conjecture 5.9 (`hEK`) and Hypothesis 5.8 (`hsin`).
+/-- **Theorem C (Theorem 7.10)** — the paper's reduction of horizontal rigidity to
+Conjecture 7.9 (`hEK`) and Hypothesis 7.8 (`hsin`).
 
-> *Assume Hypothesis 5.8 for `E`, let `c` be a vector as in its part*
+> *Assume Hypothesis 7.8 for `E`, let `c` be a vector as in its part*
 > *(i), and assume `δ_E(c) ≠ 0`. Then for every split `p ≥ 5` of good reduction*
 > *with `p ∉ S_E ∪ supp(c)` and `𝔭 ∤ δ_E(c)`: `c̃₂(p) ∈ ℤ_p^×`, `λ_an(𝔭) = 2`,*
-> *`Ш(E/ℚ)[p^∞] = 0`. If `S_E` is finite, Conjecture 4.7 holds*
+> *`Ш(E/ℚ)[p^∞] = 0`. If `S_E` is finite, Conjecture 5.1 holds*
 > *for `E`.*
 
 The conclusion is the conjunction of the per-prime statement and `ConjStrongAt H c`,
 the theorem's display at the vector `c`.
 
-Assembly route. `hsin.integral` is Hypothesis 5.8(i)'s integrality clause, so the
+Assembly route. `hsin.integral` is Hypothesis 7.8(i)'s integrality clause, so the
 factors of `δ_E(c) = ∏_{t ∈ D_E} F_c(t)` (`EKPackage.deltaE_def`) are all
 `𝔭`-integral; with `𝔭 ∤ δ_E(c)`,
 `Kernel.Resultant.forall_eq_one_of_prod_eq_one` gives `v_𝔭(F_c(t)) = 0` for every
@@ -114,7 +114,7 @@ a clause of `hsin`, which is where the paper puts it.
 it: at each prime `𝔭 ∤ δ_E(c)` already forces `δ_E(c) ≠ 0`
 (`Kernel.Resultant.prod_ne_zero_of_prod_eq_one`), and `ConjStrongAt H c` carries that
 hypothesis on every prime it speaks about. What consumes it in the paper is Theorem
-C's final clause, "if `S_E` is finite, Conjecture 4.7 holds for `E`", which is **not
+C's final clause, "if `S_E` is finite, Conjecture 5.1 holds for `E`", which is **not
 rendered**: deriving it needs `{p | 𝔭 ∣ δ_E(c)}` to be finite, and `EKPackage.v` is an
 abstract family of valuations with no such field. The hypothesis is kept so the
 statement matches the paper's input list.
@@ -147,14 +147,14 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
     have : Fact p.Prime := ⟨hp⟩
     set D := H.dataAt p hp hsplit hpS with hDdef
     have hsin' := hsin p hp hsplit hpS hsupp
-    -- step 1 Hypothesis 5.8(i) makes every factor of `δ_E(c)` `𝔭`-integral, and
+    -- step 1 Hypothesis 7.8(i) makes every factor of `δ_E(c)` `𝔭`-integral, and
     --   `𝔭 ∤ δ_E(c)` then forces every factor to be a `𝔭`-unit.
     have hprod : H.ek.v p (∏ t ∈ H.ek.D, H.ek.Fc c t) = 1 := by
       rw [← H.ek.deltaE_def c]; exact hval
     have hunits : ∀ t ∈ H.ek.D, H.ek.v p (H.ek.Fc c t) = 1 :=
       Resultant.forall_eq_one_of_prod_eq_one (H.ek.v p) H.ek.D (H.ek.Fc c)
         hsin'.integral hprod
-    -- step 2 Hypothesis 5.8(ii), then its presentation clause.
+    -- step 2 Hypothesis 7.8(ii), then its presentation clause.
     have htr : D.katz.traceClass ≠ 0 := hsin'.nonvanishing hunits
     have hres : IsLocalRing.residue D.katz.W D.katz.m2core ≠ 0 := by
       rw [hsin'.presentation]; exact htr
@@ -209,7 +209,7 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
     have hLp2 : IsUnit (coeff 2 D.analytic.Lp) :=
       Decoupling.isUnit_coeff_two_of_comparison (algebraMap ℤ_[p] D.katz.W)
         D.analytic.Lp D.katz.LKatz c u hcomp hK0 hK1 hLK
-    -- step 6 Proposition 4.3, with non-anomality from `H.notAnomalous`.
+    -- step 6 Proposition 3.3, with non-anomality from `H.notAnomalous`.
     exact (isPUnit_c2tilde_iff (coeff 2 D.analytic.Lp) _ H.torsSqOverTam
       (H.isPUnit_one_sub_alphaInv hsplit hpS) H.torsSqOverTam_eq).mpr hLp2
   refine ⟨?_, key⟩
@@ -219,25 +219,25 @@ theorem thm_reduction (H : ClassicalInputs) (c : Fin 6 → H.ek.K)
   obtain ⟨hmu, hlam, _, hsha⟩ := prop_consequence H hsplit hpS hc2
   exact ⟨hc2, hmu, hlam, hsha⟩
 
-/-- **Theorem C (Theorem 5.10) with its first input supplied by Conjecture 5.9.**
+/-- **Theorem C (Theorem 7.10) with its first input supplied by Conjecture 7.9.**
 
 Theorem C lists as its input (i) the nonvanishing `δ_E(c) ≠ 0` for a vector `c` as
-in its input (ii), and records that Conjecture 5.9 implies it, that vector being
+in its input (ii), and records that Conjecture 7.9 implies it, that vector being
 nonzero. `thm_reduction` takes the single instance `H.ek.deltaE c ≠ 0`; this
 corollary takes the conjecture instead and applies it at `c`.
 
-`hc : c ≠ 0` is the nonzeroness that Hypothesis 5.8(i) asserts of the vector it
+`hc : c ≠ 0` is the nonzeroness that Hypothesis 7.8(i) asserts of the vector it
 produces ("There exist a nonzero `c ∈ K⁶` and an integer `k ≥ 1` …"). It is a
 separate hypothesis here because `SinnottHyp` renders the three clauses
 `integral`, `presentation` and `nonvanishing` and carries `c` as a parameter, so
-the existential of Hypothesis 5.8(i) — and with it the nonzeroness of its witness —
+the existential of Hypothesis 7.8(i) — and with it the nonzeroness of its witness —
 is discharged by the caller, as in `thm_reduction`.
 
 `hconj` and `hsin` are conjectural and occur in hypothesis position only. This is
 the only declaration in the project that mentions `ConjEK`.
 
-TRANSLATION: as `thm_reduction`; Conjecture 5.9 ↦ `ConjEK H` (`Statements.lean`), whose
-docstring records the one hypothesis of Conjecture 5.9 that is not rendered. -/
+TRANSLATION: as `thm_reduction`; Conjecture 7.9 ↦ `ConjEK H` (`Statements.lean`), whose
+docstring records the one hypothesis of Conjecture 7.9 that is not rendered. -/
 theorem thm_reduction_of_conjEK (H : ClassicalInputs) (c : Fin 6 → H.ek.K) (hc : c ≠ 0)
     (hconj : ConjEK H)
     (hsin : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ H.S),

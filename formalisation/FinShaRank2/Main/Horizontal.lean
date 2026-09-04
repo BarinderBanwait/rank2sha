@@ -4,17 +4,17 @@ import FinShaRank2.Main.Consequence
 import FinShaRank2.Statements
 
 /-!
-# Corollary B (Corollary 4.10) — horizontal control along the split primes
+# Corollary B (Corollary 5.2) — horizontal control along the split primes
 
-> **Corollary B (Corollary 4.10).** *Let `E/ℚ` have CM by the maximal*
+> **Corollary B (Corollary 5.2).** *Let `E/ℚ` have CM by the maximal*
 > *order `𝒪_K` of an imaginary quadratic field `K`, with `rank E(ℚ) = 2`,*
 > *`L(E,1) = 0` and `w(E) = +1` and with finitely many anomalous split primes, and*
-> *assume Conjecture 4.7. Then horizontal control (Definition*
+> *assume Conjecture 5.1. Then horizontal control (Definition*
 > *Definition 2.1) holds for `E` along the split primes of `K`.*
 
 The paper's proof has two steps: every condition defining `S_E` other than
 anomalousness excludes only finitely many split primes, so `S_E` is finite; and
-Conjecture 4.7 supplies the hypothesis of Theorem A (Theorem 4.9) at all but finitely many
+Conjecture 5.1 supplies the hypothesis of Theorem A (Theorem 3.8) at all but finitely many
 split `p`. Only the second step has a counterpart here — see point 2 below.
 
 With this file the paper's three lettered results are all formalised: Corollary B
@@ -31,7 +31,7 @@ here, Theorem A as `prop_consequence` (`Main/Consequence.lean`), Theorem C as
   condition as the binder `hsplit` of every other statement.
 * "`Ш(E/ℚ)[p] = 0`" ↦ `Subsingleton (…).selmer.ShaDual` (dual side).
   See point 1 below.
-* Conjecture 4.7 ↦ the hypothesis `hweak : ConjWeak H` (`Statements.lean`).
+* Conjecture 5.1 ↦ the hypothesis `hweak : ConjWeak H` (`Statements.lean`).
 * The `Fact p.Prime` instance that the `PrimeData` projections require is supplied
   inside the predicate from the binder `hp`, as in `ConjWeak`. Without it the
   projection `.selmer` does not elaborate: `p` is bound by the predicate, so no
@@ -61,17 +61,17 @@ here, Theorem A as `prop_consequence` (`Main/Consequence.lean`), Theorem C as
    the project and applies to `prop_consequence` and `thm_reduction` equally.
 
 Paper statements rendered here: Corollary B, Definition 2.1,
-Conjecture 4.7, Theorem A, (10).
+Conjecture 5.1, Theorem A, (7).
 -/
 
 namespace FinShaRank2
 
-/-- **Corollary B (Corollary 4.10)** — horizontal control for `E` along the split
-primes of `K`, conditional on Conjecture 4.7.
+/-- **Corollary B (Corollary 5.2)** — horizontal control for `E` along the split
+primes of `K`, conditional on Conjecture 5.1.
 
 > *Let `E/ℚ` have CM by the maximal order `𝒪_K` of an imaginary quadratic field*
 > *`K`, with `rank E(ℚ) = 2`, `L(E,1) = 0` and `w(E) = +1` and with finitely many*
-> *anomalous split primes, and assume Conjecture 4.7. Then horizontal*
+> *anomalous split primes, and assume Conjecture 5.1. Then horizontal*
 > *control (Definition 2.1) holds for `E` along the split primes of*
 > *`K`.*
 
