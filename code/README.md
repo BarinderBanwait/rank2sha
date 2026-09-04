@@ -105,6 +105,8 @@ D=-39 G="[[3,12],[27,144]]" LO=5 HI=29999 OUT=../data/scan_D-39.txt gp -q scan_f
 ```
 The bases are in `data/family_bases.txt` and must be used as given, since the valuation depends on the lattice. Set `RESUME=1` to continue an interrupted run from its last recorded prime.
 
+The one case below 30,000 that Coates, Liang and Sujatha left open, $p = 577$ for $y^2 = x^3 + 34x$, is decided by `sage/e4_577.py`, which computes the $577$-adic $L$-function from eclib modular symbols in about a minute and records the invariants that place $577$ outside $S_E$. Its second coefficient is $529 + O(577)$, a unit.
+
 ### The $p = 5, 13$ control on the normalisation (§5.3)
 
 ```bash
@@ -175,6 +177,7 @@ time.
 | The Mordell--Weil bases used, saturated to 30011 | (PARI `ellrank`, `ellsaturation`) | `data/family_bases.txt` |
 | The exceptional primes recomputed at precisions 6 to 16 | `gp/family_checks.gp` | `data/family_checks.out` |
 | The independent Sage regulator at those primes, and the modular-symbol series of $y^2 = x^3 + 39x$ at $p = 5$ | `sage/family_crosscheck.py` | `data/family_crosscheck.out` |
+| The $577$-adic $L$-function of $y^2 = x^3 + 34x$, the case Theorem 1.3 of CLS2 left open (Proposition prop:e4) | `sage/e4_577.py` | `data/e4_577.out` |
 | The re-verification of the four scan files | `sage/verify_family_scan.py` | exit status only |
 
 ## Reading the output files

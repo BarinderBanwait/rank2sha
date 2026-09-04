@@ -226,6 +226,7 @@ check_file data/scan_D-34.txt         "output of gp/scan_family.gp at D = -34 (e
 check_file data/scan_D-39.txt         "output of gp/scan_family.gp at D = -39 (expect 1610)"
 check_file data/family_checks.out     "output of gp/family_checks.gp"
 check_file data/family_crosscheck.out "output of sage/family_crosscheck.py"
+check_file data/e4_577.out "output of sage/e4_577.py, the 577-adic L-function of y^2 = x^3 + 34x"
 
 # ---------------------------------------------------------------------------
 head2 "4. Smoke test"
@@ -476,6 +477,7 @@ for s in gp/scan.gp:"1611 primes, every split prime below 30000; produces data/a
          gp/epsilon_check.gp:"the unit character over 3018 split primes, Section 6.2; under a second" \
          gp/family_checks.gp:"the five exceptional and control primes of the CLS-family scan at precisions 6 to 14, and p = 15289 at 6 to 16; produces data/family_checks.out" \
          sage/family_crosscheck.py:"the Sage regulator at those primes and the eclib modular symbols at level 48672; produces data/family_crosscheck.out" \
+         sage/e4_577.py:"the 577-adic L-function of y^2 = x^3 + 34x from eclib modular symbols, the case CLS2 left open; about a minute; produces data/e4_577.out" \
          gp/m2_w1.gp:"the bracket B(fp) of Section 6.8; 25 s at p = 5, 13, 17 and about 18 min at p = 29, 37 (W1PRIMES=29,37 W1PREC=600)" \
          sage/m2_msd.sage:"kappa(p) at fourteen split primes, the modular-symbol side of Section 6.8; 3 minutes"; do
   name="${s%%:*}"; why="${s#*:}"
@@ -497,7 +499,7 @@ for f in "$GPDIR"/*.gp "$SAGEDIR"/*.sage "$SAGEDIR"/*.py "$SAGEDIR"/*.sh; do
     gp/m2_w1.gp|gp/family_checks.gp) ;;
     sage/regulator.sage|sage/certificates.sage|sage/check_agreement.py|sage/run.sh) ;;
     sage/verify_scan.py|sage/null_model.py|sage/m2_msd.sage) ;;
-    sage/family_crosscheck.py|sage/verify_family_scan.py) ;;
+    sage/family_crosscheck.py|sage/verify_family_scan.py|sage/e4_577.py) ;;
     *) EXTRA="$EXTRA ${f#"$HERE"/}" ;;
   esac
 done

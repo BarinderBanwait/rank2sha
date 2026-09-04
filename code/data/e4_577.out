@@ -1,0 +1,11 @@
+curve y^2 = x^3 + 34x   conductor 73984 = 2^8 * 17^2
+rank (mwrank, proved) 2   root number 1   torsion 2   Tamagawa product 4
+a_577 = -2   anomalous: False   577 splits in Q(i): True
+modular symbol at 0 (exact rational, L(E,1)/Omega up to a unit): 0
+rational isogenies of E: degrees [1, 2]
+unit root alpha: valuation 0
+L_577(E,T), n = 2, prec = 4: O(577^4) + O(577)*T + (529 + O(577))*T^2 + (300 + O(577))*T^3 + O(T^4)
+L_577(E,T), n = 2, prec = 6: O(577^4) + O(577)*T + (529 + O(577))*T^2 + (300 + O(577))*T^3 + (29 + O(577))*T^4 + (89 + O(577))*T^5 + O(T^6)
+v_577(c_2) = 0   (c_2 = 529 + O(577))
+elapsed 20 s
+E4_577_DONE
