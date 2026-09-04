@@ -1,0 +1,70 @@
+### the exceptional primes of the CLS-family scan, recomputed
+pari version      : [2, 17, 2]
+quantity          : v_p(Reg_p) = valuation(ellpadicregulator(E,p,n,G), p)
+curves            : y^2 = x^3 - Dx; D = 17, -33, -34, -39 are the CLS curves, D = 56 the testbed
+bases             : ../data/family_bases.txt; D = 56 uses (8,8), (9,15)
+D=-39 p=5  N=48672 ([2, 3, 13])  a_p=-2  anomalous=0  Tamagawa product=8  #tors=2
+   prec 6: v_p(Reg) = 3
+   prec 7: v_p(Reg) = 3
+   prec 8: v_p(Reg) = 3
+   prec 9: v_p(Reg) = 3
+   prec 10: v_p(Reg) = 3
+   prec 11: v_p(Reg) = 3
+   prec 12: v_p(Reg) = 3
+   prec 13: v_p(Reg) = 3
+   prec 14: v_p(Reg) = 3
+D=-33 p=37  N=69696 ([2, 3, 11])  a_p=2  anomalous=0  Tamagawa product=4  #tors=2
+   prec 6: v_p(Reg) = 3
+   prec 7: v_p(Reg) = 3
+   prec 8: v_p(Reg) = 3
+   prec 9: v_p(Reg) = 3
+   prec 10: v_p(Reg) = 3
+   prec 11: v_p(Reg) = 3
+   prec 12: v_p(Reg) = 3
+   prec 13: v_p(Reg) = 3
+   prec 14: v_p(Reg) = 3
+D=-33 p=5  N=69696 ([2, 3, 11])  a_p=-4  anomalous=1  Tamagawa product=4  #tors=2
+   prec 6: v_p(Reg) = 0
+   prec 7: v_p(Reg) = 0
+   prec 8: v_p(Reg) = 0
+   prec 9: v_p(Reg) = 0
+   prec 10: v_p(Reg) = 0
+   prec 11: v_p(Reg) = 0
+   prec 12: v_p(Reg) = 0
+   prec 13: v_p(Reg) = 0
+   prec 14: v_p(Reg) = 0
+D=17 p=5  N=9248 ([2, 17])  a_p=-4  anomalous=1  Tamagawa product=4  #tors=2
+   prec 6: v_p(Reg) = 0
+   prec 7: v_p(Reg) = 0
+   prec 8: v_p(Reg) = 0
+   prec 9: v_p(Reg) = 0
+   prec 10: v_p(Reg) = 0
+   prec 11: v_p(Reg) = 0
+   prec 12: v_p(Reg) = 0
+   prec 13: v_p(Reg) = 0
+   prec 14: v_p(Reg) = 0
+D=56 p=5  N=12544 ([2, 7])  a_p=-2  anomalous=0  Tamagawa product=4  #tors=2
+   prec 6: v_p(Reg) = 2
+   prec 7: v_p(Reg) = 2
+   prec 8: v_p(Reg) = 2
+   prec 9: v_p(Reg) = 2
+   prec 10: v_p(Reg) = 2
+   prec 11: v_p(Reg) = 2
+   prec 12: v_p(Reg) = 2
+   prec 13: v_p(Reg) = 2
+   prec 14: v_p(Reg) = 2
+D=-39 p=15289  isprime=1  p mod 4=1  a_p=234  anomalous=0  p | #Cl_ff candidates (1248, 1152)=0
+   prec 6: v_p(Reg) = 3
+   prec 7: v_p(Reg) = 3
+   prec 8: v_p(Reg) = 3
+   prec 9: v_p(Reg) = 3
+   prec 10: v_p(Reg) = 3
+   prec 11: v_p(Reg) = 3
+   prec 12: v_p(Reg) = 3
+   prec 13: v_p(Reg) = 3
+   prec 14: v_p(Reg) = 3
+   prec 15: v_p(Reg) = 3
+   prec 16: v_p(Reg) = 3
+D=-39 p=17   prec 10: v_p(Reg) = 2
+D=-34 p=577  prec 10: v_p(Reg) = 2
+FAMILYCHECKSDONE

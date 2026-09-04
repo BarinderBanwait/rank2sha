@@ -4,16 +4,16 @@
 \\ sentence after eq:psiE: eps was checked "over 3018 split primes and with no
 \\ conflict".
 \\
-\\ deltaE.gp records the unit class the first time a residue class mod 56 is
+\\ legacy/gp/deltaE.gp records the unit class the first time a residue class mod 56 is
 \\ reached and never re-examines it (the guard `if(epstab[id] == 0, ...)`), so it
 \\ assigns eps rather than certifying it.  This script removes the guard.
 \\
-\\ Conventions are copied verbatim from deltaE.gp.  Deuring's relation gives
+\\ Conventions are copied verbatim from legacy/gp/deltaE.gp.  Deuring's relation gives
 \\ a_p = psi_E(p) + conj(psi_E(p)) with psi_E((alpha)) = eps(alpha)*alpha on the
 \\ primary generator alpha = fa + fb*i, so a_p is one of
 \\   [2*fa, -2*fb, -2*fa, 2*fb]   according as   eps(alpha) = i^0, i^1, i^2, i^3.
 \\ The four candidates are pairwise distinct for p > 2, so a_p determines
-\\ eps(alpha) uniquely.  Write CK := kk - 1, so eps(alpha) = i^CK; deltaE.gp
+\\ eps(alpha) uniquely.  Write CK := kk - 1, so eps(alpha) = i^CK; legacy/gp/deltaE.gp
 \\ stores kk and uses the weight I^(-CK) = eps^(-1), raised to a+b in slot (a,b).
 \\
 \\ Two checks:
@@ -26,7 +26,7 @@
 \\      residue symbol (56/alpha)_4 = i^m is read off from 56^((p-1)/4) in F_p.
 \\      The assertion is (CK + m) = 0 mod 4.
 \\
-\\ Range: split 5 <= p <= 60000, p != 7, matching deltaE.gp.
+\\ Range: split 5 <= p <= 60000, p != 7, matching legacy/gp/deltaE.gp.
 \\ Output: ../data/epsilon_check.out
 \\ ---------------------------------------------------------------------------
 default(parisizemax, 4000000000);
@@ -72,7 +72,7 @@ qrs4(fa, fb, m) = {
   -1;
 };
 
-\\ --- pass 1: build the table with the first-write guard, exactly as deltaE.gp ---
+\\ --- pass 1: build the table with the first-write guard, exactly as legacy/gp/deltaE.gp ---
 epstab = vector(56*56);
 {forprime(p = 5, 60000,
   if(p % 4 != 1 || p == 7, next);

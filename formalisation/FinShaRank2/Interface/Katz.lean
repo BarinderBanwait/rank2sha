@@ -1,55 +1,29 @@
 import Mathlib
 import FinShaRank2.Defs
-import FinShaRank2.Interface.EK
 
 /-!
-# Katz interface: `KatzData p` + `SinnottHyp`
+# Katz interface: `KatzData p`
 
-The Katz-measure / Eisenstein–Kronecker layer of the assumption surface for
+The Katz-measure layer of the assumption surface for
 *Second derivatives of p-adic L-functions and the Shafarevich–Tate group of
-rank-two CM elliptic curves* (paper §7).
+rank-two CM elliptic curves*.
 
 `KatzData p Lp` packages the algebraic phase of the programme:
 
-* the comparison `L_p(E,T) = c_p · u(T) · L^{Katz}_𝔭(T)` (Lemma 3.5);
+* the comparison `L_p(E,T) = c_p · u(T) · L^{Katz}_𝔭(T)` (Lemma 3.5), which
+  Lemma 6.3 reads grade by grade;
 * the grading congruence reducing `v_p(c₂(L^K)) = 0` to nonvanishing of the
-  mod-𝔭 **criterion class** built from grade-two moments (Proposition 7.1,
-  Proposition 7.2);
-* the mod-𝔭 Sinnott trace `traceClass`.
-
-The candidate invariant `δ_E(c)` is not a field of this structure. It is the
-def `EKPackage.deltaE` of `Interface/EK.lean`, computed from the divisor
-`D_E`, the package `𝓡_E` and the coefficient vector `c`; `SinnottHyp` below
-carries the package and the vector, and Theorem C (Theorem 7.10) routes the resultant
-step through `Kernel/Resultant.forall_eq_one_of_prod_eq_one`.
+  mod-𝔭 **criterion class** built from grade-two moments (Proposition 6.1,
+  Proposition 6.2).
 
 ## Epistemic split
 
 `KatzData` is an **instantiable** structure: every field is either citable
 classical mathematics, a data equation, or an *opaque* predicate whose
-truth is never asserted here. The conjectural content of the paper —
-Hypothesis 7.8, Conjecture 7.9 — is kept OUT of `KatzData` and lives only in
-`SinnottHyp` (a `Prop`-valued structure used in **hypothesis position** of
-Theorem C) and in the hypothesis `δ_E(c) ≠ 0` of Theorem C.
-`SinnottHyp` is referenced by nothing instantiable.
+truth is never asserted here. No conjectural statement is a field of it.
 
-The bridge `criterionClass` between `KatzData` and `SinnottHyp` is a **def**
-(not a field): `criterionClass K := IsLocalRing.residue K.W K.m2core`.
-
-## The valuation normalisation is multiplicative
-
-`SinnottHyp` below states Hypothesis 7.8's integrality and nonvanishing clauses
-through the multiplicative valuation `P.v p` of `EKPackage`. Mathlib's
-`Valuation L Γ` is a monoid-with-zero hom into a linearly ordered commutative
-monoid with zero, so the order runs opposite to the paper's additive `v_𝔭`:
-
-| paper (`v_𝔭`, additive) | Lean (`P.v p`, multiplicative) |
-|---|---|
-| `v_𝔭(x) ≥ 0` (`x` is `𝔭`-integral) | `P.v p x ≤ 1` |
-| `v_𝔭(x) = 0` (`𝔭 ∤ x`) | `P.v p x = 1` |
-
-The same dictionary is stated in `Interface/EK.lean` and in
-`Kernel/Resultant.lean`; this is the third place a reader meets it.
+The criterion class of Proposition 6.2 is a **def** (not a field):
+`criterionClass K := IsLocalRing.residue K.W K.m2core`.
 
 ## Threading of `Lp` (contract for `ClassicalInputs`)
 
@@ -57,10 +31,10 @@ The same dictionary is stated in `Interface/EK.lean` and in
 `IwasawaData`/`AnalyticData` convention). `PrimeData` (`ClassicalInputs`) instantiates
 `KatzData p Lp` at the *same* `Lp` it feeds `AnalyticData`, so `comparison`
 relates the genuine MTT `L_p` to `LKatz` with no divergent copy and no
-tie-equation needed. `SinnottHyp` and `criterionClass` carry `Lp` accordingly.
+tie-equation needed. `criterionClass` carries `Lp` accordingly.
 
-Paper statements quoted below: Lemma 3.5, Proposition 7.1, Proposition 7.2,
-Lemma 7.3, Definition 6.2, Hypothesis 7.8, Conjecture 7.9, Theorem C.
+Paper statements quoted below: Lemma 3.5, Proposition 6.1, Proposition 6.2,
+Lemma 6.3.
 -/
 
 open PowerSeries
@@ -108,10 +82,10 @@ structure KatzData (p : ℕ) [Fact p.Prime] (Lp : Λ p) where
   maxIdeal_eq_p : IsLocalRing.maximalIdeal W = Ideal.span {(p : W)}
   /-- `L^{Katz}_𝔭(T) ∈ W⟦T⟧`: the one-variable restriction of the Katz measure
   `μ_{𝔣𝔭^∞}` to the cyclotomic line through the central character of `ψ_E`
-  (`L^K` of Proposition 7.1; `L^{Katz}_𝔭` of Lemma 3.5).
+  (`L^K` of Proposition 6.1; `L^{Katz}_𝔭` of Lemma 3.5).
   SOURCE: Katz [N. M. Katz, *p-adic interpolation of real analytic Eisenstein
   series*, Ann. of Math. (2) 104 (1976), 459–571]; Bannai–Kobayashi (BK3).
-  PAPER: Lemma 3.5 (`lem:comparison`), Proposition 7.1 (`prop:jetformula`). STATUS: data. -/
+  PAPER: Lemma 3.5 (`lem:comparison`), Proposition 6.1 (`prop:jetformula`). STATUS: data. -/
   LKatz : PowerSeries W
   /-- **Comparison** (Lemma 3.5): after base change to `W`, the MTT
   p-adic L-function equals `c_p · u(T) · L^{Katz}_𝔭(T)` for a unit constant
@@ -131,42 +105,32 @@ structure KatzData (p : ℕ) [Fact p.Prime] (Lp : Λ p) where
   comparison : ∃ (c : Wˣ) (u : (PowerSeries W)ˣ),
       Lp.map (algebraMap ℤ_[p] W) = (c : W) • ((u : PowerSeries W) * LKatz)
   /-- The **grade-two core** `m2core ∈ W`: the `p^{-2}` lift of the grade-two
-  moment sum, `M₂(𝔭) = p² · m2core` (Proposition 7.2(2) divisibility
+  moment sum, `M₂(𝔭) = p² · m2core` (Proposition 6.2(2) divisibility
   `v_p(M₂(𝔭)) ≥ 2`). Its residue mod 𝔭 is the criterion class `𝔠(𝔭)`
   (`criterionClass`).
-  SOURCE: Proposition 7.2 (`prop:grading`)(2) (`M₂(𝔭) = p² · (𝔠(𝔭)-lift)`); de Shalit II §4 for
+  SOURCE: Proposition 6.2 (`prop:grading`)(2) (`M₂(𝔭) = p² · (𝔠(𝔭)-lift)`); de Shalit II §4 for
   the local moment terms.
-  PAPER: Proposition 7.2 (`prop:grading`)(2). STATUS: data. -/
+  PAPER: Proposition 6.2 (`prop:grading`)(2). STATUS: data. -/
   m2core : W
-  /-- **Grading congruence** (Proposition 7.1 + Proposition 7.2(1)): for a unit
+  /-- **Grading congruence** (Proposition 6.1 + Proposition 6.2(1)): for a unit
   normalisation `κ₀ ∈ Wˣ` (absorbing `2 log_p(1+p)²`),
   `p² · (κ₀ · c₂(L^K) − m2core) ∈ (p³)`,
   i.e. `κ₀ · coeff 2 LKatz ≡ m2core (mod p)` after cancelling `p²` in the domain
   `W`. This is exactly the hypothesis of the abstract grading-valuation kernel
-  (`SelmerData.π_surj`), which turns it into `IsUnit (coeff 2 LKatz) ↔ 𝔠(𝔭) ≠ 0`.
+  (`isUnit_iff_residue_ne_zero_of_grading_congr`), which turns it into `IsUnit (coeff 2 LKatz) ↔ 𝔠(𝔭) ≠ 0`.
 
-  **Honest descope.** Proposition 7.1 expresses `c₂(L^K) = ½∫m² dμ_ψ` as a
-  second moment and Proposition 7.2(1) gives `2 log_p(1+p)² c₂(L^K) ≡ M₂(𝔭)
+  **Honest descope.** Proposition 6.1 expresses `c₂(L^K) = ½∫m² dμ_ψ` as a
+  second moment and Proposition 6.2(1) gives `2 log_p(1+p)² c₂(L^K) ≡ M₂(𝔭)
   (mod p³ W)`; the Eisenstein–Kronecker bookkeeping identifying `M₂(𝔭)`/`m2core`
-  "to the last constant" (Hypothesis 7.8(i)) is **not** carried in Lean. This
+  "to the last constant" is **not** carried in Lean. This
   field records only the resulting algebraic congruence between `coeff 2 LKatz`
   and `m2core`.
   SOURCE: Bannai–Kobayashi Prop. 3.3 / Thm. 3.7 [Duke Math. J. 153 (2010),
   229–295] (moment ↔ Eisenstein–Kronecker display) + de Shalit II §4.
-  PAPER: Proposition 7.1 (`prop:jetformula`), Proposition 7.2 (`prop:grading`)(1).
+  PAPER: Proposition 6.1 (`prop:jetformula`), Proposition 6.2 (`prop:grading`)(1).
   STATUS: consequence-form. -/
   grading_congr : ∃ κ₀ : Wˣ,
       (p : W) ^ 2 * ((κ₀ : W) * coeff 2 LKatz - m2core) ∈ Ideal.span {(p : W) ^ 3}
-  /-- The **mod-𝔭 Sinnott trace** `traceClass ∈ residue field of W` (opaque
-  data): the trace, over the 𝔭-torsion translates of §7.3, of the
-  reductions of the fixed grade-two combination of the sections `𝓡_E`. Its
-  equality with `criterionClass` is Hypothesis 7.8(i) (a `SinnottHyp` field, not
-  asserted here); its nonvanishing under pointwise `𝔭`-unitness of `F_c` on
-  `D_E` is Hypothesis 7.8(ii).
-  SOURCE: Bannai–Kobayashi §§2–3 calculus [Duke Math. J. 153 (2010), 229–295]
-  (the second-order Kummer-congruence analysis of the p-adic theta expansion).
-  PAPER: Hypothesis 7.8 (`hyp:sinnott`), §7.3 (`ssec:moments`). STATUS: opaque data. -/
-  traceClass : IsLocalRing.ResidueField W
 
 attribute [instance] KatzData.commRing KatzData.isDomain KatzData.isLocalRing
   KatzData.algebra
@@ -176,13 +140,11 @@ namespace KatzData
 variable {p : ℕ} [Fact p.Prime] {Lp : Λ p}
 
 /-- The **criterion class** `𝔠(𝔭) = p^{-2} M₂(𝔭) mod 𝔭 ∈ residue field of W`
-of Proposition 7.2, as the residue of `m2core`.
+of Proposition 6.2, as the residue of `m2core`.
 
-This is a **def, not a field**: it is the bridge
-that `SinnottHyp.presentation` (Hypothesis 7.8(i)) equates with the constructed
-`traceClass`, and the object the grading-valuation kernel (`SelmerData.π_surj`) links to
-`IsUnit (coeff 2 LKatz)`.
-PAPER: Proposition 7.2 (`prop:grading`) (the criterion class `𝔠(𝔭)`). -/
+This is a **def, not a field**: it is the object the grading-valuation kernel
+`isUnit_iff_residue_ne_zero_of_grading_congr` links to `IsUnit (coeff 2 LKatz)`.
+PAPER: Proposition 6.2 (`prop:grading`) (the criterion class `𝔠(𝔭)`). -/
 noncomputable def criterionClass (K : KatzData p Lp) : IsLocalRing.ResidueField K.W :=
   IsLocalRing.residue K.W K.m2core
 
@@ -190,10 +152,9 @@ noncomputable def criterionClass (K : KatzData p Lp) : IsLocalRing.ResidueField 
 `maxIdeal_eq_p`: a non-unit of `ℤ_[p]` lies in `(p) = maximalIdeal ℤ_[p]`, so
 its image lies in `(p) = maximalIdeal K.W`, hence is a non-unit.
 
-Provided so that the unit-transfer step of Theorem C (Theorem 7.10)
-(`Kernel/Decoupling.lean` and `thm_reduction`) —
+Provided so that the unit-transfer step of Lemma 6.3 (`Kernel/Decoupling.lean`),
 `IsUnit (coeff 2 (Lp.map (algebraMap ℤ_[p] W))) ↔ IsUnit (coeff 2 Lp)` via
-`isUnit_map_iff` — has its `[IsLocalHom …]` instance ready without expanding
+`isUnit_map_iff`, has its `[IsLocalHom …]` instance ready without expanding
 `KatzData`'s field list.
 SOURCE: derived from `maxIdeal_eq_p` + `PadicInt.maximalIdeal_eq_span_p`. -/
 theorem algMap_isLocalHom (K : KatzData p Lp) : IsLocalHom (algebraMap ℤ_[p] K.W) := by
@@ -211,45 +172,5 @@ theorem algMap_isLocalHom (K : KatzData p Lp) : IsLocalHom (algebraMap ℤ_[p] K
     (isUnit_of_mul_isUnit_left hu)
 
 end KatzData
-
-/-- **Sinnott trace property for second jets** (Hypothesis 7.8) — a
-`Prop`-valued structure used ONLY in **hypothesis position** of Theorem C (Theorem
-7.10). It is referenced by no instantiable structure, so
-the conjectural content never leaks into the assumption surface.
-
-It is stated for a `KatzData` at `p` together with the Eisenstein–Kronecker
-package `P` and the coefficient vector `c` of Hypothesis 7.8(i), so that the
-values `F_c(t)` the hypothesis speaks about are the `EKPackage.Fc` of
-`Interface/EK.lean` rather than an opaque predicate.
-
-The three fields are the paper's own clauses: -/
-structure SinnottHyp (p : ℕ) [Fact p.Prime] (Lp : Λ p) (Kd : KatzData p Lp)
-    (P : EKPackage) (c : Fin 6 → P.K) : Prop where
-  /-- **Hypothesis 7.8(i), integrality clause.** The values `F_c(t)`, `t ∈ D_E`,
-  are `𝔭`-integral: in the paper `v_𝔭(F_c(t)) ≥ 0`, here `P.v p (P.Fc c t) ≤ 1`
-  (the multiplicative normalisation of the module docstring).
-
-  This clause sits in hypothesis position, which is where the paper puts it, and
-  not on the instantiable assumption surface.
-  PAPER: Hypothesis 7.8 (`hyp:sinnott`)(i). -/
-  integral : ∀ t ∈ P.D, P.v p (P.Fc c t) ≤ 1
-  /-- **Hypothesis 7.8(i), presentation clause.** The criterion class `𝔠(𝔭)` of
-  Proposition 7.2 admits the presentation constructed in §7.3: it is
-  the mod-𝔭 trace `traceClass` of the reductions of the combination `F_c` of the
-  sections `𝓡_E`, weighted over the `𝔭^k`-torsion translation data. (Bannai–
-  Kobayashi calculus bookkeeping — expected provable, stated as hypothesis
-  because the bookkeeping is not carried to the last constant.)
-  PAPER: Hypothesis 7.8 (`hyp:sinnott`)(i). -/
-  presentation : IsLocalRing.residue Kd.W Kd.m2core = Kd.traceClass
-  /-- **Hypothesis 7.8(ii) (Nonvanishing).** If `F_c` is a `𝔭`-unit at every point
-  of `D_E` — the paper's `v_𝔭(F_c(t)) = 0` for all `t ∈ D_E`, here
-  `P.v p (P.Fc c t) = 1` — then the trace `traceClass` is nonzero: passing to
-  the level-`p` trace introduces no new zeros beyond those detected by
-  `δ_E(c)`. The genuine jet-level analogue of Sinnott's lemma.
-
-  The antecedent is the paper's explicit pointwise condition; the structure this
-  file replaces stated it as an opaque `Prop` field of `KatzData`.
-  PAPER: Hypothesis 7.8 (`hyp:sinnott`)(ii). -/
-  nonvanishing : (∀ t ∈ P.D, P.v p (P.Fc c t) = 1) → Kd.traceClass ≠ 0
 
 end FinShaRank2

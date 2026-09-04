@@ -102,7 +102,7 @@ theorem oneAddX_mul_σ : (1 + X) * (σ : Λ p) = -X := by
 /-- `x : ℚ_[p]` is a **p-adic unit** when `‖x‖ = 1`. For `x` in the ring of
 integers this is genuine invertibility (`isPUnit_coe_iff`); phrasing it on
 `ℚ_[p]` lets `c2tilde` — which lives in `ℚ_[p]` — be tested directly.
-Paper: the unit condition `\tilde c_2(p) ∈ ℤ_p^×` of Conjecture 5.1 and Theorem C. -/
+Paper: the unit condition `\tilde c_2(p) ∈ ℤ_p^×` of Theorem A (Theorem 3.8). -/
 def IsPUnit (x : ℚ_[p]) : Prop := ‖x‖ = 1
 
 /-- For an integral element, `IsPUnit` of its image in `ℚ_[p]` is exactly

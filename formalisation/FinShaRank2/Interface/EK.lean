@@ -4,18 +4,11 @@ import FinShaRank2.Defs
 /-!
 # Eisenstein–Kronecker interface: `EKPackage`
 
-The archimedean side of Definition 6.2. `EKPackage` bundles the divisor `D_E` of (9),
-the six-function package `𝓡_E` of (11), a multiplicative valuation at each
-rational prime, and the support function `supp` of Hypothesis 7.8. On top of that data,
-`δ_E(c)` is a **definition**, not an assumed datum:
+The formal counterpart of the Bannai–Kobayashi jet: the divisor `D_E` of (9),
+the six-function package `𝓡_E` of (11), and a multiplicative valuation at each
+rational prime. Only the objects the paper itself constructs are assumed.
 
-    EKPackage.Fc     P c t = ∑ i, c i • P.r i t
-    EKPackage.deltaE P c   = ∏ t ∈ P.D, P.Fc c t
-
-The product is written out, so Definition 6.2 is discharged by unfolding, and the only
-data assumed are the objects the paper itself constructs: `D_E`, `𝓡_E`, `v_𝔭`, `supp`.
-
-## The valuation normalisation is multiplicative — read this before comparing with the paper
+## The valuation normalisation is multiplicative
 
 Mathlib's `Valuation L Γ` is a monoid homomorphism to a linearly ordered commutative monoid
 with zero, so the order runs opposite to the paper's additive `v_𝔭`. The dictionary is:
@@ -27,25 +20,12 @@ with zero, so the order runs opposite to the paper's additive `v_𝔭`. The dict
 | `v_𝔭(x) > 0` (`𝔭 ∣ x`) | `P.v p x < 1` |
 | `v_𝔭(x) = ∞` (`x = 0`) | `P.v p x = 0` |
 
-Every inequality of Hypothesis 7.8 and Theorem C (Theorem 7.10) therefore reads
-reversed in the Lean.
-`AddValuation` would preserve the direction but has no product lemma at this mathlib pin, and
-`δ_E(c)` is a product, so the multiplicative encoding is the one used.
-
 No normalisation `v_𝔭(p) = …` is imposed. Nothing downstream uses one and the value depends on
 the choice of `Γ`.
 
-## `δ_E(c)` lands in `L`, not in `K`
+The section values lie in `L`, the paper's `Q̄`; no rationality over `K` is asserted.
 
-`L` is the paper's `Q̄`. That `δ_E(c) ∈ K` is Lemma 6.3(1), which the paper proves only after
-granting the equivariance `r_{a,b}(σ t) = σ(r_{a,b}(t))`, an input it uses rather than proves.
-Theorem C does not use Lemma 6.3, and `δ_E(c)` is not proved rational
-(`deltaE.tex`, after Theorem C), so the divisibility condition `𝔭 ∤ δ_E(c)` is not
-symmetric in `𝔭` and `𝔭̄`. Testing it with `padicValRat`, as the structure being replaced did,
-asserts a rationality that is not available.
-
-Paper statements quoted below: (9), (11), Definition 6.2, Lemma 6.3,
-Hypothesis 7.8, Theorem C.
+Paper statements quoted below: (9), (11).
 -/
 
 namespace FinShaRank2
@@ -74,12 +54,10 @@ theorem jetIndex_image :
 /-- `jetIndex` is injective, so the six `Fin 6` slots are six distinct pairs `(a, b)`. -/
 theorem jetIndex_injective : Function.Injective jetIndex := by decide
 
-/-- **Eisenstein–Kronecker package for a CM elliptic curve `E/ℚ`** (paper §6.2).
+/-- **Eisenstein–Kronecker package for a CM elliptic curve `E/ℚ`**.
 
-The data of Definition 6.2 other than the coefficient vector: the divisor `D_E` of (9),
-the six functions `r_{a,b}` of (11), the valuation `v_𝔭` at each rational prime, and
-the support function of Hypothesis 7.8. The invariant `δ_E(c)` is then the def
-`EKPackage.deltaE`, not a field.
+The data of the Bannai–Kobayashi jet: the divisor `D_E` of (9), the six functions
+`r_{a,b}` of (11), and the valuation `v_𝔭` at each rational prime.
 
 The carrier types are in `Type` and their algebraic instances are bundled as instance fields,
 re-exported by the `attribute [instance]` line below, so that `P.K`, `P.L` and `P.Γ` carry
@@ -87,9 +65,9 @@ re-exported by the `attribute [instance]` line below, so that `P.K`, `P.L` and `
 `KatzData` (`Interface/Katz.lean`). -/
 structure EKPackage where
   /-- The imaginary quadratic field `K` by which `E` has complex multiplication; the
-  coefficient vectors `c` of Definition 6.2 are elements of `K⁶`.
+  coefficients scaling the six sections are elements of `K`.
   SOURCE: the paper's own definition.
-  PAPER:  Definition 6.2 (`def:deltaE`) (`c = (c_{a,b}) ∈ K⁶`). STATUS: data. -/
+  PAPER:  (11) (`eq:jetpackage`). STATUS: data. -/
   K : Type
   /-- `K` is a field. STATUS: classical (structure instance). -/
   [fieldK : Field K]
@@ -119,7 +97,7 @@ structure EKPackage where
   SOURCE: the paper's own definition. PAPER: (9) (`eq:DEdef`). STATUS: data. -/
   ι : Type
   /-- The divisor `D_E := Cl_𝔣(K) = (O_K/𝔣)^× / μ_K`, the ray class group of conductor `𝔣`,
-  as a finite set of points. Finiteness is what makes `Res(F_c, D_E)` a finite product.
+  as a finite set of points.
   SOURCE: classical (finiteness of the ray class group).
   PAPER:  (9) (`eq:DEdef`). STATUS: data. -/
   D : Finset ι
@@ -140,57 +118,9 @@ structure EKPackage where
   in the paper is `P.v p x = 1` here, and `v_𝔭(x) ≥ 0` is `P.v p x ≤ 1`. See the module
   docstring.
   SOURCE: classical (valuation theory).
-  PAPER:  §2.1 (`ssec:notation`); used in Hypothesis 7.8 (`hyp:sinnott`) and Theorem C (Theorem
-  7.10, `thm:reduction`). STATUS: data. -/
+  PAPER:  §2.1 (`ssec:notation`), `eq:classsums`. STATUS: data. -/
   v : ℕ → Valuation L Γ
-  /-- `supp(c)`: the finite set of rational primes lying below a prime of `Q̄` at which some
-  entry of `c` is not a unit. Left opaque. Theorem C (Theorem 7.10) uses it only through
-  the exclusion
-  `p ∉ supp(c)`, and the paper's bound on it — that the entries of the expected `c` are roots of
-  unity times Gauss sums times rationals supported on `{2, 3}`, so that `supp(c)` adds no split
-  prime to `S_E` — is stated there as an expectation, not a theorem.
-  SOURCE: the paper's own definition.
-  PAPER:  Hypothesis 7.8 (`hyp:sinnott`) (the definition of `supp(c)`). STATUS: data. -/
-  supp : (Fin 6 → K) → Finset ℕ
 
 attribute [instance] EKPackage.fieldK EKPackage.fieldL EKPackage.algKL EKPackage.ordΓ
-
-namespace EKPackage
-
-variable (P : EKPackage) (c : Fin 6 → P.K)
-
-/-- `F_c := ∑_{a,b} c_{a,b} r_{a,b}`, the coefficient vector `c` applied to the package `𝓡_E`.
-PAPER: Definition 6.2 (`def:deltaE`). STATUS: definition. -/
-def Fc (t : P.ι) : P.L := ∑ i, c i • P.r i t
-
-/-- `δ_E(c) := Res(F_c, D_E) = ∏_{t ∈ D_E} F_c(t)`, the candidate invariant of Definition 6.2.
-
-It lands in `P.L`, the paper's `Q̄`. That it lies in `K` is Lemma 6.3(1), which needs the
-equivariance input the paper does not prove; Theorem C (Theorem 7.10) does not use it.
-PAPER: Definition 6.2 (`def:deltaE`). STATUS: definition. -/
-def deltaE : P.L := ∏ t ∈ P.D, P.Fc c t
-
-theorem Fc_def (t : P.ι) : P.Fc c t = ∑ i, c i • P.r i t := rfl
-
-theorem deltaE_def : P.deltaE c = ∏ t ∈ P.D, P.Fc c t := rfl
-
-/-- `δ_E(c) ≠ 0` exactly when `F_c` vanishes at no point of `D_E`. Immediate from Definition 6.2
-once `δ_E(c)` is the product rather than assumed data.
-PAPER: the sentence following Definition 6.2 (`def:deltaE`). STATUS: definition
-(consequence of unfolding). -/
-theorem deltaE_ne_zero_iff : P.deltaE c ≠ 0 ↔ ∀ t ∈ P.D, P.Fc c t ≠ 0 := by
-  rw [deltaE_def, Finset.prod_ne_zero_iff]
-
-/-- `δ_E(c)` on a one-point divisor is the single value of `F_c`.
-
-Stated for a hypothesis `P.D = {t}` rather than by unfolding a particular package: on an
-instantiated `EKPackage` the carriers `P.K`, `P.L`, `P.ι` are projections, and unfolding the
-package in the goal reduces them to their concrete values while leaving the instance arguments
-in projected form, which makes the goal type-incorrect at instance transparency and blocks
-`simp`. The toy instances therefore go through this lemma. -/
-theorem deltaE_singleton (t : P.ι) (h : P.D = {t}) : P.deltaE c = P.Fc c t := by
-  rw [deltaE_def, h, Finset.prod_singleton]
-
-end EKPackage
 
 end FinShaRank2

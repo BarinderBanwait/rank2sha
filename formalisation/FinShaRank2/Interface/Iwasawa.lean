@@ -29,8 +29,7 @@ The paper's discrete statements translate as
 `Ш(E/ℚ)[p^∞] = 0 ↔ Subsingleton ShaDual`. **Neither translation appears in any
 field type below** (no conclusion vocabulary): the fields carry
 only the *inputs* the proof consumes, and the conclusions are theorems
-`prop_consequence` and `cor_horizontal`
-derive from them.
+`prop_consequence` derives from them.
 
 ## Instance-field plumbing
 

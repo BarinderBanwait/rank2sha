@@ -15,21 +15,24 @@
 # fails, and prints a one-line summary last.
 #
 # WHAT NEEDS WHAT
-#   PARI/GP >= 2.17 runs everything except one item: the horizontal regulator
-#   scan (code/gp/scan.gp), the Eisenstein-Kronecker invariants
-#   (code/gp/deltaE.gp) and the first of the two Reg_p implementations
-#   (code/gp/regulator.gp).
-#   SageMath >= 10.7 is needed only for the L-side of the p = 5, 13 control on
-#   the normalisation: code/sage/certificates.sage computes L_p(E,T) from eclib
-#   modular symbols at level 12544, and code/sage/regulator.sage is the second
-#   Reg_p implementation.  A reader without Sage can still run the scan, the
-#   Eisenstein-Kronecker computation and the PARI half of the control.
-#   python3 runs code/sage/check_agreement.py, which needs no library.
+#   PARI/GP >= 2.17 runs the two horizontal regulator scans (code/gp/scan.gp
+#   and code/gp/scan_family.gp), the recomputation of the exceptional primes of
+#   the second of them (code/gp/family_checks.gp) and the first of the two
+#   Reg_p implementations (code/gp/regulator.gp).
+#   SageMath >= 10.7 is needed for two items: the L-side of the p = 5, 13
+#   control on the normalisation, where code/sage/certificates.sage computes
+#   L_p(E,T) from eclib modular symbols at level 12544 and
+#   code/sage/regulator.sage is the second Reg_p implementation; and
+#   code/sage/family_crosscheck.py, the independent reading of the CLS-family
+#   exceptions.  A reader without Sage can still run both scans and the PARI
+#   half of the control.
+#   python3 runs code/sage/check_agreement.py, code/sage/verify_scan.py and
+#   code/sage/verify_family_scan.py, none of which needs a library.
 #
 # NOT RUN HERE, because of cost:
-#   code/gp/scan.gp     1611 primes, about 12 minutes on eight cores
-#   code/gp/deltaE.gp   209.7 s on the reference machine
-#   code/sage/run.sh    the full control; 25 s at p = 5, 5778 s at p = 13
+#   code/gp/scan.gp         1611 primes, about 12 minutes on eight cores
+#   code/gp/scan_family.gp  6441 primes over four more curves
+#   code/sage/run.sh        the full control; 25 s at p = 5, 5778 s at p = 13
 # The smoke test recomputes a sample of what those produce and compares it with
 # the committed output.
 
@@ -209,15 +212,20 @@ check_file() {   # check_file <relative path> <role>
     fail "$1" "missing ($2)"
   fi
 }
-check_file data/all_primes_vreg.txt "output of gp/scan.gp, input to gp/deltaE.gp"
+check_file data/all_primes_vreg.txt "output of gp/scan.gp, input to sage/verify_scan.py"
 check_file data/lmfdb_iwasawa.txt   "input to sage/check_agreement.py, check C7"
-check_file data/deltaE_phase2.txt   "output of gp/deltaE.gp"
 check_file data/cert_5.out          "output of sage/run.sh at p = 5"
 check_file data/cert_13.out         "output of sage/run.sh at p = 13"
 check_file data/m2_w1.out           "output of gp/m2_w1.gp at p = 5, 13, 17"
 check_file data/m2_w1_2937.out      "output of gp/m2_w1.gp at p = 29, 37"
 check_file data/m2_msd.out          "output of sage/m2_msd.sage"
-check_file data/m2_gtest.out        "output of gp/m2_gtest.gp at p = 13"
+check_file data/family_bases.txt      "the four CLS bases, input to gp/scan_family.gp (expect 7)"
+check_file data/scan_D17.txt          "output of gp/scan_family.gp at D = 17 (expect 1610)"
+check_file data/scan_D-33.txt         "output of gp/scan_family.gp at D = -33 (expect 1611)"
+check_file data/scan_D-34.txt         "output of gp/scan_family.gp at D = -34 (expect 1610)"
+check_file data/scan_D-39.txt         "output of gp/scan_family.gp at D = -39 (expect 1610)"
+check_file data/family_checks.out     "output of gp/family_checks.gp"
+check_file data/family_crosscheck.out "output of sage/family_crosscheck.py"
 
 # ---------------------------------------------------------------------------
 head2 "4. Smoke test"
@@ -309,21 +317,6 @@ PYEOF
   fi
 else
   skip "S2 committed scan parses, 1611 lines, all v = 2" "no python3"
-fi
-
-# S3 -- the recorded Eisenstein-Kronecker sums match the paper's table.
-EXPECTED_SUMS="invariant sums: S01 0  S02 3584  S11/A 32  S03 225792  S12/A 0  S21/A^2 -144"
-if [ -s "$DATA/deltaE_phase2.txt" ]; then
-  GOT="$(grep -m1 '^invariant sums:' "$DATA/deltaE_phase2.txt")"
-  if [ "$GOT" = "$EXPECTED_SUMS" ]; then
-    pass "S3 deltaE_phase2.txt sums match the paper's table" ""
-  else
-    fail "S3 deltaE_phase2.txt sums match the paper's table" ""
-    info "      expected: $EXPECTED_SUMS"
-    info "      found   : $GOT"
-  fi
-else
-  fail "S3 deltaE_phase2.txt sums match the paper's table" "file missing"
 fi
 
 # S4 -- gp/regulator.gp runs and reports the expected valuations.
@@ -433,20 +426,57 @@ else
   skip "S10 sage/null_model.py reproduces Section 5.4" "no python3 or script not present"
 fi
 
+# S11 -- PARI reproduces the exceptional line "5 3" of data/scan_D-39.txt, at
+# the precision the scan used there.
+if [ -n "$GP_BIN" ]; then
+  cat > "$WORK/vregfam.gp" <<'GPEOF'
+{
+my(E, G, p, n, v);
+E = ellinit([0,0,0,39,0]);
+G = [[3,12],[27,144]];
+p = 5;
+n = 6;
+v = valuation(ellpadicregulator(E, p, n, G), p);
+print("VREGFAM ", p, " n=", n, " v=", v);
+print(if(v == 3, "VREGFAMOK", "VREGFAMBAD"));
+}
+quit
+GPEOF
+  VFOUT="$("$GP_BIN" -q "$WORK/vregfam.gp" 2>&1)"
+  if echo "$VFOUT" | grep -q "^VREGFAMOK$"; then
+    pass "S11 PARI v_fp(Reg_fp) = 3 at D = -39, p = 5" "basis (3,12),(27,144)"
+  else
+    fail "S11 PARI v_fp(Reg_fp) = 3 at D = -39, p = 5" "see below"
+    echo "$VFOUT" | sed 's/^/      /'
+  fi
+else
+  skip "S11 PARI v_fp(Reg_fp) = 3 at D = -39, p = 5" "no PARI/GP"
+fi
+
+# S12 -- the four committed CLS-family scans, re-parsed and re-verified.
+if [ -n "$PY_BIN" ] && [ -f "$SAGEDIR/verify_family_scan.py" ]; then
+  if (cd "$SAGEDIR" && python3 verify_family_scan.py >"$WORK/vf.txt" 2>&1); then
+    pass "S12 sage/verify_family_scan.py on the four CLS scans" "$(grep -c "\[PASS\]" "$WORK/vf.txt") files pass, 0 fail"
+  else
+    fail "S12 sage/verify_family_scan.py on the four CLS scans" ""
+    sed -n 's/^/      /p' "$WORK/vf.txt" | grep -i fail | head -8
+  fi
+else
+  skip "S12 sage/verify_family_scan.py on the four CLS scans" "no python3 or script not present"
+fi
+
 # ---------------------------------------------------------------------------
 head2 "5. Scripts not exercised here"
 # ---------------------------------------------------------------------------
 for s in gp/scan.gp:"1611 primes, every split prime below 30000; produces data/all_primes_vreg.txt" \
-         gp/deltaE.gp:"209.7 s on the reference machine; produces data/deltaE_phase2.txt, and must be run from code/gp, its data paths being relative" \
+         gp/scan_family.gp:"6441 primes over the four CLS curves, four times the work of gp/scan.gp; produces data/scan_D17.txt and its three siblings, one curve and one interval per run" \
          sage/run.sh:"the full control; 25 s at p = 5, 5778 s at p = 13" \
          gp/excluded_set.gp:"the discharge of S_E, Section 5.1; seconds" \
          gp/timings.gp:"the four per-prime timings of Section 5.3; about 10 s" \
-         gp/independence.gp:"the independence bound eq:indep, Section 6.5; 2.4 s at three precisions" \
          gp/epsilon_check.gp:"the unit character over 3018 split primes, Section 6.2; under a second" \
-         gp/reconstruction_artefact.gp:"the naive-reconstruction artefact of Section 6.7; 40 s" \
-         gp/s01_check.gp:"S_{0,1} at five working precisions, Section 6.3; 2.6 minutes" \
+         gp/family_checks.gp:"the five exceptional and control primes of the CLS-family scan at precisions 6 to 14, and p = 15289 at 6 to 16; produces data/family_checks.out" \
+         sage/family_crosscheck.py:"the Sage regulator at those primes and the eclib modular symbols at level 48672; produces data/family_crosscheck.out" \
          gp/m2_w1.gp:"the bracket B(fp) of Section 6.8; 25 s at p = 5, 13, 17 and about 18 min at p = 29, 37 (W1PRIMES=29,37 W1PREC=600)" \
-         gp/m2_gtest.gp:"the collapse test of lem:collapse at p = 13, Section 6.8; 2.5 minutes" \
          sage/m2_msd.sage:"kappa(p) at fourteen split primes, the modular-symbol side of Section 6.8; 3 minutes"; do
   name="${s%%:*}"; why="${s#*:}"
   if [ -f "$HERE/$name" ]; then
@@ -462,12 +492,12 @@ EXTRA=""
 for f in "$GPDIR"/*.gp "$SAGEDIR"/*.sage "$SAGEDIR"/*.py "$SAGEDIR"/*.sh; do
   [ -e "$f" ] || continue
   case "${f#"$HERE"/}" in
-    gp/regulator.gp|gp/scan.gp|gp/deltaE.gp) ;;
-    gp/excluded_set.gp|gp/timings.gp|gp/independence.gp) ;;
-    gp/epsilon_check.gp|gp/reconstruction_artefact.gp|gp/s01_check.gp) ;;
-    gp/m2_w1.gp|gp/m2_gtest.gp) ;;
+    gp/regulator.gp|gp/scan.gp|gp/scan_family.gp) ;;
+    gp/excluded_set.gp|gp/timings.gp|gp/epsilon_check.gp) ;;
+    gp/m2_w1.gp|gp/family_checks.gp) ;;
     sage/regulator.sage|sage/certificates.sage|sage/check_agreement.py|sage/run.sh) ;;
     sage/verify_scan.py|sage/null_model.py|sage/m2_msd.sage) ;;
+    sage/family_crosscheck.py|sage/verify_family_scan.py) ;;
     *) EXTRA="$EXTRA ${f#"$HERE"/}" ;;
   esac
 done

@@ -14,7 +14,7 @@ The one change forced by `Lp = C p · X²` is the **grade-two core**: since
 `m2core := 1` (the `ToyTrivial` value) is *not* available. We take `m2core := p`, which
 makes the congruence an equality `p² · 0 = 0` with `κ₀ = 1`.
 
-This is the expected shadow of the `SelmerData.π_surj` grading-valuation kernel: a non-unit
+This is the expected shadow of the `isUnit_iff_residue_ne_zero_of_grading_congr` grading-valuation kernel: a non-unit
 `coeff 2 L^{Katz}` goes hand in hand with a vanishing criterion class. Nothing
 in `KatzData` asserts that the criterion class is nonzero, so the layer is
 constructible.
@@ -38,7 +38,6 @@ noncomputable def shaKatz (p : ℕ) [Fact p.Prime] : KatzData p (shaLp p) where
   comparison := ⟨1, 1, by simp [shaLp]⟩
   m2core := (p : ℤ_[p])
   grading_congr := ⟨1, by simp [coeff_two_shaLp]⟩
-  traceClass := 1
 
 end Toy
 

@@ -37,8 +37,8 @@ main.tex
 main.pdf
 STATE.txt
 
-# Staged output of an interrupted or failed code/gp/deltaE.gp run. A clean run
-# moves this onto code/data/deltaE_phase2.txt and leaves nothing behind.
+# Staged output of an interrupted or failed run of a script under code/gp or
+# code/sage. A clean run moves the file onto code/data/ and leaves nothing behind.
 /code/data/*.partial
 
 .DS_Store

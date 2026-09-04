@@ -37,7 +37,7 @@ the multiplicative norm collapses the two extra factors, so
 
 ## Interface consumption
 
-* **Theorem A (Theorem 3.8) and Theorem C (Theorem 7.10).** `isPUnit_c2tilde_iff` is stated on
+* **Theorem A (Theorem 3.8).** `isPUnit_c2tilde_iff` is stated on
   `Defs.c2tilde` with an integral `c2 : ℤ_[p]` coerced to `ℚ_[p]`, i.e. against
   the mandatory double-coercion spelling `c2tilde ((coeff 2 Lp : ℤ_[p]) : ℚ_[p])
   (((α : ℤ_[p]) : ℚ_[p])⁻¹) tst` used by `PrimeData.c2norm_tie` (`ClassicalInputs`) and

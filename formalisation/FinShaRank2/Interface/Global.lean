@@ -21,10 +21,7 @@ every split prime outside the excluded set (7), together with the global
 Eisenstein–Kronecker package `ek` and the rational datum `(#tors)²/∏cᵥ`.
 
 Nothing here is a global axiom: `ClassicalInputs` is a structure consumed as a
-hypothesis `H` by the main theorems. The conjectural content
-(Hypothesis 7.8, Conjecture 7.9) stays out — it lives only in `SinnottHyp`
-(hypothesis-position) and in the hypothesis `H.ek.deltaE c ≠ 0` of
-Theorem C (Theorem 7.10).
+hypothesis `H` by the main theorems. No conjectural statement is a field of it.
 
 ## Aggregation vs. `extends`
 
@@ -59,18 +56,14 @@ The standalone `HeightData` layer exposes two `ℚ_[p]` proxies (`c2norm`,
   preserved — a non-unit `shaOrd` paired with a nontrivial `ShaDual` still
   satisfies it (`ToySha`).
 
-## δ_E is not threaded through `PrimeData`
+## The Eisenstein–Kronecker package is not threaded through `PrimeData`
 
-`δ_E(c)` is the def `EKPackage.deltaE`, computed from the global field
-`ek : EKPackage` and a coefficient vector `c`, so there is nothing per-prime to
-weld: Theorem C reads `H.ek.deltaE c` directly, and its
-`𝔭 ∤ δ_E(c)` side condition is the valuation statement
-`H.ek.v p (H.ek.deltaE c) = 1`. The rational factor `torsSqOverTam` is a
-`PrimeData` parameter.
+`ek : EKPackage` is a global field of `ClassicalInputs`, not a per-prime layer,
+so there is nothing to weld: a statement about it reads `H.ek` directly. The
+rational factor `torsSqOverTam` is a `PrimeData` parameter.
 
 Paper statements quoted below: (7), Definition 3.2, Proposition 4.2,
-(6), Definition 6.2, Definition 2.2, Theorem A (Theorem 3.8),
-Theorem C.
+(6), Definition 2.2, Theorem A (Theorem 3.8).
 -/
 
 open PowerSeries
@@ -87,8 +80,7 @@ Parameterized over the split hypothesis `hsplit : p % 4 = 1` (threaded into
 SOURCE: aggregate of `AnalyticData` (`AnalyticData`), `SelmerData`/`IwasawaData` (`IwasawaData`),
 `HeightData`/`KatzData` (`KatzData`); per-field citations live in those layers.
 PAPER:  Theorem A (Theorem 3.8, `prop:consequence`), Proposition 4.2
-(`prop:dictionary`), Theorem C (Theorem 7.10, `thm:reduction`) (the per-prime
-        hypotheses these theorems consume).
+(`prop:dictionary`) (the per-prime hypotheses these theorems consume).
 STATUS: interface aggregate (two welded data-equations; per-layer STATUS in the
         component structures). -/
 structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
@@ -118,11 +110,11 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   (`eq:padicbsd`).
   STATUS: interface (see `HeightData`). -/
   height : HeightData p
-  /-- The Katz-measure / δ_E layer over the shared `analytic.Lp` (`KatzData`,
+  /-- The Katz-measure layer over the shared `analytic.Lp` (`KatzData`,
   `KatzData`). Reusing `analytic.Lp` is the `KatzData` contract that makes `comparison` relate
   the real MTT `L_p` to `LKatz` with no divergent copy.
-  SOURCE: `KatzData` (`KatzData`). PAPER: Lemma 3.5 (`lem:comparison`), Proposition 7.2
-  (`prop:grading`), Definition 6.2 (`def:deltaE`).
+  SOURCE: `KatzData` (`KatzData`). PAPER: Lemma 3.5 (`lem:comparison`), Proposition 6.2
+  (`prop:grading`).
   STATUS: interface (see `KatzData`). -/
   katz : KatzData p analytic.Lp
   /-- **Tie-equation for the second-jet proxy** (`ClassicalInputs` mandate; Definition 3.2,
@@ -166,14 +158,13 @@ carries the global Eisenstein–Kronecker package, pins the rational factor of t
 normalisation, and records the non-anomality content of (7).
 
 No global axioms: this is an ordinary structure; the main theorems are literal
-implications `theorem … (H : ClassicalInputs) … : …`. The conjectural content of
-the paper is *not* here (it stays in `SinnottHyp` / the `H.ek.deltaE c ≠ 0`
-hypothesis).
+implications `theorem … (H : ClassicalInputs) … : …`. No conjectural statement of
+the paper is a field of it.
 
 SOURCE: the paper's standing hypotheses ((7) (`eq:Sexc`); `#tors²/∏cᵥ = 1` for the
-        testbed; the Eisenstein–Kronecker data of Definition 6.2).
-PAPER:  (7) (`eq:Sexc`), Definition 6.2 (`def:deltaE`), Theorem A (Theorem 3.8,
-`prop:consequence`), Theorem C (Theorem 7.10, `thm:reduction`).
+        testbed; the Eisenstein–Kronecker data of the Bannai–Kobayashi jet).
+PAPER:  (7) (`eq:Sexc`), (9) (`eq:DEdef`), (11) (`eq:jetpackage`), Theorem A
+(Theorem 3.8, `prop:consequence`).
 STATUS: interface aggregate. -/
 structure ClassicalInputs where
   /-- The **excluded set** `S ⊆ ℕ` of (7). Downstream code uses `p ∉ S`
@@ -198,27 +189,22 @@ structure ClassicalInputs where
   PAPER:  (7) (`eq:Sexc`); Theorem A (Theorem 3.8, `prop:consequence`) (quantifies over `p ∉ S`).
   STATUS: data. -/
   S : Finset ℕ
-  /-- The **Eisenstein–Kronecker package** of Definition 6.2: the divisor `D_E`
-  ((9)), the six-function package `𝓡_E` ((11)), the valuations
-  `v_𝔭`, and the support function of Hypothesis 7.8. The candidate invariant
-  `δ_E(c)` is the def `EKPackage.deltaE ek c`, not a datum; its nonvanishing is
-  Conjecture 7.9, appearing only as a hypothesis of Theorem C (Theorem 7.10) — never asserted
-  here.
+  /-- The **Eisenstein–Kronecker package** of the Bannai–Kobayashi jet: the divisor
+  `D_E` ((9)), the six-function package `𝓡_E` ((11)), and the valuations `v_𝔭`.
   SOURCE: `EKPackage` (`Interface/EK.lean`); per-field citations live there.
-  PAPER:  Definition 6.2 (`def:deltaE`), (9) (`eq:DEdef`), (11) (`eq:jetpackage`),
-  Conjecture 7.9 (`conj:EK`), Theorem C.
+  PAPER:  (9) (`eq:DEdef`), (11) (`eq:jetpackage`), `def:BKjet`.
   STATUS: data. -/
   ek : EKPackage
   /-- The global rational factor `(#E(ℚ)_tors)² / ∏_v c_v` of Definition 3.2,
   pinned `= 1` for the testbed curve by `torsSqOverTam_eq`.
   SOURCE: Definition 3.2 (`def:c2tilde`); testbed data `#tors = 2`, `∏c_v = 4`, so `4/4 = 1`.
-  PAPER:  Definition 3.2 (`def:c2tilde`), §8.1 (`ssec:testbed`).
+  PAPER:  Definition 3.2 (`def:c2tilde`), §7.1 (`ssec:testbed`).
   STATUS: data (value pinned by `torsSqOverTam_eq`). -/
   torsSqOverTam : ℚ
   /-- **Defining equation** pinning `torsSqOverTam = 1` (Definition 3.2, testbed
   data `(#tors)²/∏cᵥ = 2²/4 = 1`). Kept as a separate field (data + equation, conv.
   3) so the normalisation value is a checkable datum rather than baked in.
-  SOURCE: testbed arithmetic `2² / 4 = 1`. PAPER: Definition 3.2 (`def:c2tilde`), §8.1
+  SOURCE: testbed arithmetic `2² / 4 = 1`. PAPER: Definition 3.2 (`def:c2tilde`), §7.1
   (`ssec:testbed`).
   STATUS: data (defining equation). -/
   torsSqOverTam_eq : torsSqOverTam = 1
@@ -229,8 +215,8 @@ structure ClassicalInputs where
   membership `p ∉ S` are explicit arrows, composing with `AnalyticData`'s binder
   design (`AnalyticData`).
   SOURCE: aggregate of the per-prime interface layers.
-  PAPER:  Theorem A (Theorem 3.8, `prop:consequence`), Theorem C (Theorem 7.10,
-  `thm:reduction`) (quantified over split `p ∉ S`).
+  PAPER:  Theorem A (Theorem 3.8, `prop:consequence`) (quantified over split
+  `p ∉ S`).
   STATUS: interface aggregate. -/
   dataAt : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1), p ∉ S →
     @PrimeData p (Fact.mk hp) hsplit torsSqOverTam

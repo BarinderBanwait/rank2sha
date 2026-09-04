@@ -39,22 +39,6 @@
 % fill a proved node gets.
 \newtheorem{assumption}[theorem]{Assumption}
 
-% --- R3bp (2026-08-29): the paper's own conjecture/hypothesis environments.
-% conj:strong, conj:weak and conj:EK are Conjectures in the paper and
-% hyp:sinnott is a Hypothesis; rendering them as `definition` or `assumption`
-% made every cross-reference read "Definition N" or "Assumption N" where the
-% surrounding prose says "Conjecture" / "Hypothesis". Both share the theorem
-% counter, as every other environment here does, and both are listed in the
-% `thms=` option of src/web.tex so they appear as dependency-graph nodes.
-%
-% \leanok discipline is unchanged and reads the same way in these two
-% environments as everywhere else: it marks that the Lean *statement* matches,
-% not that anything is proved. conj:strong and conj:weak carry it (ConjStrong
-% and ConjWeak are Prop-valued defs whose statements match); conj:EK and
-% hyp:sinnott do not (see their own text for the reason in each case).
-\newtheorem{conjecture}[theorem]{Conjecture}
-\newtheorem{hypothesis}[theorem]{Hypothesis}
-
 %% --- Paper macros, ported verbatim from main.tex (T51 / Wave 7 fix, 2026-08-18).
 %% The blueprint restates the paper's results, so it needs the paper's notation.
 %% Keep this block in sync with main.tex's preamble (main.tex lines 11-31).

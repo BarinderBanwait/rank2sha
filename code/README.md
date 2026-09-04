@@ -20,7 +20,7 @@ recomputed here. See §1.8 of the paper.
 | Software | Version used | What needs it |
 |---|---|---|
 | PARI/GP | 2.17.2 | everything under `gp/` |
-| SageMath | 10.7 | only the modular-symbol side of the $p = 5, 13$ control |
+| SageMath | 10.7 | the four SageMath scripts under `sage/` |
 | Python 3 | 3.13 | the plain-Python checks under `sage/` |
 
 Run
@@ -40,11 +40,12 @@ brew install pari          # macOS
 sudo apt install pari-gp   # Debian/Ubuntu
 ```
 
-SageMath is a larger dependency and is needed for one computation only. A reader
-without it can still run everything under `gp/`, which is the regulator scan, the
-Eisenstein–Kronecker computation, and all the verification scripts — that is,
-all of §6 and all of §5 except the modular-symbol half of the $p = 5, 13$
-control. Install instructions are at <https://doc.sagemath.org/html/en/installation/>.
+SageMath is a larger dependency. It is needed by `sage/certificates.sage` and
+`sage/regulator.sage`, the two halves of the $p = 5, 13$ control that
+`sage/run.sh` drives, by `sage/m2_msd.sage` for $\kappa(p)$ in §6.8, and by
+`sage/family_crosscheck.py` for the CLS family; everything under `gp/` and every
+plain-Python script under `sage/` runs without it. Install instructions are at
+<https://doc.sagemath.org/html/en/installation/>.
 
 ## Layout
 
@@ -57,7 +58,7 @@ legacy/  retired computations; gitignored, not published, supports nothing
 
 Section numbers below are those of the manuscript as it stands. They move as the
 paper is edited; the LaTeX labels each script names in its header (`ssec:scan`,
-`def:deltaE`, `eq:indep`, and so on) do not, and are the reference to trust if
+`prop:scaneq`, `eq:Sexc`, and so on) do not, and are the reference to trust if
 the two ever disagree.
 
 Each script resolves its data paths as `../data/`, so **run it from the directory
@@ -95,6 +96,15 @@ $v \ge n-1$, where finite precision could mask a larger true valuation, the prim
 is recomputed at precision $n+4$ and its line flagged `ESC`. No line in the
 committed output carries a flag.
 
+### The CLS-family scan
+
+The same quantity is computed for the four other rank-two curves of Coates, Liang and Sujatha, $y^2 = x^3 - Dx$ with $D = 17, -33, -34, -39$, at every split prime of good reduction below 30,000. Run one curve with
+```bash
+cd gp
+D=-39 G="[[3,12],[27,144]]" LO=5 HI=29999 OUT=../data/scan_D-39.txt gp -q scan_family.gp
+```
+The bases are in `data/family_bases.txt` and must be used as given, since the valuation depends on the lattice. Set `RESUME=1` to continue an interrupted run from its last recorded prime.
+
 ### The $p = 5, 13$ control on the normalisation (§5.3)
 
 ```bash
@@ -110,15 +120,6 @@ $p = 5$ takes about a minute. **$p = 13$ takes about 96 minutes**, almost all of
 it in the modular-symbol sum, which is $(p-1)p^{n-1}$ measures — exponential in
 the number of certified digits. `run.sh` never lets a lower-precision run replace
 a higher-precision certificate, so it is safe to re-run at any $n$, in any order.
-
-### The Eisenstein–Kronecker computation (§6)
-
-```bash
-cd gp && gp -q deltaE.gp
-```
-
-About 210 seconds, single-threaded, peak resident set 16 MB. Reproduces
-`data/deltaE_phase2.txt`.
 
 ### The bracket $B(\mathfrak{p})$ at five primes (§6.8)
 
@@ -141,13 +142,7 @@ cd sage && sage m2_msd.sage
 
 about three minutes, reproducing `data/m2_msd.out`. The $\kappa(p)$ table it
 prints is transcribed into `gp/m2_w1.gp`, which does not read the file at run
-time. The torsion-translate collapse test of `lem:collapse` is
-
-```bash
-cd gp && gp -q m2_gtest.gp
-```
-
-about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
+time.
 
 ## The map from paper to script to file
 
@@ -167,15 +162,20 @@ about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
 
 | Quantity | Script | Output |
 |---|---|---|
-| The sums $S_{a,b}$ and the resultants $R[F]$ | `gp/deltaE.gp` | `data/deltaE_phase2.txt` |
-| The independence bound `eq:indep` | `gp/independence.gp` | `data/independence.out` |
-| The vanishing of $S_{0,1}$ across precisions | `gp/s01_check.gp` | `data/s01_check.out` |
 | The unit character $\varepsilon$, re-determined | `gp/epsilon_check.gp` | `data/epsilon_check.out` |
-| The reconstruction artefact of §6.7 | `gp/reconstruction_artefact.gp` | `data/reconstruction_artefact.out` |
 | §6.8, $v_\mathfrak{p}(B(\mathfrak{p})) = 2$ at $p = 5, 13, 17$ | `gp/m2_w1.gp` | `data/m2_w1.out` |
 | §6.8, the same at $p = 29, 37$ | `gp/m2_w1.gp`, `W1PRIMES=29,37` | `data/m2_w1_2937.out` |
 | §6.8, the modular-symbol side $\kappa(p)$ | `sage/m2_msd.sage` | `data/m2_msd.out` |
-| §6.8, the collapse test of `lem:collapse` | `gp/m2_gtest.gp` | `data/m2_gtest.out` |
+
+### The CLS-family scan
+
+| Quantity | Script | Output |
+|---|---|---|
+| $v_\mathfrak{p}(\operatorname{Reg}_\mathfrak{p})$ at every split prime below 30,000, four CLS curves | `gp/scan_family.gp` | `data/scan_D17.txt`, `data/scan_D-33.txt`, `data/scan_D-34.txt`, `data/scan_D-39.txt` |
+| The Mordell--Weil bases used, saturated to 30011 | (PARI `ellrank`, `ellsaturation`) | `data/family_bases.txt` |
+| The exceptional primes recomputed at precisions 6 to 16 | `gp/family_checks.gp` | `data/family_checks.out` |
+| The independent Sage regulator at those primes, and the modular-symbol series of $y^2 = x^3 + 39x$ at $p = 5$ | `sage/family_crosscheck.py` | `data/family_crosscheck.out` |
+| The re-verification of the four scan files | `sage/verify_family_scan.py` | exit status only |
 
 ## Reading the output files
 
@@ -183,11 +183,7 @@ about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
   ` MAXED` appended if the escalation rule fired. 1611 lines: every prime
   $p \equiv 1 \bmod 4$ with $5 \le p \le 29989$, in increasing order, and no
   other. No line carries a flag and every $v$ is 2.
-- `deltaE_phase2.txt` — the six class-invariant sums, then one block per section
-  giving the sign, the 2- and 7-valuations, the small primes below 30000, whether
-  any of them is among the 1611 scanned primes, and the residual cofactor in full.
-  The three cofactors have 400, 912 and 1243 decimal digits and are unfactored:
-  nothing is claimed about them beyond having no prime factor at or below 30000.
+- The four files `data/scan_D*.txt` have the format of `all_primes_vreg.txt`, one line `p v` per split prime of good reduction with the same flags; the split primes dividing $D$ are absent, so $D = 17, -34, -39$ have 1610 lines and $D = -33$ has 1611. The lines with $v \ne 2$ are $p = 5$ for $D = 17$ and $D = -33$ (anomalous, excluded from $S_E$), $p = 37$ for $D = -33$, and $p = 5$ and $p = 15289$ for $D = -39$.
 - `cert_5.out`, `cert_13.out` — the full transcript of a control run, header
   first, then the four stages, then the verdict. `MACHINE` lines carry the
   $p$-adic expansions in a fixed format so that the cross-checks compare digits
@@ -198,8 +194,6 @@ about 2.5 minutes at $p = 13$, reproducing `data/m2_gtest.out`.
   against $\kappa(p)$. The file ends with a gate tally: 11 of 11 and 8 of 8.
 - `m2_msd.out` — $\kappa(p)$ in the Mazur–Tate–Teitelbaum normalisation at
   fourteen split primes.
-- `m2_gtest.out` — one block per section of `eq:jetpackage`, giving the valuation
-  of each translated class sum against the untranslated one.
 - `lmfdb_iwasawa.txt` — the LMFDB Iwasawa invariants of the curve, read by
   `check_agreement.py` for its last check. Corroboration only: the control does
   not depend on it, and the check reports itself skipped if the file is absent.
@@ -224,58 +218,7 @@ separately, by re-running the determination without that first-write guard and
 comparing every prime against the stored class, over 3018 split primes and with
 no conflict.
 
-### The reconstruction artefact (`gp/reconstruction_artefact.gp`)
-
-The obvious way to assert that a product of 384 transcendental numbers *is* a
-given rational is to hand the computed real number to a best-rational-approximation
-routine with a denominator bound. It is unsafe, and this is not hypothetical.
-
-Applied at working precision 1600 digits to the six resultants, over a range of
-denominator bounds, it produced a spurious factorisation in 19 of 48
-reconstructions. In 16 of those the spurious support included a prime among the
-1611 of the horizontal scan: the artefact took the shape of the result the
-computation was meant to test. Which primes appear is not stable. They are read
-off the last digits of a floating-point product of 384 transcendental factors,
-and they move with the working precision, with the denominator bound and with
-the order of the product; across those 48 reconstructions 22 distinct primes of
-the scan occurred.
-
-This is why the paper's exactness claims rest on forced integrality and on an
-explicit rounding gate against a denominator fixed in advance, and never on a
-reconstruction.
-
-### Why $R[E_1^*\wp + \tfrac12\wp'] = R[E_1^*]\,R[\wp]$ (`gp/deltaE.gp`)
-
-The paper records this identity as a test of the arithmetic. It holds for the
-following reason. Since $s_2 = 0$ the quasi-period map is $\eta(\gamma) =
-\bar\gamma/A$, so $E_1^*$ is $\Gamma$-periodic as well as odd; hence
-$E_1^*(\,\cdot + \omega/2) - E_1^*$ is elliptic and odd with simple poles of
-residue $+1$ at $\omega/2$ and $-1$ at $0$. Take $\omega/2 = (1+i)\omega_1/2$,
-the half-period at which $\wp$ vanishes, multiplication by $i$ fixing it modulo
-$\Gamma$ and sending $\wp$ to $-\wp$, so that $\wp$ has a double zero there
-and $\tfrac12\wp'/\wp$ has exactly the same poles, residues and parity. The
-two elliptic functions therefore agree:
-
-$$E_1^*\wp + \tfrac12\wp' = \wp \cdot E_1^*(\,\cdot + \omega/2),$$
-
-and $D_E$ is stable under the corresponding translation $g \mapsto g + 28(1+i)$,
-which preserves primarity ($28(1+i) = 14(2+2i)$) and coprimality to
-$\mathfrak{f}$ ($7 \mid 28$). Multiplying over $D_E$ gives the relation. Two
-independently computed products of 384 transcendental factors reproduce an exact
-relation of this size, so the check tests the rounding; it is not independent
-information about the cofactor $C_1$.
-
-### The 3135 near-miss (`gp/deltaE.gp`)
-
-The number $\mathrm{N}\mathfrak{f} - 1 = 3135 = 3 \cdot 5 \cdot 11 \cdot 19$
-divides no entry of the resultant table. This was worth checking because an early
-wrong reading of $M_2$, mixing $(x+y-2)^2$ in raw rather than Katz coordinates,
-produced $144(\mathrm{N}\mathfrak{f} - 1)$ and with it the split prime 5. That
-reading is excluded by the coordinate inversion of Bannai–Kobayashi Def. 3.8, but
-a wrong combination's prime support need not resemble the right one's, which is
-the point of the check.
-
-### The bracket run (`gp/m2_w1.gp`, `gp/m2_gtest.gp`)
+### The bracket run (`gp/m2_w1.gp`)
 
 Cost grows like $p^4$: about 2 seconds at $p = 5$ and 519 seconds at $p = 37$,
 and it rises faster still once the class sums outgrow the working precision.
@@ -293,13 +236,6 @@ One observation from the run is worth recording, since nothing forces it. The
 divisibility by $p^2$ is termwise at $p = 5, 13, 17, 37$, each of the three terms
 of the bracket having valuation 2, and is not termwise at $p = 29$, where the
 three valuations are 3, 2, 3.
-
-`gp/m2_gtest.gp` tests the class-sum form of the collapse lemma at $p = 13$. For
-each of the six sections and each of the $p-1$ nonzero $\mathfrak{p}$-torsion
-translates, the translated class sum differs from the untranslated one by a
-quantity of valuation exactly $1/(p-1)$ or $2/(p-1)$: positive, as the lemma
-requires, and of the size its proof predicts, $\zeta_p - 1$ having valuation
-$1/(p-1)$.
 
 ## A note on `cert_13.out`
 
@@ -331,4 +267,6 @@ six-prime certificate pipeline that the v2 rewrite cut, several superseded
 one-off scripts, and `gp/m2_katz.gp`, the Katz-side companion to `gp/m2_w1.gp`
 that the paper does not quote. None of it supports the paper, it is gitignored, and it is not
 published. `legacy/README.md` says what each part was for and, where a script is
-wrong, why. Do not cite anything in it.
+wrong, why. Do not cite anything in it. The versions of this directory and of
+`../formalisation/` that accompany v2 of the paper, including the resultant
+computations that v2 quotes, are at tag `v2` of this repository.

@@ -67,7 +67,7 @@ the verdict is irrelevant, to show the mapping was checked.
 | `NumberTheory/NumberField/Internal/PrimeDivisibility.lean` | distinct primes coprime after `Int` cast (one lemma) | irrelevant — mathlib | — |
 | `NumberTheory/NumberField/Internal/QuadraticIntegralBasis.lean` | `{1, x}` ℚ-basis of a quadratic field with integral vectors | irrelevant | — |
 | `NumberTheory/ClassGroup/ElementaryTwoQuotient.lean`, `NumberField/ClassGroupElementaryTwoQuotient.lean`, `RamificationInertia/Galois.lean`, `GeometryOfNumbers/{Doubling,RankTwoDoubling}.lean` | class-group 2-torsion quotients; Galois e/f counting; lattice doubling | irrelevant | — |
-| `FieldTheory/Trace.lean` | Tr(x) = 0 for x² ∈ ℚ, x ∉ ℚ; discriminant of {1, x} | irrelevant — our Sinnott trace (`traceClass`) is opaque interface data by design | (T13) |
+| `FieldTheory/Trace.lean` | Tr(x) = 0 for x² ∈ ℚ, x ∉ ℚ; discriminant of {1, x} | irrelevant — no field trace occurs anywhere in the project | (T13) |
 | `FieldTheory/{IntermediateField/Card,IntermediateField/Quadratic,SquareClassGroup}.lean` | subfield counting, square-class groups | irrelevant | — |
 | `AlgebraicGeometry/AbelianVariety/Basic.lean` | abelian variety = proper geometrically integral group scheme; commutativity via rigidity; base change | irrelevant — scheme-theoretic; our project deliberately never formalizes EC geometry (interface-only). Not even consult-later: no overlap with any board task | — |
 | `AlgebraicGeometry/WeilDivisor/*` (28 files) | Weil divisors, Abel–Jacobi map to the class group, degree splitting (Jacobian-challenge Layer work) | irrelevant — same reason | — |

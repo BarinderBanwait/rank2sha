@@ -177,10 +177,10 @@ when tasks are implemented. Items 9–11 are v4.33.1 changes, recorded on task R
     notation itself is unaffected.
 11. **New linter `linter.style.haveILetI`** (`Mathlib/Tactic/Linter/HaveILetI.lean`,
     mathlib #41657; absent at v4.32.0, `defValue := true`). It flags `haveI`/`letI` in a
-    proof of a `Prop` and suggests `have`/`let`. Warning only. Thirteen sites in the tree
+    proof of a `Prop` and suggests `have`/`let`. Warning only. Twelve sites in the tree
     emit it — `Kernel/LambdaModule.lean` (151, 153, 155, 174, 175, 177),
-    `Main/Reduction.lean` (122, 147, 191), `Toy/Iwasawa.lean` (102, 128),
-    `Toy/ShaIwasawa.lean` (286, 323), `Toy/ShaTrivial.lean` (130, 179). Left as they
+    `Toy/Iwasawa.lean` (102, 128), `Toy/ShaIwasawa.lean` (286, 323),
+    `Toy/ShaTrivial.lean` (130, 179). Left as they
     are: those files are on the R2a/R2b rewrite list.
 
 Nothing else in the tree needed a change. The v4.32.0 → v4.33.1 bump produced no

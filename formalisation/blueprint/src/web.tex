@@ -8,22 +8,21 @@
 
 \usepackage{amssymb, amsthm, amsmath}
 \usepackage{hyperref}
-% T51 / Wave 7 (W7-A, 2026-08-18): default thms= is
-% definition+lemma+proposition+theorem+corollary, which leaves the
-% `assumption` environment (macros/common.tex) entirely invisible in the
-% auto-generated dependency graph -- the six interface/conjectural nodes a
-% proved theorem's chain passes through (lem:comparison, eq:padicbsd,
-% def:deltaE, prop:jetformula, hyp:sinnott, conj:EK) would not appear at
-% all. Adding +assumption restores them as graph nodes; they render with
-% the distinct "Assumption" header and, since \leanok is never applied to
-% them (by the fence rule), never receive the green "proved" fill that
-% theorem/lemma/proposition/corollary nodes get once \leanok'd -- so they
-% stay visually distinct from proved nodes even though plasTeX's default
+% The default thms= is definition+lemma+proposition+theorem+corollary,
+% which leaves the `assumption` environment (macros/common.tex) entirely
+% invisible in the auto-generated dependency graph -- the five interface
+% nodes a proved theorem's chain passes through (lem:comparison,
+% rmk:nofinitesub, eq:padicbsd, prop:jetformula, eq:jetpackage) would not
+% appear at all. Adding +assumption restores them as graph nodes; they
+% render with the distinct "Assumption" header and, since \leanok is never
+% applied to them (by the fence rule), never receive the green "proved" fill
+% that theorem/lemma/proposition/corollary nodes get once \leanok'd -- so
+% they stay visually distinct from proved nodes even though plasTeX's default
 % shape map only special-cases `definition` for a box (everything else,
 % assumption included, renders as an ellipse; see
 % plastexdepgraph/Packages/depgraph.py). Verified: `bp web` stays green
-% and dep_graph_document.html renders all six nodes after this change.
-\usepackage[showmore, dep_graph, thms=definition+lemma+proposition+theorem+corollary+assumption+conjecture+hypothesis]{blueprint}
+% and dep_graph_document.html renders all five nodes.
+\usepackage[showmore, dep_graph, thms=definition+lemma+proposition+theorem+corollary+assumption]{blueprint}
 
 
 \input{macros/common}

@@ -11,8 +11,6 @@ import FinShaRank2.Kernel.FunctionalEquation
 import FinShaRank2.Kernel.GradingValuation
 import FinShaRank2.Kernel.LambdaModule
 import FinShaRank2.Kernel.Normalization
-import FinShaRank2.Kernel.Orbit
-import FinShaRank2.Kernel.Resultant
 import FinShaRank2.Kernel.ShaEndgame
 import FinShaRank2.Kernel.TsqUnit
 import FinShaRank2.Toy.EK
@@ -21,16 +19,17 @@ import FinShaRank2.Toy.ShaTrivial
 import FinShaRank2.Statements
 import FinShaRank2.Main.Lemma41
 import FinShaRank2.Main.Consequence
-import FinShaRank2.Main.Horizontal
 import FinShaRank2.Main.Dictionary
-import FinShaRank2.Main.Reduction
 
 /-!
-# FinShaRank2 — root module
+# FinShaRank2, root module
 
-Root import for the Lean 4 formalization of *Horizontal rigidity for second
-jets of Katz p-adic L-functions, with applications to the Tate–Shafarevich
-group in rank two*.
+Root import for the Lean 4 formalisation of *Second derivatives of p-adic
+L-functions and the Shafarevich–Tate group of rank-two CM elliptic curves*.
+
+The tree it collects is: the interface layers (`Interface/`), the kernel
+lemmas they feed (`Kernel/`), Theorem A and the analytic-arithmetic dictionary
+(`Main/`), and the two witness worlds (`Toy/`).
 
 Everything imported (transitively) from this module is audited by
 `scripts/audit.sh`: it must contain no incomplete proofs and use only the

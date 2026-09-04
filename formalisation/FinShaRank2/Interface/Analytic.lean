@@ -35,7 +35,7 @@ condition of the whole structure and is not consumed by any individual field
 type.
 
 Paper statements quoted below: §2.1, Lemma 3.1, Definition 3.2,
-Remark 3.4, Lemma 2.3, §8.1.
+Remark 3.4, Lemma 2.3, §7.1.
 -/
 
 open PowerSeries
@@ -104,7 +104,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: classical (modular symbol `L(E,1)/Ω_E`); Stein–Wuthrich, Math. Comp. 82
           (2013).
-  PAPER:  Lemma 3.1 (`lem:c0c1`); §8.1 (`ssec:testbed`) (exact evaluation).
+  PAPER:  Lemma 3.1 (`lem:c0c1`); §7.1 (`ssec:testbed`) (exact evaluation).
   STATUS: data. -/
   modularSymbol0 : ℚ
   /-- **MTT interpolation at the trivial character**, as a data-equation: the constant coefficient of `L_p` equals
@@ -131,7 +131,7 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
 
   SOURCE: exact computation for `E : y² = x³ − 56x` (eclib/Sage modular symbols,
           cross-checked in PARI/GP).
-  PAPER:  Lemma 3.1 (`lem:c0c1`) (hypothesis `L(E,1) = 0`); §8.1 (`ssec:testbed`) (certification).
+  PAPER:  Lemma 3.1 (`lem:c0c1`) (hypothesis `L(E,1) = 0`); §7.1 (`ssec:testbed`) (certification).
   STATUS: certificate. -/
   msymb_zero : modularSymbol0 = 0
   /-- **MTT p-adic functional equation** with the root number `w(E) = +1` folded

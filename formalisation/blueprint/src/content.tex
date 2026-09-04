@@ -8,12 +8,11 @@
 % this file follows (in particular the `assumption` environment, registered in
 % macros/common.tex).
 %
-% Resynced with the Lean tree and with paper v2 on 2026-08-29 (task R3bp).
 % There is no build gate on the \lean{} names in this file: `blueprint/bp
 % checkdecls` cannot run, because `lake exe checkdecls` is not a Lake
-% dependency of this project. On that date every \lean{} name below was
-% checked against the built environment, by running a file that imports
-% FinShaRank2 and asserts `env.contains n` for each of them; all 40 exist.
+% dependency of this project. Every \lean{} name below is checked against
+% the built environment by running a file that imports FinShaRank2 and
+% asserts `env.contains n` for each of them; all 24 exist.
 % An editor who adds a \lean{} must check it the same way. Neither
 % `lake build` nor scripts/audit.sh reads this file, so nothing else will
 % catch a dead name.
@@ -29,10 +28,9 @@ curve $E : y^2 = x^3 - 56x$ over $\mathbb{Q}$ (CM by $\mathbb{Z}[i]$,
 conductor $N = 12544$, rank $2$, torsion $\mathbb{Z}/2$, $\prod_v c_v = 4$,
 root number $w(E) = +1$; split primes $p \equiv 1 \pmod 4$).
 
-The paper's three lettered results are all formalized. Theorem~A is
-\texttt{prop:consequence} (Chapter~\ref{ch:consequence}), Corollary~B is
-\texttt{cor:horizontal} (Chapter~\ref{ch:horizontal}), and Theorem~C is
-\texttt{thm:reduction} (Chapter~\ref{ch:reduction}).
+Theorem~A is \texttt{prop:consequence} (Chapter~\ref{ch:consequence}); the
+paper's other lettered result, \texttt{thm:criterion}, has no Lean
+counterpart.
 
 \section{What is machine-checked, and what is assumed}
 
@@ -42,13 +40,8 @@ universally accepted classical theorems (Rubin, Mazur, Greenberg,
 Mazur--Tate--Teitelbaum, Bannai--Kobayashi, de~Shalit,
 Schneider/Perrin-Riou, Hasse) as explicitly documented, human-refereeable
 \emph{hypotheses}: fields of the structure \texttt{ClassicalInputs}, never
-global \texttt{axiom} declarations. There is a second, strictly smaller
-category: the paper's conjectural inputs. \texttt{hyp:sinnott} and
-\texttt{conj:EK} occur only as hypotheses of \texttt{thm\_reduction} and
-\texttt{thm\_reduction\_of\_conjEK} and nowhere else; \texttt{conj:weak},
-which is the paper's own hypothesis for Corollary~B, occurs only as a
-hypothesis of \texttt{cor\_horizontal}. Neither \texttt{prop:consequence}
-nor \texttt{prop:dictionary} depends on a conjecture.
+global \texttt{axiom} declarations. No conjectural statement occurs anywhere
+in the project.
 
 A second structure \texttt{Certificates}, carrying this project's own
 machine-verified numerics, was retired on 2026-08-29 together with the two
@@ -58,8 +51,7 @@ Every declaration marked \texttt{\textbackslash leanok} below is sorry-free, use
 \texttt{native\_decide}, and --- for the project's audited declarations ---
 has been confirmed by \texttt{FinShaRank2/AxiomAudit.lean} to depend on no
 axiom outside $\{\texttt{propext}, \texttt{Classical.choice},
-\texttt{Quot.sound}\}$ (82 audited declarations, empty allowlist, verified
-2026-08-29).
+\texttt{Quot.sound}\}$ (73 audited declarations, empty allowlist).
 \textbf{A \texttt{\textbackslash leanok} mark is never applied to an assumption node}: those are
 citations, not proof obligations, and marking them would misrepresent the
 trust boundary this blueprint exists to make visible.
@@ -74,11 +66,7 @@ Lemma/Proposition/Theorem/Corollary/Definition. \texttt{src/web.tex} lists
 the auto-generated dependency graph; they are never marked
 \texttt{\textbackslash leanok}, so they never receive the green fill a proved node gets.
 Every such node carries its pinpoint citation, and is distinguished from a
-Lean-kernel-proved result by header word and by fill colour alike. The
-conjectural inputs \texttt{hyp:sinnott} and \texttt{conj:EK} are
-additionally flagged \textbf{CONJECTURAL} in their statement text, and occur
-only upstream of \texttt{thm:reduction} in the graph --- nothing downstream
-of \texttt{prop:consequence} or \texttt{prop:dictionary} touches them.
+Lean-kernel-proved result by header word and by fill colour alike.
 
 Material the paper contains but this formalization deliberately does not
 attempt (the analytic content of \texttt{prop:jetformula}'s integral
@@ -91,31 +79,6 @@ for an oversight.
 
 % ===========================================================================
 \chapter{Foundational definitions}
-
-\begin{definition}[Horizontal control]
-  \label{def:horizontal}
-  \lean{FinShaRank2.HorizontalControl}
-  \leanok
-  Let $E/\Q$ be an elliptic curve and let $\mathcal{P}$ be a set of rational
-  primes. \emph{Horizontal control} holds for $E$ along $\mathcal{P}$ if
-  $\Sha(E/\Q)[p] = 0$ for all but finitely many $p \in \mathcal{P}$.
-\end{definition}
-\begin{proof}[Lean]
-  \leanok
-  Rendered as a predicate on a set of primes \texttt{P} and a per-prime
-  predicate \texttt{shaVanishes}: the set of \texttt{p \(\in\) P} at which
-  vanishing fails is finite. This is a standalone definition, independent of
-  the interface layers built later, matching the paper, where
-  \texttt{def:horizontal} precedes all interface data.
-  \texttt{cor:horizontal} (Chapter~\ref{ch:horizontal}) supplies the concrete
-  predicate through the Selmer-dual layer, as \texttt{Subsingleton
-  (\ldots).selmer.ShaDual}. That renders $\Sha(E/\Q)[p^\infty] = 0$, which is
-  stronger than the $\Sha(E/\Q)[p] = 0$ the definition asks for, so what is
-  proved implies \texttt{def:horizontal} and not conversely.
-
-  The declaration was named \texttt{HorizontalVanishing} until 2026-08-29;
-  ``horizontal control'' is the term paper v2 defines.
-\end{proof}
 
 \begin{definition}[The normalised second jet]
   \label{def:c2tilde}
@@ -212,67 +175,6 @@ for an oversight.
   \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv}. It is kept audited
   because it bounds what \texttt{notAnomalous} assumes beyond the proved
   Lemma~\ref{lem:noanomalous}.
-\end{proof}
-
-% ===========================================================================
-\chapter{The horizontal rigidity conjectures}
-
-\begin{conjecture}[Horizontal rigidity; strong form]
-  \label{conj:strong}
-  \lean{FinShaRank2.ConjStrong}
-  \leanok
-  \uses{def:c2tilde, def:deltaE}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $\rank E(\Q) = 2 = \ord_{s=1} L(E,s)$; let $S_E$ be the
-  excluded set, and let $\delta_E(c)$, $c \in K^6$, be the invariants of
-  Definition~\ref{def:deltaE}. Then $\tilde c_2(p) \in \Z_p$ for every
-  split $p \notin S_E$, and for every nonzero $c \in K^6$,
-  $\tilde c_2(p) \in \Z_p^\times$ for every split
-  $p \notin S_E \cup \operatorname{supp}(c)$ with $\fp \nmid \delta_E(c)$.
-\end{conjecture}
-\begin{proof}[Lean]
-  \leanok
-  \texttt{ConjStrong H} is rendered as the universal statement the
-  conjecture makes: for every nonzero \texttt{c}, \texttt{ConjStrongAt H c},
-  which asserts $\tilde c_2(p) \in \Z_p^\times$ for every split
-  $p \notin H.S$ with $p \notin \texttt{H.ek.supp c}$ and
-  $\texttt{H.ek.v p (H.ek.deltaE c)} = 1$. The paper's $\Sigma$ is
-  $H.S \cup \texttt{H.ek.supp c}$: $H.S$ is the standing exclusion of every
-  statement about $H$. What is quantified over is the package \texttt{H.ek}
-  itself (Assumption~\ref{eq:jetpackage}), not an unconstrained element of
-  its value field. \texttt{thm:reduction} proves \texttt{ConjStrongAt H c} at
-  a single vector, not \texttt{ConjStrong H}.
-
-  The divisibility condition is
-  \texttt{H.ek.v p (H.ek.deltaE c) = 1}, not a
-  statement about a rational number: mathlib's \texttt{Valuation} is
-  multiplicative, so the paper's $v_\fp(x) = 0$ reads as $v(x) = 1$ here.
-
-  The integrality clause ``$\tilde c_2(p) \in \Z_p$'' is not part of the
-  formal predicate. By \texttt{rmk:integrality} integrality follows from
-  integrality of the modular symbols of $E$ and is classical; the paper
-  records that it ``is therefore not its substance; the unit assertion is''.
-\end{proof}
-
-\begin{conjecture}[Weak form]
-  \label{conj:weak}
-  \lean{FinShaRank2.ConjWeak}
-  \leanok
-  \uses{def:c2tilde}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $\rank E(\Q) = 2 = \ord_{s=1} L(E,s)$. Then
-  $\tilde c_2(p) \in \Z_p^\times$ for all but finitely many split primes $p$
-  of good reduction.
-\end{conjecture}
-\begin{proof}[Lean]
-  \leanok
-  Rendered as: there is a finite exceptional set $T$ such that every split
-  $p \notin S$ outside $T$ has $\tilde c_2(p)$ a $p$-adic unit. This is the
-  $\exists\ \text{finite } T,\ \forall p \notin T$-form that
-  \texttt{cor:horizontal} (Chapter~\ref{ch:horizontal}) consumes.
-  \texttt{prop:consequence} does not consume it: that proposition takes the
-  unit condition at a single prime as a hypothesis and mentions no
-  conjecture.
 \end{proof}
 
 % ===========================================================================
@@ -430,51 +332,6 @@ for an oversight.
 \end{assumption}
 
 % ===========================================================================
-\chapter{Horizontal control along the split primes}
-\label{ch:horizontal}
-
-\begin{corollary}[$=$ Corollary B]
-  \label{cor:horizontal}
-  \lean{FinShaRank2.cor_horizontal}
-  \leanok
-  \uses{def:horizontal, conj:weak, prop:consequence}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $\rank E(\Q) = 2$, $L(E,1) = 0$ and $w(E) = +1$ and with
-  finitely many anomalous split primes, and assume
-  Conjecture~\ref{conj:weak}. Then horizontal control
-  (Definition~\ref{def:horizontal}) holds for $E$ along the split primes of
-  $K$.
-\end{corollary}
-\begin{proof}[Lean]
-  \leanok
-  \texttt{ConjWeak H} supplies a finite set $T$ such that every split
-  $p \notin H.S$ outside $T$ has $\tilde c_2(p) \in \Z_p^\times$;
-  Theorem~\ref{prop:consequence} turns that into
-  \texttt{Subsingleton (\ldots).selmer.ShaDual} at each such $p$. The set of
-  split primes at which the per-prime predicate fails is therefore contained
-  in $T$, which is finite. At $p \in H.S$ the predicate holds vacuously,
-  there being no proof of $p \notin H.S$ to supply it, so $H.S$ does not
-  enter the bound.
-
-  ``The split primes of $K$'' is $\{p \mid p \text{ prime},\ p \equiv 1
-  \pmod 4\}$; throughout the project $K = \Q(i)$.
-
-  \textbf{Two deviations from the paper.} The predicate supplied is
-  $\Sha(E/\Q)[p^\infty] = 0$ where \texttt{def:horizontal} asks for
-  $\Sha(E/\Q)[p] = 0$, so the conclusion proved is stronger than the one
-  stated. And the paper derives finiteness of $S_E$ from its hypothesis that
-  there are finitely many anomalous split primes, whereas
-  \texttt{ClassicalInputs.S} is a \texttt{Finset} and finite by
-  construction; neither that hypothesis nor the first step of the paper's
-  proof has a counterpart here. This is a simplification the encoding makes,
-  not something proved.
-
-  \texttt{hweak} is the paper's own hypothesis for this corollary and is the
-  only conjectural hypothesis of the statement: \texttt{ConjEK} and
-  \texttt{SinnottHyp} do not appear.
-\end{proof}
-
-% ===========================================================================
 \chapter{The height dictionary}
 
 \begin{assumption}[$p$-adic BSD, leading-term form]
@@ -569,7 +426,7 @@ of $c_2(5)$ to exclude the anti-vacuity world. Paper v2 displays those
 digits nowhere, so that lemma has no paper cross-reference.
 
 % ===========================================================================
-\chapter{Towards \texorpdfstring{$\delta_E$}{delta\_E}: the Eisenstein--Kronecker mechanism}
+\chapter{The Bannai--Kobayashi jet and the criterion class}
 
 \begin{assumption}[The central second jet as a second moment]
   \label{prop:jetformula}
@@ -628,7 +485,7 @@ $(\varpi)$, a unit $\kappa_0$, and $c, m \in W$ with
 $\varpi^2(\kappa_0 c - m) \in (\varpi^3)$, then
 $\mathrm{IsUnit}\, c \iff \mathrm{residue}(m) \ne 0$. That is the kernel
 lemma named above, sorry-free and mathlib-only, instantiated at
-$\varpi := p$ inside \texttt{thm\_reduction}.
+$\varpi := p$ over the Katz coefficient ring $W$.
 
 \begin{lemma}[Decoupling]
   \label{lem:decoupling}
@@ -655,8 +512,7 @@ $\varpi := p$ inside \texttt{thm\_reduction}.
   applies part (1) along a local ring hom to move
   $\mathrm{IsUnit}(\mathrm{coeff}_2\, L^{\mathrm{Katz}})$ across the
   comparison of Assumption~\ref{lem:comparison} to
-  $\mathrm{IsUnit}(\mathrm{coeff}_2\, L_p)$. That direction is the one
-  \texttt{thm\_reduction} uses.
+  $\mathrm{IsUnit}(\mathrm{coeff}_2\, L_p)$.
 
   What part (1) rules out is a contribution to the leading grade from any
   derivative of the comparison or Euler-type factors, and in particular a
@@ -690,286 +546,10 @@ $\varpi := p$ inside \texttt{thm\_reduction}.
   \texttt{K}, the value field \texttt{L} (the paper's $\Qbar$), a finite
   nonempty \texttt{Finset} \texttt{D} of points, the six sections
   \texttt{r : Fin 6 \(\to\) \(\iota\) \(\to\) L}, a multiplicative
-  \texttt{Valuation} \texttt{v p} on \texttt{L} for each rational prime $p$,
-  and the support function \texttt{supp} of \texttt{hyp:sinnott}. The
-  elliptic-curve construction behind those values is not unfolded; that is
+  \texttt{Valuation} \texttt{v p} on \texttt{L} for each rational prime $p$.
+  The elliptic-curve construction behind those values is not unfolded; that is
   the descope recorded in the closing chapter.
 \end{assumption}
-
-\begin{definition}[The invariants $\delta_E(c)$]
-  \label{def:deltaE}
-  \lean{FinShaRank2.EKPackage.deltaE, FinShaRank2.EKPackage.deltaE_ne_zero_iff, FinShaRank2.jetIndex_image, FinShaRank2.jetIndex_injective}
-  \leanok
-  \uses{eq:jetpackage}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, and let $\mathcal{R}_E$ and $D_E$ be the package and the divisor
-  of Assumption~\ref{eq:jetpackage}. For $c = (c_{a,b}) \in K^6$, indexed by
-  the six slots of $\mathcal{R}_E$, set
-  \[
-    F_c := \sum_{a,b} c_{a,b}\, r_{a,b} \colon D_E \longrightarrow \Qbar,
-    \qquad
-    \delta_E(c) := \mathrm{Res}(F_c, D_E) = \prod_{t \in D_E} F_c(t) .
-  \]
-\end{definition}
-\begin{proof}[Lean]
-  \leanok
-  \texttt{EKPackage.Fc} and \texttt{EKPackage.deltaE} are definitions, not
-  data: the product is written out, so \texttt{def:deltaE} is discharged by
-  unfolding. The sentence the paper states just after the definition ---
-  $\delta_E(c) \ne 0$ exactly when $F_c$ vanishes at no point of $D_E$ ---
-  is the one-line consequence \texttt{deltaE\_ne\_zero\_iff}.
-  \texttt{jetIndex} names which \texttt{Fin 6} slot is which pair $(a,b)$;
-  \texttt{jetIndex\_image} checks by \texttt{decide} that the enumeration is
-  exactly the paper's index set $\{(a,b) : b \ge 1,\ a + b \le 3\}$, and
-  \texttt{jetIndex\_injective} that the six slots are six distinct pairs.
-
-  \textbf{$\delta_E(c)$ lands in $\Qbar$, not in $K$.} $K$-rationality is
-  Lemma~\ref{lem:orbit}(1), which rests on an equivariance input the paper
-  uses rather than proves, and Theorem~\ref{thm:reduction} does not use it.
-  Accordingly the divisibility test $\fp \nmid \delta_E(c)$ is a valuation on
-  \texttt{L}, not \texttt{padicValRat} on a rational number.
-
-  Until 2026-08-29 this node was an assumption: $\delta_E$ was an opaque
-  rational field \texttt{KatzData.deltaE\_local}, bundled with an assumed
-  implication \texttt{KatzData.resultant\_link} from $\fp \nmid \delta_E$ to
-  nonvanishing on $D_E$. Both fields are deleted; the content of the second
-  is now the proved Lemma~\ref{lem:resultantstep}.
-\end{proof}
-
-\begin{lemma}[Orbit criterion]
-  \label{lem:orbit}
-  \lean{FinShaRank2.Orbit.prod_mem_range_algebraMap, FinShaRank2.Orbit.forall_eq_zero_of_exists_eq_zero}
-  \leanok
-  Let $L/K$ be a Galois extension of fields, let $D$ be a finite nonempty
-  set carrying an action of $\Gal(L/K)$, and let $F \colon D \to L$ satisfy
-  $F(\sigma t) = \sigma(F(t))$ for all $\sigma \in \Gal(L/K)$ and $t \in D$.
-  \begin{enumerate}
-    \item $\prod_{t \in D} F(t) \in K$.
-    \item If $\Gal(L/K)$ acts transitively on $D$, then $F$ vanishes either
-      at every point of $D$ or at none.
-  \end{enumerate}
-\end{lemma}
-\begin{proof}[Lean]
-  \leanok
-  Both parts are mathlib-only Galois theory over an abstract Galois
-  extension and an abstract $\Gal(L/K)$-set, so instantiating at $D_E$ and
-  $F_c$ is a substitution. Part (1): every $\sigma$ permutes $D$, so
-  reindexing the product along \texttt{MulAction.toPerm \(\sigma\)} shows
-  $\sigma$ fixes it, and
-  \texttt{InfiniteGalois.mem\_range\_algebraMap\_iff\_fixed} puts it in the
-  image of $K$. The conclusion is stated as membership of
-  \texttt{Set.range (algebraMap K L)} rather than of an
-  \texttt{IntermediateField}, which avoids subtype coercions at the call
-  site, and uses the \texttt{InfiniteGalois} form because the
-  \texttt{IsGalois} form additionally requires
-  \texttt{[FiniteDimensional K L]}, which the lemma does not assume. Part
-  (2): transitivity gives $\sigma$ with $t = \sigma t_0$, and equivariance
-  gives $F(t) = \sigma(F(t_0)) = 0$; neither finiteness of $D$ nor the
-  Galois hypothesis is used.
-
-  This lemma is a faithful rendering of a paper lemma, not a link in the
-  main chain. The paper applies it granting an input it does not prove ---
-  the reciprocity $r_{a,b}(\sigma t) = \sigma(r_{a,b}(t))$, which is the
-  hypothesis \texttt{hF} here --- and records that
-  Theorem~\ref{thm:reduction} does not depend on it.
-\end{proof}
-
-\begin{lemma}[Unit factors of a unit resultant]
-  \label{lem:resultantstep}
-  \lean{FinShaRank2.Resultant.forall_eq_one_of_prod_eq_one, FinShaRank2.Resultant.prod_ne_zero_of_prod_eq_one}
-  \leanok
-  \uses{def:deltaE}
-  Let $v$ be a valuation on a field $L$, let $D$ be a finite index set, and
-  let $F \colon D \to L$. If $v(F(t)) \ge 0$ for every $t \in D$ and
-  $v\bigl(\prod_{t \in D} F(t)\bigr) = 0$, then $v(F(t)) = 0$ for every
-  $t \in D$. If moreover the value group is nontrivial, then
-  $\prod_{t \in D} F(t) \ne 0$.
-\end{lemma}
-\begin{proof}[Lean]
-  \leanok
-  This is the valuation step in the proof of Theorem~\ref{thm:reduction}:
-  by \texttt{hyp:sinnott}(i) each factor $F_c(t)$ of
-  $\delta_E(c) = \prod_{t \in D_E} F_c(t)$ is $\fp$-integral, so
-  $v_\fp(\delta_E(c))$ is a sum of nonnegative terms, and
-  $\fp \nmid \delta_E(c)$ forces $v_\fp(F_c(t)) = 0$ at every $t$. The Lean
-  proof distributes $v$ over the product (\texttt{map\_prod}, available
-  because \texttt{Valuation} is a \texttt{MonoidWithZeroHomClass}) and
-  applies \texttt{Finset.prod\_eq\_one\_iff\_of\_le\_one'}.
-
-  \textbf{Sign convention.} Mathlib's \texttt{Valuation} is multiplicative,
-  so the paper's $v_\fp(x) \ge 0$ is \texttt{v x \(\le\) 1} and the paper's
-  $v_\fp(x) = 0$ is \texttt{v x = 1}. The multiplicative encoding is forced
-  by the pin: \texttt{AddValuation} carries no lemma for the valuation of a
-  product, and $\delta_E(c)$ is a product.
-
-  \texttt{prod\_ne\_zero\_of\_prod\_eq\_one} is a small strengthening over
-  the paper, which carries $\delta_E(c) \ne 0$ as a separate hypothesis of
-  Theorem~\ref{thm:reduction}: at the point where the valuation argument is
-  made, that hypothesis follows from $\fp \nmid \delta_E(c)$. It does not
-  make the paper's hypothesis redundant, because \texttt{thm:reduction} also
-  uses $\delta_E(c) \ne 0$ outside this step --- to witness the single
-  $\delta_E$ that Conjecture~\ref{conj:strong} asserts works at every prime
-  at once.
-
-  Until 2026-08-29 this step was the assumed \texttt{KatzData} field
-  \texttt{resultant\_link}, which asserted its conclusion outright; the
-  integrality it rested on is now the hypothesis
-  \texttt{SinnottHyp.integral}, where the paper puts it.
-\end{proof}
-
-\begin{hypothesis}[Sinnott trace property for second jets --- CONJECTURAL]
-  \label{hyp:sinnott}
-  \lean{FinShaRank2.SinnottHyp}
-  \uses{prop:grading, def:deltaE}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $L(E,1) = 0$ and $w(E) = +1$; let $\mathcal{R}_E$, $D_E$
-  and $F_c$ be as in Assumption~\ref{eq:jetpackage} and
-  Definition~\ref{def:deltaE}, and let $\mathfrak{c}(\fp)$ be the criterion
-  class of Proposition~\ref{prop:grading}. For $c \in K^6$ write
-  $\operatorname{supp}(c)$ for the finite set of rational primes lying below
-  a prime of $\Qbar$ at which some entry of $c$ is not a unit.
-  \begin{enumerate}
-    \item[(i)] (\emph{Presentation.}) There exist a nonzero $c \in K^6$ and
-      an integer $k \ge 1$, both independent of $p$, such that for every
-      prime $p = \fp\bar\fp \ge 5$ of good reduction split in $K$ with
-      $p \notin S_E \cup \operatorname{supp}(c)$: the values $F_c(t)$,
-      $t \in D_E$, and their $\fp^k$-torsion translates are $\fp$-integral,
-      and $\mathfrak{c}(\fp) = \sum_{t \in D_E} \sum_s w_{t,s}\,
-      \overline{F_c}(t \oplus s)$, where $s$ runs over the $\fp^k$-torsion
-      translation data and the weights $w_{t,s}$ are units of $W$.
-    \item[(ii)] (\emph{Nonvanishing.}) For every presentation as in (i) and
-      every such $p$: if $v_\fp(F_c(t)) = 0$ for all $t \in D_E$, then the
-      sum displayed in (i) is nonzero.
-  \end{enumerate}
-
-  \textbf{One of the project's two conjectural inputs} (the other is
-  \texttt{conj:EK} below). \texttt{SinnottHyp} is a \texttt{Prop}-valued
-  structure with three fields: \texttt{integral} (the $\fp$-integrality of
-  (i), as \texttt{P.v p (P.Fc c t) \(\le\) 1} for every $t \in D_E$),
-  \texttt{presentation} (the displayed identity, as the equality of the
-  residue of \texttt{m2core} with the opaque \texttt{traceClass}), and
-  \texttt{nonvanishing} (the implication of (ii), whose antecedent is the
-  paper's explicit pointwise condition \texttt{P.v p (P.Fc c t) = 1}). It
-  occurs only in hypothesis position, in \texttt{thm\_reduction} and
-  \texttt{thm\_reduction\_of\_conjEK}, and is never a field of any
-  instantiable structure, so the assumption surface
-  \texttt{ClassicalInputs} stays free of conjecture.
-
-  Until 2026-08-29 the integrality clause sat in \texttt{KatzData}, on the
-  instantiable surface, and the nonvanishing antecedent was an opaque
-  \texttt{Prop}. Both now read as the paper states them.
-
-  Part (i) is bookkeeping in the Bannai--Kobayashi calculus, which the paper
-  expects to be provable but has not carried to the last constant; part (ii)
-  is the jet-level analogue of Sinnott's lemma, and the paper records that
-  nothing in the literature settles it.
-\end{hypothesis}
-
-\begin{conjecture}[Eisenstein--Kronecker nonvanishing --- CONJECTURAL]
-  \label{conj:EK}
-  \lean{FinShaRank2.ConjEK}
-  \uses{def:deltaE}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $L(E,1) = 0$, $w(E) = +1$ and $\#\mathrm{Cl}_\ff(K) \ge 6$,
-  and let $\delta_E(c)$ be the invariants of Definition~\ref{def:deltaE}.
-  Then $\delta_E(c) \ne 0$ for every nonzero $c \in K^6$.
-
-  \textbf{The project's other conjectural input.} \texttt{ConjEK H} renders
-  the conjecture as a statement about the package \texttt{H.ek} alone:
-  \texttt{\(\forall\) c : Fin 6 \(\to\) H.ek.K, c \(\ne\) 0 \(\to\)
-  H.ek.deltaE c \(\ne\) 0}. It occurs as a code term at its own definition
-  and in the hypotheses of \texttt{thm\_reduction\_of\_conjEK}, and nowhere
-  else; it is not a field of any structure. \texttt{thm\_reduction} takes
-  the single instance $\delta_E(c) \ne 0$ instead.
-
-  \textbf{Descope: $\#\mathrm{Cl}_\ff(K) \ge 6$ is not rendered.} The paper
-  carries the hypothesis and shows it is forced --- the equivariant
-  functions on the torsor $D_E$ form a $K$-space of dimension
-  $\#\mathrm{Cl}_\ff(K)$, so with fewer classes than sections some
-  combination vanishes identically on $D_E$. In this encoding
-  \texttt{EKPackage.D} is an abstract \texttt{Finset} with no class group and
-  no equivariance, so the hypothesis has nothing to attach to. Dropping it
-  widens what \texttt{ConjEK} asserts: a package with $\#D < 6$ makes
-  \texttt{ConjEK} false, and nothing in the encoding rules such a package
-  out. \texttt{ConjEK H} therefore renders \texttt{conj:EK} only for those
-  \texttt{H} whose package meets the paper's hypothesis. This node carries no
-  \texttt{\textbackslash leanok} for that reason: the Lean statement does not match the
-  paper's on the nose, where \texttt{ConjStrong} and \texttt{ConjWeak}
-  (Conjectures~\ref{conj:strong} and~\ref{conj:weak}) do.
-\end{conjecture}
-
-% ===========================================================================
-\chapter{The reduction theorem}
-\label{ch:reduction}
-
-\begin{theorem}[Reduction; $=$ Theorem C]
-  \label{thm:reduction}
-  \lean{FinShaRank2.thm_reduction, FinShaRank2.thm_reduction_of_conjEK}
-  \leanok
-  \uses{prop:consequence, lem:decoupling, prop:grading, hyp:sinnott, conj:EK, prop:normalisation, lem:comparison, lem:resultantstep, def:deltaE, conj:strong}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $\rank E(\Q) = 2$, $L(E,1) = 0$ and $w(E) = +1$. Assume
-  Hypothesis~\ref{hyp:sinnott} for $E$, let $c$ be a vector as in its part
-  (i), and assume $\delta_E(c) \ne 0$. Then for every prime
-  $p = \fp\bar\fp \ge 5$ of good reduction split in $K$ with
-  $p \notin S_E \cup \operatorname{supp}(c)$ and $\fp \nmid \delta_E(c)$,
-  \[
-    \tilde c_2(p) \in \Z_p^\times, \qquad
-    \lambda_{\mathrm{an}}(\fp) = 2, \qquad
-    \Sha(E/\Q)[p^\infty] = 0 .
-  \]
-  If moreover $S_E$ is finite, then Conjecture~\ref{conj:strong} holds for
-  $E$ with $\delta_E = \delta_E(c)$ (Definition~\ref{def:deltaE}) and with
-  $\Sigma = S_E \cup \operatorname{supp}(c)$.
-\end{theorem}
-\begin{proof}[Lean]
-  \leanok
-  \textbf{Conjectural input appears in this chapter and nowhere else}, and
-  strictly in hypothesis position: \texttt{hEK : H.ek.deltaE c \(\ne\) 0},
-  one instance of Conjecture~\ref{conj:EK}, and \texttt{hsin}, which is
-  \texttt{SinnottHyp} (Hypothesis~\ref{hyp:sinnott}) quantified over every
-  split $p \notin H.S \cup \texttt{H.ek.supp c}$.
-
-  \textbf{Assembly route}: \texttt{hsin.integral} makes every factor of
-  $\delta_E(c) = \prod_{t \in D_E} F_c(t)$ $\fp$-integral, and with
-  $\fp \nmid \delta_E(c)$ Lemma~\ref{lem:resultantstep} gives
-  $v_\fp(F_c(t)) = 0$ at every $t \in D_E$. That is the antecedent of
-  \texttt{hsin.nonvanishing}, which yields $\mathrm{traceClass} \ne 0$;
-  \texttt{hsin.presentation} identifies this with the residue of
-  \texttt{m2core}; the kernel lemma of Proposition~\ref{prop:grading}(2)
-  turns that into $\mathrm{IsUnit}(\mathrm{coeff}_2\, L^{\mathrm{Katz}})$;
-  the comparison of Assumption~\ref{lem:comparison}, transferred by
-  Lemma~\ref{lem:decoupling}'s kernel lemma, moves unit-ness to
-  $\mathrm{coeff}_2\, L_p$; Proposition~\ref{prop:normalisation}, fed
-  non-anomality by \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv},
-  converts this to $\tilde c_2(p) \in \Z_p^\times$; and
-  Theorem~\ref{prop:consequence} supplies the remaining conclusions. Every
-  step downstream of \texttt{hEK}/\texttt{hsin} is sorry-free; nothing about
-  the conjectural hypotheses is discharged, only consumed.
-
-  \texttt{\_hEK} renders input (i) of Theorem~C. The conclusions rendered
-  here do not consume it: at each prime $\fp \nmid \delta_E(c)$ already
-  forces $\delta_E(c) \ne 0$, by Lemma~\ref{lem:resultantstep}. What
-  consumes it in the paper is Theorem~C's final clause, that
-  Conjecture~\ref{conj:weak} holds for $E$ when $S_E$ is finite, and that
-  clause is not rendered: deriving it needs
-  $\{p : \fp \mid \delta_E(c)\}$ to be finite, and \texttt{EKPackage.v} is
-  an abstract family of valuations with no such field.
-
-  \texttt{thm\_reduction\_of\_conjEK} is the same statement with
-  \texttt{hEK} replaced by \texttt{ConjEK H} and the nonzeroness
-  \texttt{hc : c \(\ne\) 0} of the vector, which is what
-  \texttt{hyp:sinnott}(i) asserts of the vector it produces. It renders the
-  paper's parenthetical that input (i) of Theorem~C follows from
-  \texttt{conj:EK}. It is the only declaration in the project that mentions
-  \texttt{ConjEK}.
-
-  \textbf{Two points of shape.} The per-prime conclusion reports
-  \texttt{MuZero} alongside $\lambda_{\mathrm{an}} = 2$, the two being
-  paired throughout because \texttt{lambdaAn} is junk-valued without it. And
-  \texttt{ConjStrongAt} omits the integrality clause of
-  Conjecture~\ref{conj:strong}, for the reason given there.
-\end{proof}
 
 % ===========================================================================
 \chapter{Non-vacuity of the assumption surface}
@@ -999,8 +579,8 @@ $\varpi := p$ inside \texttt{thm\_reduction}.
   \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}.
 
   \texttt{Toy.toyEK} is the shared Eisenstein--Kronecker package of both toy
-  instances: a one-point divisor over $\Q$, with $F_c$ the sum of the six
-  coefficients, so $\delta_E(c) \ne 0$ reduces to $\sum_i c_i \ne 0$.
+  instances: a one-point divisor over $\Q$, six constant sections, and the
+  trivial valuation at every rational prime.
 \end{proof}
 
 \begin{theorem}[The assumption surface does not entail the conclusion]
@@ -1068,19 +648,6 @@ Bannai--Kobayashi facts about the Kronecker theta function (generating
 function, algebraicity, $p$-adic interpolation at ordinary primes) that
 \S\texttt{sec:mechanism} recalls as background. Purely expository; nothing
 downstream depends on a Lean rendering of these.
-
-\paragraph{Failure modes and commentary
-(\texttt{ssec:failuremodes}, \texttt{rmk:fq}, \texttt{rmk:modesnow},
-\texttt{rmk:correlation}).} The section listing the ways
-Conjecture~\ref{conj:strong} could fail (irreducible $\fp$-dependence,
-after the pattern of the Kubota--Leopoldt functions, where the horizontal
-$\lambda$-statement is known to be \emph{false}; Wieferich-type collapse of
-$\delta_E$); the remark on why Fermat-quotient terms are structurally
-absent from the leading grade at a double zero; the remark identifying
-\texttt{hyp:sinnott} and \texttt{conj:EK} as the formal loci of those
-failure modes; and the remark on how the regulator scan acquires algebraic
-meaning through \texttt{thm:reduction}. All are mathematical commentary and
-motivation, not statements this project proves or assumes as Lean data.
 
 \paragraph{The regulator scan (\texttt{ssec:scan},
 \texttt{ssec:scanweight}).} The $508$-prime computational scan testing

@@ -1,0 +1,24 @@
+### the CLS-family exceptions, recomputed in SageMath
+sage              : SageMath version 10.7, Release Date: 2025-08-09
+python            : 3.13.3
+quantity          : E.padic_regulator(p, prec), Sage's own saturated basis
+curves            : y^2 = x^3 - Dx; D = 56 is the paper's testbed and the control
+D = 56  p = 5  conductor = 12544  a_p = -2  anomalous = False  Tamagawa = 4  gens = [(-7, 7), (9, 15)]
+   padic_regulator(5, prec=8): valuation 2   (5^2 + 3*5^3 + 3*5^4 + 3*5^5 + 3*5^6 + 4*5^7 + 4*5^8 + O(5^9))
+   padic_regulator(5, prec=14): valuation 2   (5^2 + 3*5^3 + 3*5^4 + 3*5^5 + 3*5^6 + 4*5^7 + 4*5^8 + 3*5^9 + 4*5^10 + 2*5^11 + 4*5^12 + 3*5^13 + 4*5^14 + O(5^15))
+D = -39  p = 5  conductor = 48672  a_p = -2  anomalous = False  Tamagawa = 8  gens = [(3, 12), (27, 144)]
+   padic_regulator(5, prec=8): valuation 3   (2*5^3 + 4*5^4 + 4*5^6 + 4*5^7 + 4*5^8 + O(5^9))
+   padic_regulator(5, prec=14): valuation 3   (2*5^3 + 4*5^4 + 4*5^6 + 4*5^7 + 4*5^8 + 2*5^9 + 4*5^11 + 2*5^12 + 5^13 + O(5^15))
+D = -33  p = 37  conductor = 69696  a_p = 2  anomalous = False  Tamagawa = 4  gens = [(4, 14), (16, 68)]
+   padic_regulator(37, prec=8): valuation 3   (4*37^3 + 24*37^4 + 18*37^5 + 10*37^6 + 33*37^7 + 28*37^8 + O(37^9))
+   padic_regulator(37, prec=14): valuation 3   (4*37^3 + 24*37^4 + 18*37^5 + 10*37^6 + 33*37^7 + 28*37^8 + 20*37^9 + 20*37^10 + 7*37^11 + 26*37^13 + 9*37^14 + O(37^15))
+D = -34  p = 5  conductor = 73984  a_p = -2  anomalous = False  Tamagawa = 4  gens = [(8, 28), (32, 184)]
+   padic_regulator(5, prec=8): valuation 2   (5^2 + 5^3 + 5^5 + 2*5^7 + 4*5^8 + O(5^9))
+   padic_regulator(5, prec=14): valuation 2   (5^2 + 5^3 + 5^5 + 2*5^7 + 4*5^8 + 5^9 + 2*5^10 + 3*5^11 + 3*5^12 + 4*5^13 + 3*5^14 + O(5^15))
+D = -39  p = 15289  conductor = 48672  a_p = 234  anomalous = False  Tamagawa = 8  gens = [(3, 12), (27, 144)]
+   padic_regulator(15289, prec=6): valuation 3   (150*15289^3 + 12483*15289^4 + 14648*15289^5 + 9395*15289^6 + O(15289^7))
+   padic_regulator(15289, prec=8): valuation 3   (150*15289^3 + 12483*15289^4 + 14648*15289^5 + 9395*15289^6 + 3882*15289^7 + 10169*15289^8 + O(15289^9))
+D = -39  p = 5  y^2 = x^3 + 39x  level = 48672  modular-symbol side
+   implementation    : eclib
+   L_5(E,T), 4 terms, prec 6: O(5^6) + O(5^3)*T + (4*5 + 2*5^2 + O(5^3))*T^2 + (3*5 + 4*5^2 + O(5^3))*T^3 + (4 + 2*5^2 + O(5^3))*T^4 + (4 + O(5^2))*T^5 + O(T^6)
+FAMILYCROSSCHECKDONE

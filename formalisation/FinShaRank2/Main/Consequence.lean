@@ -22,7 +22,7 @@ The statement carries no conjectural hypothesis; its content is the implication
 from the unit condition at a single prime. The formal statement takes that unit
 condition as the hypothesis `hc2`, so no conjectural hypothesis reaches this
 theorem, matching the head of the paper's
-proof, which records that nothing in it assumes Conjecture 5.1.
+proof, which records that nothing in it assumes a conjecture.
 
 ## Translation conventions
 
@@ -49,9 +49,9 @@ in the spelling that lemma uses — into `IsPUnit ((1 : ℚ_[p]) − α_p⁻¹)`
 the hypothesis of `Kernel.Normalization.isPUnit_c2tilde_iff`.
 
 Non-anomality is supplied by `ClassicalInputs.notAnomalous` at every split
-`p ∉ S`, so no residual hypothesis at `p = 5` is carried here or in
-`thm_reduction`.  The proved lemma `Kernel.Anomalous.anomalous_iff_five` gives
-the clause unconditionally at every split `p ≥ 13`.
+`p ∉ S`, so no residual hypothesis at `p = 5` is carried here.  The proved lemma
+`Kernel.Anomalous.anomalous_iff_five` gives the clause unconditionally at every
+split `p ≥ 13`.
 
 Paper statements rendered here: Theorem A, Lemma 2.3, (7),
 Proposition 3.3.
@@ -67,7 +67,7 @@ stated as `a_p ≢ 1 (mod p)`; `Kernel.Anomalous.isPUnit_one_sub_alphaInv_iff`, 
 the `AnalyticData` field `alpha_root`, converts it into the `p`-adic unit
 statement for the local factor `1 − α_p⁻¹`.
 
-This is the bridge that lets `prop_consequence` and `thm_reduction` call
+This is the bridge that lets `prop_consequence` call
 `Kernel.Normalization.isPUnit_c2tilde_iff` with no residual `p = 5` hypothesis.
 PAPER: (7) (`eq:Sexc`) (`S_an`), Definition 2.2 (`def:anomalous`), Proposition 3.3
 (`prop:normalisation`). -/

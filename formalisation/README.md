@@ -4,9 +4,12 @@ A Lean 4 formalisation of the main statements of *Second derivatives of $p$-adic
 $L$-functions and the Shafarevich–Tate group of rank-two CM elliptic curves*,
 together with a blueprint linking the informal argument to the Lean declarations.
 
-Part 3 of the paper (§§10–14) says what the formalisation establishes and what it
+Part 3 of the paper says what the formalisation establishes and what it
 does not. This file is how you navigate it: what to read, what to run, and where
 the Lean differs from the paper.
+
+The formalisation of the withdrawn Theorem C and of the horizontal rigidity
+conjecture is preserved at tag `v2` of this repository.
 
 This directory holds the Lean project and nothing else. The computer algebra —
 the PARI/GP and SageMath scripts behind Part 2 of the paper, and the output of
@@ -19,16 +22,16 @@ not part of this repository.
 | `FinShaRank2/Interface/` | the assumption surface — the six files §3 asks you to read |
 | `FinShaRank2/Scratch/` | working files, excluded from the build and the audit gate |
 | `FinShaRank2/Toy/` | the two witness worlds of §7 |
-| `blueprint/` | the blueprint; see §9 |
+| `blueprint/` | the blueprint; see §8 |
 | `scripts/` | `audit.sh` and the (empty) sorry allowlist |
 
 Paper statements are referred to by their printed numbers, as the PDF prints
-them, and the three lettered results by both — Theorem A (Theorem 3.8), Theorem C
-(Theorem 7.10). The docstrings in the Lean sources do the same, and each keeps
-its TeX label on the `PAPER:` line, so a renumbering can be tracked down rather
-than hunted for. Declarations are referred to by name and file; there are no line
-numbers here, because they rot. Everything below is greppable from
-`formalisation/`.
+them, and the lettered results by both, Theorem A (Theorem 3.8) and Theorem B
+(Theorem 6.7), the second of which has no Lean counterpart. The docstrings
+in the Lean sources do the same, and each keeps its TeX label on the `PAPER:`
+line, so a renumbering can be tracked down rather than hunted for. Declarations
+are referred to by name and file; there are no line numbers here, because they
+rot. Everything below is greppable from `formalisation/`.
 
 ## 1. What is proved and what is assumed
 
@@ -38,7 +41,7 @@ years. So this is a formalisation *modulo the literature*: the classical theorem
 the paper takes from other authors are assumed, as explicitly stated fields of one
 structure, and everything the paper deduces from them is machine-checked.
 
-Two categories, and which one a fact belongs to is visible in the source.
+What is assumed is visible in the source.
 
 **`ClassicalInputs`** (`Interface/Global.lean`) is the assumed classical
 material. Six fields: the excluded set `S` of (7); the Eisenstein–Kronecker
@@ -48,11 +51,9 @@ every split `p ∉ S`; and `notAnomalous`. `PrimeData` in turn aggregates five
 layers — `AnalyticData`, `SelmerData`, `IwasawaData`, `HeightData`, `KatzData`.
 Every headline theorem takes `H : ClassicalInputs` as an ordinary hypothesis.
 
-**Conjectural hypotheses** are three, and none is a field of `ClassicalInputs` or
-of any structure that is ever instantiated: `SinnottHyp` (Hypothesis 7.8,
-`Interface/Katz.lean`), `ConjEK` (Conjecture 7.9, `Statements.lean`) and `ConjWeak`
-(Conjecture 5.1, `Statements.lean`). Each occurs in hypothesis position only. Figure
-2 of the paper shows which declarations take which; §8 below is the machine check.
+**No conjectural hypothesis** occurs anywhere in the project: every assumed input
+is a field of `ClassicalInputs`, and the unit condition `c̃₂(p) ∈ ℤ_p^×` enters
+Theorem A as an ordinary hypothesis at a single prime.
 
 There are no `axiom` declarations anywhere in the project. Every assumed input is
 a structure field or a hypothesis, so it appears in the statement of any theorem
@@ -66,7 +67,6 @@ Lean's own three; §2 says how that is checked and which declarations are covere
   attributed and correctly used is the human task, and §3–§4 are about doing it.
 * It does not mean the Lean statements are self-evidently the right rendering of
   the paper's mathematics. Same human task.
-* Hypothesis 7.8 and Conjecture 7.9 are exactly as open as the paper says they are.
 * Part 2 of the paper — the computations — is not formalised. Neither is the
   background survey of §2 nor the outlook of Part 4.
 
@@ -79,12 +79,11 @@ appears as `Subsingleton ShaDual`.
 
 **Valuations are multiplicative.** `EKPackage.v p` is a `Valuation` in mathlib's
 sense, so the paper's `v_𝔭(x) ≥ 0` is `P.v p x ≤ 1`, and the paper's
-`v_𝔭(x) = 0` — that `x` is a `𝔭`-unit — is `P.v p x = 1`. Read `SinnottHyp` with
-this in mind or it will look inverted.
+`v_𝔭(x) = 0` — that `x` is a `𝔭`-unit — is `P.v p x = 1`.
 
 **No conclusion vocabulary in assumptions.** No interface field mentions `Ш`,
 `Subsingleton ShaDual`, `MuZero` or `lambdaAn`. This is what keeps the conclusion
-out of the hypotheses; §7 and §8 are two independent checks that it worked.
+out of the hypotheses; §7 is the check that it worked.
 
 ## 2. Build it and run the audit
 
@@ -116,7 +115,7 @@ scripts/audit.sh
 The tail of a passing run:
 
 ```
-AxiomAudit: all 82 audited declaration(s) clean
+AxiomAudit: all 73 audited declaration(s) clean
 [3/3] OK: axiom whitelist holds for all audited decls
 
 AUDIT: PASS
@@ -150,8 +149,8 @@ through one field end to end.
 | `Interface/Analytic.lean` | `AnalyticData p hsplit` | the Mazur–Tate–Teitelbaum $p$-adic $L$-function `L_p(E,T)`, its interpolation at the trivial character, the $p$-adic functional equation with sign `w(E) = +1`, unit-root data for `X² − a_p X + p`, evenness of `a_p` under CM, and the Hasse bound |
 | `Interface/Iwasawa.lean` | `IwasawaData p`, `SelmerData p` | Greenberg's no-nonzero-finite-submodule (LNM 1716, Prop. 4.14); the fused structure-theorem-plus-Rubin field `rubin_structure`; Mazur control in consequence form; the dualised descent sequence |
 | `Interface/Heights.lean` | `HeightData p` | the normalised cyclotomic $p$-adic regulator `Reg_γ` as opaque data, the nondegeneracy predicate, and Schneider/Perrin-Riou's leading-term theorem in the two consequence forms Proposition 4.2 uses, packaged as Stein–Wuthrich Thm. 6.1 |
-| `Interface/Katz.lean` | `KatzData p Lp`, `SinnottHyp` | the comparison `L_p = c_p · u(T) · L^{Katz}_𝔭` of Lemma 3.5, the grading congruence behind Proposition 7.1 and Proposition 7.2, and the mod-`𝔭` trace class. `SinnottHyp` is declared here but is a field of nothing |
-| `Interface/EK.lean` | `EKPackage` | the divisor `D_E`, the six sections `𝓡_E`, a valuation at each rational prime, and `supp`. `δ_E(c)` is a definition on top of these, not assumed data |
+| `Interface/Katz.lean` | `KatzData p Lp` | the comparison `L_p = c_p · u(T) · L^{Katz}_𝔭` of Lemma 3.5, and the grading congruence behind Proposition 6.1 and Proposition 6.2 |
+| `Interface/EK.lean` | `EKPackage` | the divisor `D_E`, the six sections `𝓡_E`, and a valuation at each rational prime |
 | `Interface/Global.lean` | `PrimeData`, `ClassicalInputs` | no new mathematics: the aggregation of the five layers and the tie-equations welding them together |
 
 ## 4. A worked example: checking one assumption end to end
@@ -213,16 +212,15 @@ check a case analysis, a module-theoretic step, or any valuation bookkeeping.
 ## 5. Statement by statement
 
 Every declaration name below exists in the tree; `grep -rn '<name>' FinShaRank2/`
-confirms it. The status column takes six values:
+confirms it. The status column takes five values:
 
 * **kernel-proved** — a `theorem`, sorry-free, proved from the interface and
   kernel layers, and covered by `AxiomAudit.lean`.
-* **formal def** — a `def` rendering a paper definition or conjecture as a
-  proposition. A `def` asserts nothing; what asserts is whatever consumes it.
+* **formal def** — a `def` rendering a paper definition. A `def` asserts
+  nothing; what asserts is whatever consumes it.
 * **interface field + citation** — a field carrying a `SOURCE`/`PAPER`/`STATUS`
   docstring. Not proved: it *is* the assumption.
 * **data field** — opaque data, not a proposition.
-* **conjectural hypothesis** — occurs in hypothesis position only.
 * **no counterpart** — not formalised; §6 says why.
 
 | Paper statement | Lean declaration(s) | File | Status |
@@ -231,80 +229,30 @@ confirms it. The status column takes six values:
 | (7) | `ClassicalInputs.S`, `ClassicalInputs.notAnomalous` | `Interface/Global.lean` | data field + **interface field** |
 | (9) | `EKPackage.ι`, `EKPackage.D`, `EKPackage.D_nonempty` | `Interface/EK.lean` | data fields |
 | (11) | `EKPackage.r`; `jetIndex`, `jetIndex_image`, `jetIndex_injective` | `Interface/EK.lean` | data field + **kernel-proved** |
-| Definition 2.1 | `HorizontalControl` | `Statements.lean` | formal def |
 | Lemma 2.3 | (2) `anomalous_iff_five`, `noAnomalous`, `ap_ne_one_of_hasse`, `two_dvd_ap` and two more; (1) — | `Kernel/Anomalous.lean` | (2) **kernel-proved**; (1) **no counterpart** |
 | Lemma 3.1 | `c0_eq_zero`, `c1_eq_zero` | `Main/Lemma41.lean` | **kernel-proved** |
 | Definition 3.2 | `c2tilde`; `PrimeData.c2tilde` | `Defs.lean`; `Statements.lean` | formal def |
 | Proposition 3.3 | `isPUnit_c2tilde_iff`; `ClassicalInputs.isPUnit_one_sub_alphaInv` | `Kernel/Normalization.lean`; `Main/Consequence.lean` | **kernel-proved** |
-| — (the strong form, withdrawn from the paper on 2026-09-03) | `ConjStrong`; `ConjStrongAt` | `Statements.lean` | formal def; `ConjStrongAt H c` is the conclusion of Theorem C at the vector `c`, `ConjStrong` renders no statement of the paper; see the note below |
-| Conjecture 5.1 | `ConjWeak` | `Statements.lean` | formal def (conjectural) |
 | Remark 3.4 | — | — | **no counterpart** (automatic: `Λ p := PowerSeries ℤ_[p]`) |
 | Lemma 3.5 | `KatzData.comparison` | `Interface/Katz.lean` | **interface field + citation** |
 | Lemma 3.6 | — | — | **no counterpart** |
 | Theorem A (Theorem 3.8) | `prop_consequence` | `Main/Consequence.lean` | **kernel-proved** |
-| Corollary B (Corollary 5.2) | `cor_horizontal` | `Main/Horizontal.lean` | **kernel-proved**, conditional on Conjecture 5.1 |
 | Proposition 4.1 | — | — | **no counterpart** |
 | Proposition 4.2 | `prop_dictionary` | `Main/Dictionary.lean` | **kernel-proved** |
-| Proposition 7.1 | `KatzData.grading_congr` | `Interface/Katz.lean` | **interface field** (the integral content is assumed, not derived) |
-| Proposition 7.2 | (2) `isUnit_iff_residue_ne_zero_of_grading_congr`; (1) `KatzData.grading_congr`, `m2core`, `criterionClass` | `Kernel/GradingValuation.lean`; `Interface/Katz.lean` | (2) **kernel-proved**; (1) **interface field** |
-| Lemma 7.3 | `Decoupling.coeff_two_mul` and six further lemmas | `Kernel/Decoupling.lean` | **kernel-proved** |
-| Definition 6.2 | `EKPackage.Fc`, `EKPackage.deltaE`, `deltaE_def`, `deltaE_ne_zero_iff` | `Interface/EK.lean` | formal def + **kernel-proved** |
-| Lemma 6.3 | `Orbit.prod_mem_range_algebraMap` (1), `Orbit.forall_eq_zero_of_exists_eq_zero` (2) | `Kernel/Orbit.lean` | **kernel-proved** |
-| Hypothesis 7.8 | `SinnottHyp` (fields `integral`, `presentation`, `nonvanishing`) | `Interface/Katz.lean` | **conjectural hypothesis** |
-| Conjecture 7.9 | `ConjEK` | `Statements.lean` | formal def (conjectural) |
-| Theorem C (Theorem 7.10) | `thm_reduction`; `thm_reduction_of_conjEK`; `Resultant.forall_eq_one_of_prod_eq_one` | `Main/Reduction.lean`; `Kernel/Resultant.lean` | **kernel-proved**, conditional on Hypothesis 7.8; concludes the unit condition at the given vector (`ConjStrongAt H c`) |
+| Proposition 6.1 | `KatzData.grading_congr` | `Interface/Katz.lean` | **interface field** (the integral content is assumed, not derived) |
+| Proposition 6.2 | (2) `isUnit_iff_residue_ne_zero_of_grading_congr`; (1) `KatzData.grading_congr`, `m2core`, `criterionClass` | `Kernel/GradingValuation.lean`; `Interface/Katz.lean` | (2) **kernel-proved**; (1) **interface field** |
+| Lemma 6.3 | `Decoupling.coeff_two_mul` and six further lemmas | `Kernel/Decoupling.lean` | **kernel-proved** |
+| Theorem B (Theorem 6.7) | — | — | **no counterpart** (§6) |
 
 ## 6. Where the Lean differs from the paper
 
-Six differences change what is established. Read these before concluding
+One difference changes what is established. Read it before concluding
 anything from a green audit.
-
-**Theorem C's conclusion is the per-vector predicate `ConjStrongAt`, and its final
-clause is not rendered.** `ConjStrongAt H c` asserts the unit condition at every split
-`p ∉ H.S ∪ supp(c)` with `𝔭 ∤ δ_E(c)`, which is the display of Theorem C at the vector
-`c`; `thm_reduction` proves it at the vector Hypothesis 7.8(i) presents. Its universal
-closure `ConjStrong H`, that is `∀ c ≠ 0, ConjStrongAt H c`, rendered the strong form
-of the conjecture, which the paper withdrew on 2026-09-03; it is kept as a definition,
-is proved by no declaration, and renders no statement of the paper. Theorem C's final clause,
-"if `S_E` is finite, Conjecture 5.1 holds for `E`", is absent: deriving it needs
-`{p | 𝔭 ∣ δ_E(c)}` to be finite, which holds in the paper because `δ_E(c)` is a
-nonzero algebraic number, but `EKPackage.v` is an abstract family of valuations
-carrying no such field. So `ConjWeak` is never concluded in this project, only
-consumed (by `cor_horizontal`).
-
-**Conjecture 7.9 is rendered in a wider form.** The paper's conjecture assumes
-`#Cl_𝔣(K) ≥ 6`, and explains that the hypothesis is forced: the equivariant
-functions on `D_E` form a `K`-space of dimension `#Cl_𝔣(K)`, so with fewer classes
-than sections some combination vanishes identically and `δ_E(c) = 0`. `ConjEK`
-carries no such hypothesis, because `EKPackage.D` is an abstract `Finset` with no
-class group to attach it to. Dropping a hypothesis from a conjecture *widens* it:
-a package with `#D < 6` makes `ConjEK` false, and nothing in the encoding
-excludes such a package. So `ConjEK H` renders Conjecture 7.9 only for those `H` whose
-package meets the paper's hypothesis, and `thm_reduction_of_conjEK` should be
-read as conditional on that. `thm_reduction` is unaffected — it takes the single
-instance `δ_E(c) ≠ 0`, not the conjecture.
 
 **Lemma 2.3(1) is not formalised.** It reduces to Deuring's reduction
 criterion, which mathlib does not have. Nothing depends on it: every statement in
 the project quantifies over split primes, where part (2) — which *is*
 kernel-proved, in the strengthened form the paper states — applies.
-
-**Lemma 6.3 is proved, but on an input the paper assumes.** Both parts are
-proved in full generality, for a Galois extension and a finite set with a Galois
-action. What is assumed is the equivariance `r_{a,b}(σt) = σ(r_{a,b}(t))` for the
-package, which the paper also assumes rather than proves. `thm_reduction` does not
-use Lemma 6.3.
-
-**`cor_horizontal` proves more than Definition 2.1 asks.** The per-prime
-predicate supplied is `Ш[p^∞] = 0`, where the paper's definition asks for
-`Ш[p] = 0`. What is proved implies what is stated. Separately, the paper's
-hypothesis that there are finitely many anomalous split primes has no counterpart:
-`ClassicalInputs.S : Finset ℕ` is finite by construction and `notAnomalous` puts
-every anomalous split prime inside it. That is a simplification the encoding
-makes, not something proved.
-
-**`thm_reduction` loses the clause "if `S_E` is finite"** for the same reason:
-`H.S` is a `Finset`, so finiteness is not a hypothesis anyone can fail to meet.
 
 Two statements in the table are marked **no counterpart** for a reason that is
 not a descope. Proposition 4.1 is not the paper's own result — it combines
@@ -315,8 +263,12 @@ separately. Lemma 3.6 compares the Mazur–Swinnerton-Dyer and
 Mazur–Tate–Teitelbaum normalisations; `AnalyticData` starts from the MTT
 `L`-function, so the comparison never arises in Lean.
 
+Theorem B (Theorem 6.7), the exact criterion, is marked **no counterpart** because it
+is not formalised: Lemma 6.5 and Proposition 6.6 of the paper have no Lean
+rendering, and the formalisation of Theorem B would begin there.
+
 Two further points about where trust sits, neither a defect. The integral content
-behind Proposition 7.1 is assumed as `KatzData.grading_congr` and rests on
+behind Proposition 6.1 is assumed as `KatzData.grading_congr` and rests on
 Bannai–Kobayashi §§2–3; the paper flags this itself. And the height side enters
 only as the citations `spr_padicBSD` and `spr_nondeg`: `Reg_γ` is opaque data,
 there is no sigma-function construction in Lean, and no proof here needs its
@@ -346,67 +298,7 @@ the anti-vacuity world. Those digits are this project's own computation,
 cross-checked by two independent implementations (PARI and Sage), and they
 correspond to no display in the paper; the lemma's docstring says so.
 
-## 8. Checking the conjectural surface mechanically
-
-`audit.sh` certifies axiom-cleanliness. It does not by itself certify the
-narrower claim that `prop_consequence`, `prop_dictionary` and `cor_horizontal`
-never touch the conjectural surface — as opposed to touching it and happening to
-avoid the named hypotheses. That is checkable by walking the transitive closure of
-constants each declaration's type and proof term depend on.
-
-Save this outside `FinShaRank2/`, so the audit's scans do not see it, and run
-`lake env lean <file>` from `formalisation/`:
-
-```lean
-import FinShaRank2
-
-open Lean in
-partial def deps (env : Environment) (n : Name) : StateM NameSet Unit := do
-  if (← get).contains n then return
-  modify (·.insert n)
-  match env.find? n with
-  | some ci =>
-      for c in ci.type.getUsedConstants do deps env c
-      match ci.value? with
-      | some v => for c in v.getUsedConstants do deps env c
-      | none => pure ()
-  | none => pure ()
-
-def has (s t : String) : Bool := ((s.splitOn t).length > 1)
-
-def markers : List String :=
-  ["KatzData", "SinnottHyp", "ConjStrong", "ConjWeak", "ConjEK",
-   "EKPackage.deltaE", "traceClass", "m2core", "criterionClass"]
-
-open Lean Elab Command in
-elab "#scan " id:ident : command => do
-  let env ← getEnv
-  let n ← liftCoreM <| realizeGlobalConstNoOverload id
-  let (_, s) := (deps env n).run {}
-  let bad := s.toList.filter (fun m => markers.any (has m.toString))
-  logInfo m!"{n}: total deps = {s.size}, conjectural-surface deps = {bad}"
-
-#scan FinShaRank2.prop_consequence
-#scan FinShaRank2.prop_dictionary
-#scan FinShaRank2.cor_horizontal
-#scan FinShaRank2.thm_reduction
-#scan FinShaRank2.thm_reduction_of_conjEK
-```
-
-The closures of `prop_consequence` and `prop_dictionary` contain none of the
-markers. `cor_horizontal`'s contains `ConjWeak`, which is its own hypothesis and
-the one the paper's Corollary B also assumes. `thm_reduction`'s contains
-`SinnottHyp`, `KatzData`, `ConjStrong` and `EKPackage.deltaE`;
-`thm_reduction_of_conjEK`'s contains `ConjEK` as well. Those are consumed, and
-the paper says so.
-
-Three limits on what the scan shows. `ConjStrong` appears in `thm_reduction`'s
-closure because it is in the *conclusion*, not the hypotheses. The marker list is
-a substring filter, so it over-reports rather than under-reports. And the scan
-sees constants, not structure projections, so it cannot be used to argue that a
-declaration avoids some particular *field* of a structure it mentions.
-
-## 9. The blueprint
+## 8. The blueprint
 
 `blueprint/` holds a blueprint in the usual Lean style, stating each result
 informally beside the declaration that formalises it. Build it locally with

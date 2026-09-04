@@ -12,10 +12,8 @@ Both computational fields are then immediate: `comparison` holds with
 `c = u = 1`, and `grading_congr` with `κ₀ = 1` because
 `coeff 2 (X²) = 1 = m2core`, so the congruence is `p² · 0 ∈ (p³)`.
 
-The `δ_E` fields this layer used to carry — `deltaE_local`, `NonvanishingOnDE`,
-`resultant_link` — are gone from `KatzData`. The Eisenstein–Kronecker data is now
-the single global field `ClassicalInputs.ek`, witnessed by `Toy.toyEK`
-(`Toy/EK.lean`).
+The Eisenstein–Kronecker data is the single global field `ClassicalInputs.ek`,
+witnessed by `Toy.toyEK` (`Toy/EK.lean`).
 -/
 
 open PowerSeries
@@ -36,7 +34,6 @@ noncomputable def toyKatz (p : ℕ) [Fact p.Prime] : KatzData p ((X : Λ p) ^ 2)
   comparison := ⟨1, 1, by simp⟩
   m2core := 1
   grading_congr := ⟨1, by simp⟩
-  traceClass := 1
 
 end Toy
 
