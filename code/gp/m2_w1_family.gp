@@ -50,9 +50,9 @@
 \\ Cost is #Cl_f times a per-class cost that grows like p^4 and does not depend on
 \\ the conductor: at realprecision 600, 78 s at (D = -33, p = 13), 379 s at
 \\ (D = 17, p = 37), 14 s at (D = -39, p = 5).  At (D = -33, p = 37), 1920
-\\ classes, the run at realprecision 600 took 2779 s and failed the exactness
-\\ gate: the (0,2p-2) slot lost about 240 digits, S[0,2p-2] was not recognised,
-\\ and no output was written.  A higher precision was not run; the pair is a
+\\ classes, the run at realprecision 600 took 2779 s and was inconclusive: the
+\\ (0,2p-2) slot lost about 240 digits, S[0,2p-2] was not recognised, the
+\\ exactness gate did not pass, and no output was written.  A higher precision was not run; the pair is a
 \\ reported gap in the paper.
 \\ The rational recognition searches denominators up to 10^(W1PREC/3) and the gate
 \\ demands a denominator below 10^(W1PREC/6), so a class sum that is not a rational

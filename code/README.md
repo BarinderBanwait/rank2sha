@@ -352,13 +352,14 @@ to numerical noise. The $p$-adic bracket is then formed through the embedding
 $i \mapsto i_p$ fixed by the labelling of $\mathfrak{p}$.
 
 The pair $(D,p) = (-33,37)$, the second exception of the scan, has no bracket
-file. The run at realprecision 600, 1920 classes, took 2779 seconds and failed
-the exactness gate: the third class sum $S[0,2p-2]$ came back with a
-denominator at the search bound and did not satisfy the conjugation relation,
-while the other two were clean, so the $(0,2p-2)$ slot loses about 240 digits
-at this class count and 600 is not enough. No output was written, by design. A
-run at higher precision was not made; the paper reports the pair, together
-with $(-39, 15289)$, as a gap.
+file. The run at realprecision 600, 1920 classes, took 2779 seconds and was
+inconclusive: its exactness gate, which recognises each class sum as an
+element of $\mathbb{Q}(i)$ of bounded height, did not pass for the third class
+sum $S[0,2p-2]$, which came back with a denominator at the search bound and
+did not satisfy the conjugation relation, while the other two were clean. So
+the $(0,2p-2)$ slot loses about 240 digits at this class count and 600 is not
+enough. No output was written, by design. A run at higher precision was not
+made; the paper reports the pair, together with $(-39, 15289)$, as a gap.
 
 ## A note on `cert_13.out`
 
