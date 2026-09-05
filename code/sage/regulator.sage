@@ -1,5 +1,5 @@
 #!/usr/bin/env sage
-# regulator.sage -- height side of eq:padicbsd for E: y^2 = x^3 - 56x, by Sage.
+# regulator.sage -- height side of eq:padicbsd for E: y^2 = x^3 - D x, by Sage.
 #
 # The second of two independent implementations of Reg_p.  The first is
 # ../gp/regulator.gp, which uses PARI/GP's ellpadicregulator.  The two supply
@@ -11,14 +11,22 @@
 # Prints, at the given split prime p:
 #   * Reg_p from E.padic_regulator(p, prec)                (Sage, sigma-function)
 #   * Reg_p as an explicit 2x2 Gram determinant of E.padic_height(p, prec) on
-#     the Mordell-Weil basis P1 = (8,8), P2 = (9,15) of tab:testbed.  Equality
-#     of the determinant with padic_regulator checks the saturation.
+#     the saturated Mordell-Weil basis: tab:testbed for D = 56, and
+#     ../data/family_bases.txt for the other curves.  Equality of the
+#     determinant with padic_regulator checks the saturation.
+#
+# The curve and the basis come from the environment:
+#   D  the curve y^2 = x^3 - D x, default 56
+#   G  the basis as [[x,y],[x,y]],  default [[8,8],[9,15]]
 #   * the unit root alpha, the Euler factor (1-alpha^-1)^2, log_p(1+p)
-#   * the height side (1-alpha^-1)^2 * Reg_p / log_p(1+p)^2, the right-hand
-#     side of eq:padicbsd with #Sha(E/Q)[p^oo] = 1.  That value of the Sha
+#   * the height side (1-alpha^-1)^2 (prod_v c_v/#E(Q)_tors^2) Reg_p /
+#     log_p(1+p)^2, the right-hand side of eq:padicbsd with #Sha(E/Q)[p^oo] = 1.  That value of the Sha
 #     factor is a theorem at every split p < 30000 (cor:shavanishing).
 
-import sys, time
+import ast, os, sys, time
+
+D = Integer(os.environ.get("D", "56"))
+G = ast.literal_eval(os.environ.get("G", "[[8,8],[9,15]]"))
 
 p    = Integer(sys.argv[1])
 prec = Integer(sys.argv[2]) if len(sys.argv) > 2 else Integer(14)
@@ -28,7 +36,7 @@ print("sage version      : %s" % version())
 print("p                 : %s" % p)
 print("working precision : O(p^%s)" % prec)
 
-E = EllipticCurve([0, 0, 0, -56, 0])
+E = EllipticCurve([0, 0, 0, -D, 0])
 print("curve             : %s" % E)
 print("conductor         : %s" % E.conductor())
 print("discriminant      : %s" % E.discriminant())
@@ -54,8 +62,8 @@ print("padic_regulator   : %.3f s" % (t1 - t0))
 
 # --- Reg_p as a Gram determinant on the MW basis of tab:testbed ---------
 # <P,Q> = ( h(P+Q) - h(P) - h(Q) ) / 2 for the quadratic form h.
-P1 = E(8, 8)
-P2 = E(9, 15)
+P1 = E(G[0][0], G[0][1])
+P2 = E(G[1][0], G[1][1])
 print("MW basis          : %s , %s" % (P1.xy(), P2.xy()))
 try:
     h  = E.padic_height(p, prec)
@@ -86,8 +94,10 @@ print("v_p of that       : %s   (0 = non-anomalous)" % eul.valuation())
 print("log_p(1+p)        : %s" % lg)
 print("v_p(log_p(1+p))   : %s   (expected 1)" % lg.valuation())
 
-hs = eul * Qp_(reg) / lg**2
-print("HEIGHT SIDE       : (1-alpha^-1)^2 * Reg_p / log_p(1+p)^2 , Sha-factor 1")
+bsdfac = E.tamagawa_product() / E.torsion_order()**2
+print("prod c_v/#tors^2  : %s   (eq:padicbsd normalising factor)" % bsdfac)
+hs = eul * Qp_(bsdfac) * Qp_(reg) / lg**2
+print("HEIGHT SIDE       : (1-alpha^-1)^2 * (prod c_v/#tors^2) * Reg_p / log_p(1+p)^2 , Sha-factor 1")
 print("height side       : %s" % hs)
 print("v_p(height side)  : %s   (expected 0)" % hs.valuation())
 

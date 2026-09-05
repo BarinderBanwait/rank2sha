@@ -47,7 +47,7 @@ This is a *toy* world: it is not the testbed curve, and no faithfulness claim is
 made about it. Its only job is to witness that the assumption bundle does not
 entail the conclusion. What excludes this world is the numerical `c₂` datum:
 `toySha_fails_c2_5_certificate` shows the seven computed `5`-adic digits of
-`c₂(5)` for the testbed curve are not the digits of `coeff 2 (shaLp 5) = 5`.
+`c₂(4)` for the testbed curve are not the digits of `coeff 2 (shaLp 5) = 5`.
 -/
 
 open PowerSeries
@@ -173,7 +173,7 @@ positive; only the jet digits are used below.
 
 SOURCE: none — this is a computation about the toy instance.
 PAPER:  none.  The digits on the right are this project's own computation of
-        `c₂(5)` for the testbed curve, cross-checked by two independent
+        `c₂(4)` for the testbed curve, cross-checked by two independent
         implementations.  They correspond to no display in the paper.
 STATUS: theorem (toy model). -/
 theorem toySha_fails_c2_5_certificate :

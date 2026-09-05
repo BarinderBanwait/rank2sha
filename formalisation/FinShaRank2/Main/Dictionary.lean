@@ -52,7 +52,7 @@ with both factors of norm `≤ 1`, so the product is a unit iff both are), which
 the valuation-arithmetic route sketched on the board; both routes are open and the
 signature is agnostic between them.
 
-Paper statements rendered here: Proposition 4.2, (6).
+Paper statements rendered here: Proposition 4.2, (7).
 -/
 
 open PowerSeries

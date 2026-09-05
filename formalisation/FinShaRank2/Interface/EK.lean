@@ -4,7 +4,7 @@ import FinShaRank2.Defs
 /-!
 # Eisenstein–Kronecker interface: `EKPackage`
 
-The formal counterpart of the Bannai–Kobayashi jet: the divisor `D_E` of (9),
+The formal counterpart of the Bannai–Kobayashi jet: the divisor `D_E` of (10),
 the six-function package `𝓡_E` of (11), and a multiplicative valuation at each
 rational prime. Only the objects the paper itself constructs are assumed.
 
@@ -25,7 +25,7 @@ the choice of `Γ`.
 
 The section values lie in `L`, the paper's `Q̄`; no rationality over `K` is asserted.
 
-Paper statements quoted below: (9), (11).
+Paper statements quoted below: (10), (11).
 -/
 
 namespace FinShaRank2
@@ -56,7 +56,7 @@ theorem jetIndex_injective : Function.Injective jetIndex := by decide
 
 /-- **Eisenstein–Kronecker package for a CM elliptic curve `E/ℚ`**.
 
-The data of the Bannai–Kobayashi jet: the divisor `D_E` of (9), the six functions
+The data of the Bannai–Kobayashi jet: the divisor `D_E` of (10), the six functions
 `r_{a,b}` of (11), and the valuation `v_𝔭` at each rational prime.
 
 The carrier types are in `Type` and their algebraic instances are bundled as instance fields,
@@ -94,16 +94,16 @@ structure EKPackage where
   [ordΓ : LinearOrderedCommMonoidWithZero Γ]
   /-- The type indexing the points of the divisor. The paper takes the points to be the ray
   classes themselves; `ι` is left abstract because nothing below uses the group structure.
-  SOURCE: the paper's own definition. PAPER: (9) (`eq:DEdef`). STATUS: data. -/
+  SOURCE: the paper's own definition. PAPER: (10) (`eq:DEdef`). STATUS: data. -/
   ι : Type
   /-- The divisor `D_E := Cl_𝔣(K) = (O_K/𝔣)^× / μ_K`, the ray class group of conductor `𝔣`,
   as a finite set of points.
   SOURCE: classical (finiteness of the ray class group).
-  PAPER:  (9) (`eq:DEdef`). STATUS: data. -/
+  PAPER:  (10) (`eq:DEdef`). STATUS: data. -/
   D : Finset ι
   /-- `D_E` is nonempty: it is a group, so it contains the trivial class.
   SOURCE: classical (a ray class group is a nonempty finite abelian group).
-  PAPER:  (9) (`eq:DEdef`). STATUS: classical. -/
+  PAPER:  (10) (`eq:DEdef`). STATUS: classical. -/
   D_nonempty : D.Nonempty
   /-- The package `𝓡_E` of six functions `r_{a,b} : D_E → Q̄`, indexed by `Fin 6` through
   `jetIndex`: the grade-`≤ 2` jet of the reduced theta function evaluated along the

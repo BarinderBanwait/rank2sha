@@ -10,7 +10,7 @@ elliptic curves*.
 `AnalyticData p hsplit` bundles the Mazur–Tate–Teitelbaum (MTT) p-adic
 L-function `L_p(E, T)` of the testbed curve `E : y² = x³ − 56x` together with
 the small set of classical facts about it that the paper's Lemma 3.1 and
-Lemma 2.3 consume: the interpolation formula at the trivial character,
+Lemma 2.2 consume: the interpolation formula at the trivial character,
 the p-adic functional equation with sign `w(E) = +1`, the unit-root data of the
 Frobenius polynomial `X² − a_p X + p`, the CM evenness of `a_p`, and the Hasse
 bound. Each field is either a datum or a citable classical statement rendered —
@@ -26,7 +26,7 @@ triviality of Ш): those live strictly downstream.
 `hsplit : p % 4 = 1` is carried as an **explicit hypothesis parameter**, matching
 the paper's standing assumption that `p` is split in `K = ℚ(i)` (for this curve,
 `p ≡ 1 (mod 4)` is exactly splitness, and forces good reduction — see
-Lemma 2.3). It is passed explicitly rather than as a `Fact`-style
+Lemma 2.2). It is passed explicitly rather than as a `Fact`-style
 instance so that it composes directly with the aggregator's
 `dataAt : ∀ p, p.Prime → p % 4 = 1 → p ∉ S → PrimeData p`, whose
 `p % 4 = 1` argument is likewise an explicit arrow; a `Fact` would force
@@ -35,7 +35,7 @@ condition of the whole structure and is not consumed by any individual field
 type.
 
 Paper statements quoted below: §2.1, Lemma 3.1, Definition 3.2,
-Remark 3.4, Lemma 2.3, §7.1.
+Remark 3.4, Lemma 2.2, §7.1.
 -/
 
 open PowerSeries
@@ -45,13 +45,13 @@ namespace FinShaRank2
 /-- **Analytic data at a split prime `p`.**
 
 The Mazur–Tate–Teitelbaum p-adic L-function of the testbed curve together with
-the classical facts about it consumed by Lemma 3.1 and Lemma 2.3. The
+the classical facts about it consumed by Lemma 3.1 and Lemma 2.2. The
 split hypothesis `hsplit : p % 4 = 1` is the paper's standing assumption on `p`
 (splitness in `K = ℚ(i)`); see the module docstring for the binder rationale.
 
 SOURCE: Mazur–Tate–Teitelbaum, Invent. math. 84 (1986), 1–48; Stein–Wuthrich,
 Math. Comp. 82 (2013), no. 283, 1757–1792.
-PAPER:  §2.1 (`ssec:notation`), Lemma 3.1 (`lem:c0c1`), Lemma 2.3 (`lem:noanomalous`).
+PAPER:  §2.1 (`ssec:notation`), Lemma 3.1 (`lem:c0c1`), Lemma 2.2 (`lem:noanomalous`).
 STATUS: interface aggregate (per-field SOURCE/PAPER/STATUS below). -/
 structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
   /-- The MTT p-adic L-function `L_p(E, T) ∈ Λ = ℤ_[p]⟦X⟧` of the testbed curve,
@@ -151,19 +151,19 @@ structure AnalyticData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) where
   multiplication gives `a_p = π + π̄ = 2·Re(π)` for a generator `π` of the prime
   `𝔭 = (π)` above `p`, with `N(π) = π π̄ = p`. Encoded as: there is a Gaussian
   integer `π` of norm `p` with `a_p = 2·Re(π)`. This yields `2 ∣ a_p` immediately
-  (witness `⟨π.re, ·⟩`), the arithmetic input to Lemma 2.3.
+  (witness `⟨π.re, ·⟩`), the arithmetic input to Lemma 2.2.
 
   SOURCE: complex-multiplication theory (Deuring): `a_p = π + π̄`, `p = π π̄` in
           `ℤ[i]`.
-  PAPER:  Lemma 2.3 (`lem:noanomalous`) (`a_p ∈ 2ℤ`).
+  PAPER:  Lemma 2.2 (`lem:noanomalous`) (`a_p ∈ 2ℤ`).
   STATUS: classical. -/
   ap_from_CM : ∃ π : GaussianInt, π.norm = (p : ℤ) ∧ ap = 2 * π.re
   /-- **Hasse bound** `a_p² ≤ 4p` (equivalently `|a_p| ≤ 2√p`). Together with the
-  evenness from `ap_from_CM` this drives the Hasse squeeze of Lemma 2.3
+  evenness from `ap_from_CM` this drives the Hasse squeeze of Lemma 2.2
   ruling out anomalous primes (`a_p ≢ 1 mod p`).
 
   SOURCE: Hasse bound on the Frobenius trace of an elliptic curve over `𝔽_p`.
-  PAPER:  Lemma 2.3 (`lem:noanomalous`) (Hasse-bound step).
+  PAPER:  Lemma 2.2 (`lem:noanomalous`) (Hasse-bound step).
   STATUS: classical. -/
   hasse : ap ^ 2 ≤ 4 * (p : ℤ)
 

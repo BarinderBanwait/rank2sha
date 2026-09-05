@@ -17,14 +17,15 @@ meaning the value is sum_i d_i * p^(v+i) + O(p^prec), and checks:
       This is the "two implementations agreeing digit for digit" of the control
       on the normalisation at the end of ssec:scan.
   C2  Reg_p vs the explicit 2x2 Gram determinant of E.padic_height on the
-      Mordell-Weil basis P1 = (8,8), P2 = (9,15) of tab:testbed. Saturation
-      check.
-  C3  height side (1-alpha^-1)^2 Reg_p / log_p(1+p)^2: PARI vs Sage.
+      saturated Mordell-Weil basis. Saturation check.
+  C3  height side (1-alpha^-1)^2 (prod_v c_v/#E(Q)_tors^2) Reg_p /
+      log_p(1+p)^2: PARI vs Sage.
   C4  a_p: PARI ellap vs Sage E.ap.
   C5  the two sides of eq:padicbsd -- height side vs L-side (modular symbols):
       equal valuation and equal digits over the full precision of the L-side.
-  C6  the L-side certificate itself: v_p(c_2(p)) = 0, hence (with lem:c0c1)
-      lambda_an = 2 and mu_an = 0.
+  C6  the L-side certificate itself: v_p(c_2(p)) = EXPECT_V, which is 0 at
+      every prime where the unit condition holds; set the environment variable
+      EXPECT_V to the expected valuation at a prime where it fails.
   C7  cross-check against an LMFDB table of Iwasawa invariants, if one is
       given. LMFDB is corroboration only; a MISMATCH here is a stop-the-line
       event. The check is skipped when no table is given or the named file is
@@ -33,6 +34,7 @@ meaning the value is sum_i d_i * p^(v+i) + O(p^prec), and checks:
 Exit status 0 iff every check passes.
 
 Usage:  python3 check_agreement.py <p> <cert_file> [lmfdb_file]
+        EXPECT_V=<v>  the expected v_p(c_2(p)) of C6, default 0
 """
 import os
 import re
@@ -41,6 +43,7 @@ import sys
 p = int(sys.argv[1])
 path = sys.argv[2]
 lmfdb_path = sys.argv[3] if len(sys.argv) > 3 else None
+expect_v = int(os.environ.get("EXPECT_V", "0"))
 
 LINE = re.compile(r"MACHINE\s+(\S+)\s+v=\s*(-?\d+)\s+prec=\s*(-?\d+)\s+digits=\[([^\]]*)\]")
 
@@ -87,7 +90,7 @@ def cmp_pair(t1, t2, label):
 
 cmp_pair("reg.pari", "reg.sage", "C1a Reg_p  PARI vs Sage")
 cmp_pair("reg.sage", "reg.cert", "C1b Reg_p  Sage vs certificates.sage")
-cmp_pair("reg.sage", "gram.sage", "C2  Reg_p  vs Gram det on (8,8),(9,15)")
+cmp_pair("reg.sage", "gram.sage", "C2  Reg_p  vs Gram det on the MW basis")
 cmp_pair("hs.pari", "hs.sage", "C3a height side  PARI vs Sage")
 cmp_pair("hs.sage", "hs.cert", "C3b height side  Sage vs certificates.sage")
 cmp_pair("ap.pari", "ap.sage", "C4  a_p  PARI vs Sage")
@@ -112,13 +115,13 @@ else:
     fails.append("C5: no L-side certificate in %s" % path)
 
 # C6 -- the certificate
-label = "C6  certificate  v_p(c_2(p)) = 0"
+label = "C6  certificate  v_p(c_2(p)) = %d" % expect_v
 if "c2.modsym" in vals:
     vc, prc, dc = vals["c2.modsym"]
-    if vc == 0 and dc and dc[0] % p != 0:
+    if vc == expect_v and dc and dc[0] % p != 0:
         print("%-46s : PASS  leading digit %s, rigorous to O(%s^%s)" % (label, dc[0], p, prc))
     else:
-        fails.append("C6: v_p(c_2) = %s" % vc)
+        fails.append("C6: v_p(c_2) = %s, expected %s" % (vc, expect_v))
         print("%-46s : FAIL  v_p(c_2) = %s" % (label, vc))
 else:
     print("%-46s : FAIL  no c_2 certificate" % label)

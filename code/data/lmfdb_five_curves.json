@@ -1,0 +1,1454 @@
+{
+ "_about": "Rows pulled from the LMFDB (read-only PostgreSQL mirror, via the lmfdb MCP server) on 2026-09-05 for the five rank-two curves y^2 = x^3 - Dx of Coates--Liang--Sujatha (CLS2, Thm 1.3), D = -14, 17, -33, -34, -39, and the 2-isogenous curve y^2 = x^3 - 56x that the paper uses in place of D = -14.  Tables: ec_curvedata, ec_mwbsd (gens are projective triples), ec_localdata (one row per bad prime; root_number is the LOCAL root number, and the global root number is their product times -1 for the archimedean place), ec_iwasawa (iwdata: 'a' = additive; [lambda, mu] at good ordinary primes; [lambda+, lambda-, mu] at supersingular primes), ec_classdata (aplist = a_p for p < 100), ec_padic (val = valuation of the p-adic regulator of the isogeny class at precision 20, p < 100).  The LMFDB values are quoted in the paper and not recomputed, except where a script records its own recomputation.",
+ "curves": {
+  "-56": "12544.g1",
+  "14": "12544.g2",
+  "-17": "9248.c1",
+  "33": "69696.i2",
+  "34": "73984.d2",
+  "39": "48672.n2"
+ },
+ "ec_curvedata": [
+  {
+   "lmfdb_label": "9248.c1",
+   "Clabel": "9248g1",
+   "lmfdb_iso": "9248.c",
+   "Ciso": "9248g",
+   "ainvs": [
+    0,
+    0,
+    0,
+    -17,
+    0
+   ],
+   "conductor": 9248,
+   "cm": -4,
+   "rank": 2,
+   "analytic_rank": 2,
+   "regulator": "1.8567788824106906566401243649",
+   "torsion": 2,
+   "torsion_structure": [
+    2
+   ],
+   "bad_primes": [
+    2,
+    17
+   ],
+   "isogeny_degrees": [
+    1,
+    2
+   ],
+   "class_size": 2,
+   "class_deg": 2,
+   "sha": 1,
+   "sha_primes": [],
+   "nonmax_primes": [],
+   "optimality": 1,
+   "manin_constant": 1,
+   "signD": 1,
+   "degree": 1024,
+   "jinv": [
+    "1728",
+    "1"
+   ],
+   "absD": "314432",
+   "root_number_global": 1
+  },
+  {
+   "lmfdb_label": "12544.g1",
+   "Clabel": "12544b2",
+   "lmfdb_iso": "12544.g",
+   "Ciso": "12544b",
+   "ainvs": [
+    0,
+    0,
+    0,
+    -56,
+    0
+   ],
+   "conductor": 12544,
+   "cm": -4,
+   "rank": 2,
+   "analytic_rank": 2,
+   "regulator": "2.9674567984431839008589936532",
+   "torsion": 2,
+   "torsion_structure": [
+    2
+   ],
+   "bad_primes": [
+    2,
+    7
+   ],
+   "isogeny_degrees": [
+    1,
+    2
+   ],
+   "class_size": 2,
+   "class_deg": 2,
+   "sha": 1,
+   "sha_primes": [],
+   "nonmax_primes": [],
+   "optimality": 0,
+   "manin_constant": 1,
+   "signD": 1,
+   "degree": 2048,
+   "jinv": [
+    "1728",
+    "1"
+   ],
+   "absD": "11239424",
+   "root_number_global": 1
+  },
+  {
+   "lmfdb_label": "12544.g2",
+   "Clabel": "12544b1",
+   "lmfdb_iso": "12544.g",
+   "Ciso": "12544b",
+   "ainvs": [
+    0,
+    0,
+    0,
+    14,
+    0
+   ],
+   "conductor": 12544,
+   "cm": -4,
+   "rank": 2,
+   "analytic_rank": 2,
+   "regulator": "2.9674567984431839008589936532",
+   "torsion": 2,
+   "torsion_structure": [
+    2
+   ],
+   "bad_primes": [
+    2,
+    7
+   ],
+   "isogeny_degrees": [
+    1,
+    2
+   ],
+   "class_size": 2,
+   "class_deg": 2,
+   "sha": 1,
+   "sha_primes": [],
+   "nonmax_primes": [],
+   "optimality": 1,
+   "manin_constant": 1,
+   "signD": -1,
+   "degree": 1024,
+   "jinv": [
+    "1728",
+    "1"
+   ],
+   "absD": "175616",
+   "root_number_global": 1
+  },
+  {
+   "lmfdb_label": "48672.n2",
+   "Clabel": "48672i1",
+   "lmfdb_iso": "48672.n",
+   "Ciso": "48672i",
+   "ainvs": [
+    0,
+    0,
+    0,
+    39,
+    0
+   ],
+   "conductor": 48672,
+   "cm": -4,
+   "rank": 2,
+   "analytic_rank": 2,
+   "regulator": "2.9178431649936463423431710315",
+   "torsion": 2,
+   "torsion_structure": [
+    2
+   ],
+   "bad_primes": [
+    2,
+    3,
+    13
+   ],
+   "isogeny_degrees": [
+    1,
+    2
+   ],
+   "class_size": 2,
+   "class_deg": 2,
+   "sha": 1,
+   "sha_primes": [],
+   "nonmax_primes": [],
+   "optimality": 1,
+   "manin_constant": 1,
+   "signD": -1,
+   "degree": 6144,
+   "jinv": [
+    "1728",
+    "1"
+   ],
+   "absD": "3796416",
+   "root_number_global": 1
+  },
+  {
+   "lmfdb_label": "69696.i2",
+   "Clabel": "69696eb1",
+   "lmfdb_iso": "69696.i",
+   "Ciso": "69696eb",
+   "ainvs": [
+    0,
+    0,
+    0,
+    33,
+    0
+   ],
+   "conductor": 69696,
+   "cm": -4,
+   "rank": 2,
+   "analytic_rank": 2,
+   "regulator": "5.3220381358763085973033856918",
+   "torsion": 2,
+   "torsion_structure": [
+    2
+   ],
+   "bad_primes": [
+    2,
+    3,
+    11
+   ],
+   "isogeny_degrees": [
+    1,
+    2
+   ],
+   "class_size": 2,
+   "class_deg": 2,
+   "sha": 1,
+   "sha_primes": [],
+   "nonmax_primes": [],
+   "optimality": 1,
+   "manin_constant": 1,
+   "signD": -1,
+   "degree": 12288,
+   "jinv": [
+    "1728",
+    "1"
+   ],
+   "absD": "2299968",
+   "root_number_global": 1
+  },
+  {
+   "lmfdb_label": "73984.d2",
+   "Clabel": "73984m1",
+   "lmfdb_iso": "73984.d",
+   "Ciso": "73984m",
+   "ainvs": [
+    0,
+    0,
+    0,
+    34,
+    0
+   ],
+   "conductor": 73984,
+   "cm": -4,
+   "rank": 2,
+   "analytic_rank": 2,
+   "regulator": "5.8002639722532484966083768687",
+   "torsion": 2,
+   "torsion_structure": [
+    2
+   ],
+   "bad_primes": [
+    2,
+    17
+   ],
+   "isogeny_degrees": [
+    1,
+    2
+   ],
+   "class_size": 2,
+   "class_deg": 2,
+   "sha": 1,
+   "sha_primes": [],
+   "nonmax_primes": [],
+   "optimality": 1,
+   "manin_constant": 1,
+   "signD": -1,
+   "degree": 6144,
+   "jinv": [
+    "1728",
+    "1"
+   ],
+   "absD": "2515456",
+   "root_number_global": 1
+  }
+ ],
+ "ec_mwbsd": [
+  {
+   "lmfdb_label": "9248.c1",
+   "conductor": 9248,
+   "special_value": "4.7953484875913067603418868447446938014",
+   "real_period": "2.5826168818580144414211128472",
+   "area": "1.6674774896145033307120230299",
+   "sha_an": "1.0000000000000000000000000000",
+   "tamagawa_product": 4,
+   "ngens": 2,
+   "rank_bounds": [
+    2,
+    2
+   ],
+   "torsion_generators": [
+    [
+     "0",
+     "0",
+     "1"
+    ]
+   ],
+   "gens": [
+    [
+     "-1",
+     "4",
+     "1"
+    ],
+    [
+     "-4",
+     "2",
+     "1"
+    ]
+   ],
+   "heights": [
+    "1.1721830987006970106016415567",
+    "1.7550260161729507136324269270"
+   ]
+  },
+  {
+   "lmfdb_label": "12544.g1",
+   "conductor": 12544,
+   "special_value": "5.6886552394210405589625724936828370050",
+   "real_period": "1.9170136671932269741289333967",
+   "area": "0.91873535005140609737844453666",
+   "sha_an": "1.0000000000000000000000000000",
+   "tamagawa_product": 4,
+   "ngens": 2,
+   "rank_bounds": [
+    2,
+    2
+   ],
+   "torsion_generators": [
+    [
+     "0",
+     "0",
+     "1"
+    ]
+   ],
+   "gens": [
+    [
+     "8",
+     "8",
+     "1"
+    ],
+    [
+     "9",
+     "15",
+     "1"
+    ]
+   ],
+   "heights": [
+    "1.3685348573016726965806423919",
+    "2.4964763592872160731523256416"
+   ]
+  },
+  {
+   "lmfdb_label": "12544.g2",
+   "conductor": 12544,
+   "special_value": "5.6886552394210405589625724936828370050",
+   "real_period": "1.9170136671932269741289333967",
+   "area": "1.8374707001028121947568890733",
+   "sha_an": "1.0000000000000000000000000000",
+   "tamagawa_product": 4,
+   "ngens": 2,
+   "rank_bounds": [
+    2,
+    2
+   ],
+   "torsion_generators": [
+    [
+     "0",
+     "0",
+     "1"
+    ]
+   ],
+   "gens": [
+    [
+     "2",
+     "6",
+     "1"
+    ],
+    [
+     "18",
+     "78",
+     "1"
+    ]
+   ],
+   "heights": [
+    "1.2482381796436080365761628208",
+    "2.6450719155164229680888403997"
+   ]
+  },
+  {
+   "lmfdb_label": "48672.n2",
+   "conductor": 48672,
+   "special_value": "8.6593044012179375359158052385493005266",
+   "real_period": "1.4838536397546222008809521154",
+   "area": "1.1009108121065200596321171352",
+   "sha_an": "1.0000000000000000000000000000",
+   "tamagawa_product": 8,
+   "ngens": 2,
+   "rank_bounds": [
+    2,
+    2
+   ],
+   "torsion_generators": [
+    [
+     "0",
+     "0",
+     "1"
+    ]
+   ],
+   "gens": [
+    [
+     "3",
+     "12",
+     "1"
+    ],
+    [
+     "27",
+     "144",
+     "1"
+    ]
+   ],
+   "heights": [
+    "1.1818785875668304027045171222",
+    "2.5132944307111361193594136819"
+   ]
+  },
+  {
+   "lmfdb_label": "69696.i2",
+   "conductor": 69696,
+   "special_value": "8.2339213692237160764481927182279848095",
+   "real_period": "1.5471368597902665620431559209",
+   "area": "1.1968162314608434673844374934",
+   "sha_an": "1.0000000000000000000000000000",
+   "tamagawa_product": 4,
+   "ngens": 2,
+   "rank_bounds": [
+    2,
+    2
+   ],
+   "torsion_generators": [
+    [
+     "0",
+     "0",
+     "1"
+    ]
+   ],
+   "gens": [
+    [
+     "4",
+     "14",
+     "1"
+    ],
+    [
+     "16",
+     "68",
+     "1"
+    ]
+   ],
+   "heights": [
+    "2.1106614355875951821370012141",
+    "2.9532146504554453916533594636"
+   ]
+  },
+  {
+   "lmfdb_label": "73984.d2",
+   "conductor": 73984,
+   "special_value": "8.9070778411240789142082517302648978413",
+   "real_period": "1.5356331856158463331760077529",
+   "area": "1.1790846403823361787752773041",
+   "sha_an": "1.0000000000000000000000000000",
+   "tamagawa_product": 4,
+   "ngens": 2,
+   "rank_bounds": [
+    2,
+    2
+   ],
+   "torsion_generators": [
+    [
+     "0",
+     "0",
+     "1"
+    ]
+   ],
+   "gens": [
+    [
+     "8",
+     "28",
+     "1"
+    ],
+    [
+     "32",
+     "184",
+     "1"
+    ]
+   ],
+   "heights": [
+    "2.1126179861937079340375933705",
+    "3.2073507334215176867661938512"
+   ]
+  }
+ ],
+ "ec_localdata": [
+  {
+   "lmfdb_label": "9248.c1",
+   "prime": 2,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": -1,
+   "conductor_valuation": 5,
+   "discriminant_valuation": 6,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "9248.c1",
+   "prime": 17,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "12544.g1",
+   "prime": 2,
+   "tamagawa_number": 2,
+   "kodaira_symbol": -3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 8,
+   "discriminant_valuation": 15,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "12544.g1",
+   "prime": 7,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": -1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "12544.g2",
+   "prime": 2,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 8,
+   "discriminant_valuation": 9,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "12544.g2",
+   "prime": 7,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": -1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "48672.n2",
+   "prime": 2,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 5,
+   "discriminant_valuation": 6,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "48672.n2",
+   "prime": 3,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "48672.n2",
+   "prime": 13,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": -1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "69696.i2",
+   "prime": 2,
+   "tamagawa_number": 1,
+   "kodaira_symbol": 2,
+   "reduction_type": 0,
+   "root_number": -1,
+   "conductor_valuation": 6,
+   "discriminant_valuation": 6,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "69696.i2",
+   "prime": 3,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "69696.i2",
+   "prime": 11,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "73984.d2",
+   "prime": 2,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": -1,
+   "conductor_valuation": 8,
+   "discriminant_valuation": 9,
+   "j_denominator_valuation": 0
+  },
+  {
+   "lmfdb_label": "73984.d2",
+   "prime": 17,
+   "tamagawa_number": 2,
+   "kodaira_symbol": 3,
+   "reduction_type": 0,
+   "root_number": 1,
+   "conductor_valuation": 2,
+   "discriminant_valuation": 3,
+   "j_denominator_valuation": 0
+  }
+ ],
+ "ec_iwasawa": {
+  "9248.c1": {
+   "iwp0": 0,
+   "iwdata": {
+    "2": "a",
+    "3": [
+     4,
+     2,
+     0
+    ],
+    "5": [
+     2,
+     0
+    ],
+    "7": [
+     2,
+     2,
+     0
+    ],
+    "11": [
+     4,
+     2,
+     0
+    ],
+    "13": [
+     2,
+     0
+    ],
+    "17": "a",
+    "19": [
+     4,
+     2,
+     0
+    ],
+    "23": [
+     2,
+     2,
+     0
+    ],
+    "29": [
+     2,
+     0
+    ],
+    "31": [
+     2,
+     2,
+     0
+    ],
+    "37": [
+     2,
+     0
+    ],
+    "41": [
+     2,
+     0
+    ],
+    "43": [
+     2,
+     2,
+     0
+    ],
+    "47": [
+     2,
+     2,
+     0
+    ]
+   }
+  },
+  "12544.g1": {
+   "iwp0": 0,
+   "iwdata": {
+    "2": "a",
+    "3": [
+     2,
+     2,
+     0
+    ],
+    "5": [
+     2,
+     0
+    ],
+    "7": "a",
+    "11": [
+     2,
+     2,
+     0
+    ],
+    "13": [
+     2,
+     0
+    ],
+    "17": [
+     2,
+     0
+    ],
+    "19": [
+     2,
+     2,
+     0
+    ],
+    "23": [
+     2,
+     2,
+     0
+    ],
+    "29": [
+     2,
+     0
+    ],
+    "31": [
+     2,
+     2,
+     0
+    ],
+    "37": [
+     2,
+     0
+    ],
+    "41": [
+     2,
+     0
+    ],
+    "43": [
+     2,
+     2,
+     0
+    ],
+    "47": [
+     4,
+     2,
+     0
+    ]
+   }
+  },
+  "12544.g2": {
+   "iwp0": 0,
+   "iwdata": {
+    "2": "a",
+    "3": [
+     2,
+     2,
+     0
+    ],
+    "5": [
+     2,
+     0
+    ],
+    "7": "a",
+    "11": [
+     2,
+     2,
+     0
+    ],
+    "13": [
+     2,
+     0
+    ],
+    "17": [
+     2,
+     0
+    ],
+    "19": [
+     2,
+     2,
+     0
+    ],
+    "23": [
+     2,
+     2,
+     0
+    ],
+    "29": [
+     2,
+     0
+    ],
+    "31": [
+     2,
+     2,
+     0
+    ],
+    "37": [
+     2,
+     0
+    ],
+    "41": [
+     2,
+     0
+    ],
+    "43": [
+     2,
+     2,
+     0
+    ],
+    "47": [
+     4,
+     2,
+     0
+    ]
+   }
+  },
+  "48672.n2": {
+   "iwp0": 0,
+   "iwdata": {
+    "2": "a",
+    "3": "a",
+    "5": [
+     4,
+     0
+    ],
+    "7": [
+     2,
+     2,
+     0
+    ],
+    "11": [
+     2,
+     4,
+     0
+    ],
+    "13": "a",
+    "17": [
+     2,
+     0
+    ],
+    "19": [
+     2,
+     2,
+     0
+    ],
+    "23": [
+     2,
+     2,
+     0
+    ],
+    "29": [
+     2,
+     0
+    ],
+    "31": [
+     2,
+     2,
+     0
+    ],
+    "37": [
+     2,
+     0
+    ],
+    "41": [
+     2,
+     0
+    ],
+    "43": [
+     2,
+     2,
+     0
+    ],
+    "47": [
+     2,
+     2,
+     0
+    ]
+   }
+  },
+  "69696.i2": {
+   "iwp0": 0,
+   "iwdata": {
+    "2": "a",
+    "3": "a",
+    "5": [
+     2,
+     0
+    ],
+    "7": [
+     2,
+     2,
+     0
+    ],
+    "11": "a",
+    "13": [
+     2,
+     0
+    ],
+    "17": [
+     2,
+     0
+    ],
+    "19": [
+     2,
+     2,
+     0
+    ],
+    "23": [
+     2,
+     2,
+     0
+    ],
+    "29": [
+     2,
+     0
+    ],
+    "31": [
+     2,
+     2,
+     0
+    ],
+    "37": [
+     4,
+     0
+    ],
+    "41": [
+     2,
+     0
+    ],
+    "43": [
+     2,
+     2,
+     0
+    ],
+    "47": [
+     2,
+     2,
+     0
+    ]
+   }
+  },
+  "73984.d2": {
+   "iwp0": 0,
+   "iwdata": {
+    "2": "a",
+    "3": [
+     2,
+     2,
+     0
+    ],
+    "5": [
+     2,
+     0
+    ],
+    "7": [
+     2,
+     2,
+     0
+    ],
+    "11": [
+     4,
+     2,
+     0
+    ],
+    "13": [
+     2,
+     0
+    ],
+    "17": "a",
+    "19": [
+     2,
+     2,
+     0
+    ],
+    "23": [
+     2,
+     2,
+     0
+    ],
+    "29": [
+     2,
+     0
+    ],
+    "31": [
+     2,
+     2,
+     0
+    ],
+    "37": [
+     2,
+     0
+    ],
+    "41": [
+     2,
+     0
+    ],
+    "43": [
+     2,
+     2,
+     0
+    ],
+    "47": [
+     4,
+     2,
+     0
+    ]
+   }
+  }
+ },
+ "ec_classdata": [
+  {
+   "lmfdb_iso": "9248.c",
+   "conductor": 9248,
+   "class_size": 2,
+   "class_deg": 2,
+   "isogeny_matrix": [
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "aplist": [
+    0,
+    0,
+    -4,
+    0,
+    0,
+    -6,
+    0,
+    0,
+    0,
+    -4,
+    0,
+    -12,
+    -8,
+    0,
+    0,
+    -14,
+    0,
+    -12,
+    0,
+    0,
+    -16,
+    0,
+    0,
+    -10,
+    8
+   ],
+   "anlist": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    -4,
+    0,
+    0,
+    0,
+    -3,
+    0,
+    0,
+    0,
+    -6,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "lmfdb_iso": "12544.g",
+   "conductor": 12544,
+   "class_size": 2,
+   "class_deg": 2,
+   "isogeny_matrix": [
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "aplist": [
+    0,
+    0,
+    -2,
+    0,
+    0,
+    -6,
+    -8,
+    0,
+    0,
+    4,
+    0,
+    -12,
+    -8,
+    0,
+    0,
+    -4,
+    0,
+    -10,
+    0,
+    0,
+    -16,
+    0,
+    0,
+    -16,
+    8
+   ],
+   "anlist": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    -2,
+    0,
+    0,
+    0,
+    -3,
+    0,
+    0,
+    0,
+    -6,
+    0,
+    0,
+    0,
+    -8,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "lmfdb_iso": "48672.n",
+   "conductor": 48672,
+   "class_size": 2,
+   "class_deg": 2,
+   "isogeny_matrix": [
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "aplist": [
+    0,
+    0,
+    -2,
+    0,
+    0,
+    0,
+    -8,
+    0,
+    0,
+    -4,
+    0,
+    -12,
+    -10,
+    0,
+    0,
+    4,
+    0,
+    -10,
+    0,
+    0,
+    -16,
+    0,
+    0,
+    10,
+    -8
+   ],
+   "anlist": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    -2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    -8,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "lmfdb_iso": "69696.i",
+   "conductor": 69696,
+   "class_size": 2,
+   "class_deg": 2,
+   "isogeny_matrix": [
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "aplist": [
+    0,
+    0,
+    -4,
+    0,
+    0,
+    -4,
+    2,
+    0,
+    0,
+    -10,
+    0,
+    2,
+    -10,
+    0,
+    0,
+    -4,
+    0,
+    -12,
+    0,
+    0,
+    -16,
+    0,
+    0,
+    -16,
+    18
+   ],
+   "anlist": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    -4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    -4,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "lmfdb_iso": "73984.d",
+   "conductor": 73984,
+   "class_size": 2,
+   "class_deg": 2,
+   "isogeny_matrix": [
+    [
+     1,
+     2
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "aplist": [
+    0,
+    0,
+    -2,
+    0,
+    0,
+    -4,
+    0,
+    0,
+    0,
+    -10,
+    0,
+    2,
+    8,
+    0,
+    0,
+    -4,
+    0,
+    10,
+    0,
+    0,
+    -16,
+    0,
+    0,
+    -10,
+    -8
+   ],
+   "anlist": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    -2,
+    0,
+    0,
+    0,
+    -3,
+    0,
+    0,
+    0,
+    -4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "ec_padic_val": {
+  "9248.c": {
+   "5": 0,
+   "13": 2,
+   "29": 2,
+   "37": 2,
+   "41": 2,
+   "53": 2,
+   "61": 2,
+   "73": 2,
+   "89": 2,
+   "97": 2
+  },
+  "12544.g": {
+   "5": 2,
+   "13": 2,
+   "17": 2,
+   "29": 2,
+   "37": 2,
+   "41": 2,
+   "53": 2,
+   "61": 2,
+   "73": 2,
+   "89": 2,
+   "97": 2
+  },
+  "48672.n": {
+   "5": 3,
+   "17": 2,
+   "29": 2,
+   "37": 2,
+   "41": 2,
+   "53": 2,
+   "61": 2,
+   "73": 2,
+   "89": 2,
+   "97": 2
+  },
+  "69696.i": {
+   "5": 0,
+   "13": 2,
+   "17": 2,
+   "29": 2,
+   "37": 3,
+   "41": 2,
+   "53": 2,
+   "61": 2,
+   "73": 2,
+   "89": 2,
+   "97": 2
+  },
+  "73984.d": {
+   "5": 2,
+   "13": 2,
+   "29": 2,
+   "37": 2,
+   "41": 2,
+   "53": 2,
+   "61": 2,
+   "73": 2,
+   "89": 2,
+   "97": 2
+  }
+ }
+}

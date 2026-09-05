@@ -214,7 +214,7 @@ noncomputable def setup (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1) : Setup p 
 
 `Setup` carries `1 ≤ a` and `2a < p`, so `2a − 1` lies strictly between `0` and
 `p` and cannot be divisible by `p`. This is the form `ClassicalInputs.notAnomalous`
-asks for — the `S_an` clause of (7) — and it is discharged from the toy data
+asks for — the `S_an` clause of (8) — and it is discharged from the toy data
 itself, with no change to the toy `a_p`.
 
 Used by both toy worlds: `ToyTrivial` and `ToySha` take the same `a_p = 2a`. -/

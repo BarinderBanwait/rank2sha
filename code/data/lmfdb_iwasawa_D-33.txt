@@ -1,0 +1,31 @@
+# lmfdb_iwasawa_D-33.txt -- Iwasawa invariants of E : y^2 = x^3 + 33x from the LMFDB
+# (curve 69696.i2, conductor 69696), in the form check C7 of code/sage/check_agreement.py reads.
+# Pulled from the LMFDB read-only mirror on 2026-09-05 (code/data/lmfdb_five_curves.json).
+#
+# THESE ARE ANALYTIC INVARIANTS OF L_p(E) AND CARRY NO STATED ERROR BOUNDS.
+# Corroboration only; what the paper cites is the recomputation in
+# code/data/cert_D-33_p<p>.out.  A disagreement is a stop-the-line event.
+#
+# At supersingular primes the LMFDB row is [lambda+, lambda-, mu]; the sign
+# convention has not been checked and nothing here depends on it.
+#
+# Columns: p  reduction  lambda  mu  split  ordinary_split   (add = bad prime [2, 3, 11])
+p   reduction  lambda  mu    split  ordinary_split
+2   add        -       -     -      no
+3   add        -       -     -      no
+5   ord        2       0     yes    yes
+7   ss         2,2     0,0   no     no
+11  add        -       -     -      no
+13  ord        2       0     yes    yes
+17  ord        2       0     yes    yes
+19  ss         2,2     0,0   no     no
+23  ss         2,2     0,0   no     no
+29  ord        2       0     yes    yes
+31  ss         2,2     0,0   no     no
+37  ord        4       0     yes    yes
+41  ord        2       0     yes    yes
+43  ss         2,2     0,0   no     no
+47  ss         2,2     0,0   no     no
+#
+# The split ordinary primes covered, with lambda: 5:2, 13:2, 17:2, 29:2, 37:4, 41:2
+# a_5 = -4  (anomalous at 5: 5 | #E(F_5) = 10)

@@ -9,7 +9,7 @@ The per-prime height layer of the assumption surface for
 rank-two CM elliptic curves*.
 
 `HeightData p` packages the **leading-term / p-adic BSD** side of the paper's
-normalisation dictionary (Proposition 4.2, (6)): the normalised
+normalisation dictionary (Proposition 4.2, (7)): the normalised
 cyclotomic p-adic regulator `Reg_γ`, the nondegeneracy predicate for the
 cyclotomic p-adic height pairing, and the Schneider/Perrin-Riou leading-term
 theorem (packaged as Stein–Wuthrich Thm 6.1) in the two consequence forms the
@@ -37,17 +37,17 @@ data-equations (a data-equation, not a bare proposition):
 
 * `c2norm` — the normalised second jet `c̃₂(p)`; `ClassicalInputs` imposes
   `c2norm = c2tilde (coeff 2 Lp : ℚ_[p]) alphaInv torsSqOverTam`.
-* `shaOrd` — the `#Ш(E/ℚ)[p^∞]` factor of (6), cast to `ℚ_[p]`; `ClassicalInputs`
+* `shaOrd` — the `#Ш(E/ℚ)[p^∞]` factor of (7), cast to `ℚ_[p]`; `ClassicalInputs`
   imposes `IsPUnit shaOrd ↔ Subsingleton SelmerData.ShaDual` (a p-power is a
   p-adic unit iff it is `1`).
 
-Paper statements quoted below: Proposition 4.2, (6), Lemma 3.5.
+Paper statements quoted below: Proposition 4.2, (7), Lemma 3.5.
 -/
 
 namespace FinShaRank2
 
 /-- **Height data at a split prime `p`** (paper Proposition 4.2,
-(6)).
+(7)).
 
 Bundles the height / p-adic-BSD side of the normalisation dictionary: the
 normalised cyclotomic p-adic regulator of the fixed rank-2 Mordell–Weil basis,
@@ -60,13 +60,13 @@ The two `ℚ_[p]` proxies `c2norm`, `shaOrd` decouple this layer from
 (see the module docstring). -/
 structure HeightData (p : ℕ) [Fact p.Prime] where
   /-- The **normalised cyclotomic p-adic regulator** `Reg_γ(E/ℚ)` of the fixed
-  rank-2 Mordell–Weil basis `{P₁, P₂}`, as it enters (6).
+  rank-2 Mordell–Weil basis `{P₁, P₂}`, as it enters (7).
 
   SOURCE: Mazur–Stein–Tate cyclotomic p-adic heights via the p-adic sigma
   function [B. Mazur, W. Stein and J. Tate, *Computation of p-adic heights and
   log convergence*, Doc. Math. (2006), Extra Vol.: John H. Coates' Sixtieth
   Birthday, 577–614].
-  PAPER: Proposition 4.2 (`prop:dictionary`)(2), (6) (`eq:padicbsd`) (the factor
+  PAPER: Proposition 4.2 (`prop:dictionary`)(2), (7) (`eq:padicbsd`) (the factor
   `Reg_p/log_p(1+p)²`).
   STATUS: data. -/
   Reg_γ : ℚ_[p]
@@ -80,23 +80,23 @@ structure HeightData (p : ℕ) [Fact p.Prime] where
   is nondegenerate").
   STATUS: opaque assumption. -/
   heightNondeg : Prop
-  /-- Proxy for the **`#Ш(E/ℚ)[p^∞]` order factor** of (6), realised
+  /-- Proxy for the **`#Ш(E/ℚ)[p^∞]` order factor** of (7), realised
   in `ℚ_[p]` (the group order — a power of `p` — cast to `ℚ_[p]`).
 
   Used only to phrase the leading-term consequence forms without referencing
   `SelmerData.ShaDual`; `PrimeData` (`ClassicalInputs`) imposes
   `IsPUnit shaOrd ↔ Subsingleton ShaDual` (a data-equation, not a bare proposition).
-  SOURCE: (6) (`eq:padicbsd`) (`#Ш(E/ℚ)[p^∞]` factor).
-  PAPER: Proposition 4.2 (`prop:dictionary`)(2), (6) (`eq:padicbsd`).
+  SOURCE: (7) (`eq:padicbsd`) (`#Ш(E/ℚ)[p^∞]` factor).
+  PAPER: Proposition 4.2 (`prop:dictionary`)(2), (7) (`eq:padicbsd`).
   STATUS: data (proxy; tied downstream). -/
   shaOrd : ℚ_[p]
   /-- Proxy for the **normalised second jet `c̃₂(p)`** predicted by the height
-  side of (6).
+  side of (7).
 
   `PrimeData` (`ClassicalInputs`) imposes `c2norm = c2tilde (coeff 2 Lp) alphaInv
   torsSqOverTam` (a data-equation, not a bare proposition), so the dictionary about the analytic jet
   follows from the dictionary about this proxy.
-  SOURCE: (6) (`eq:padicbsd`) (the height-side prediction of `c₂(p)`).
+  SOURCE: (7) (`eq:padicbsd`) (the height-side prediction of `c₂(p)`).
   PAPER: Definition 3.2 (`def:c2tilde`), Proposition 4.2 (`prop:dictionary`)(1).
   STATUS: data (proxy; tied downstream). -/
   c2norm : ℚ_[p]
@@ -117,10 +117,10 @@ structure HeightData (p : ℕ) [Fact p.Prime] where
   Paired with `reg_integral` this supplies the two nonnegative summands of the
   valuation split `v_p(c̃₂) = v_p(Reg_γ) + v_p(#Ш[p^∞])` that `prop_dictionary` collapses.
   SOURCE: `#Ш(E/ℚ)[p^∞]` is a positive integer (a power of `p`).
-  PAPER: (6) (`eq:padicbsd`).
+  PAPER: (7) (`eq:padicbsd`).
   STATUS: consequence-form (of the classical integrality). -/
   sha_integral : ‖shaOrd‖ ≤ 1
-  /-- **Leading-coefficient identity** ((6)), in the valuation form the
+  /-- **Leading-coefficient identity** ((7)), in the valuation form the
   proof of Proposition 4.2 extracts: `‖c2norm‖ = ‖Reg_γ‖ * ‖shaOrd‖`.
 
   This is the norm avatar of `c₂(p) = (1-α_p⁻¹)² · Reg_p/log_p(1+p)² ·
@@ -134,7 +134,7 @@ structure HeightData (p : ℕ) [Fact p.Prime] where
   their §3 onward; the paper cites Thm 6.1 for the normalisation only, the
   underlying Schneider / Perrin-Riou theorems applying to CM (main.tex,
   Proposition 4.2 proof).
-  PAPER: (6) (`eq:padicbsd`), Proposition 4.2 (`prop:dictionary`) proof.
+  PAPER: (7) (`eq:padicbsd`), Proposition 4.2 (`prop:dictionary`) proof.
   STATUS: consequence-form. -/
   spr_padicBSD : ‖c2norm‖ = ‖Reg_γ‖ * ‖shaOrd‖
   /-- **Leading-term dictionary** (the order-equality / nondegeneracy clause of

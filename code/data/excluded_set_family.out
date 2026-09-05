@@ -1,0 +1,112 @@
+### the excluded set S_E of eq:Sexc for the five curves y^2 = x^3 - D x
+pari version      : [2, 17, 2]
+field             : K = Q(i), d_K = -4
+isogeny degrees [1,2] quoted from ../data/lmfdb_five_curves.json (2026-09-05);
+supp(omega_E) empty (A = E, omega_E = 1), the paper's input to lem:comparison.
+
+=== D = 56   E : y^2 = x^3 - 56x   LMFDB 12544.g1 ===
+  conductor N       : 12544 = 2^8 * 7^2
+  local c_q         : [[2, 2], [7, 2]]   product 4
+  #E(Q)_tors        : 2
+  isogeny_degrees   : [1, 2]   (quoted; a rational p-isogeny only at p = 2)
+  Nm(f) = N/|d_K|   : 3136 = 2^6 * 7^2
+  f                 : (1+i)^6 * (7)   generator f_0 = 56
+  ideals of Z[i] of norm 3136 : 1   f is the conjugation-stable one
+  Nm(f) - 1         : 3135 = 3 * 5 * 11 * 19
+  S_bad             : {2, 3, 7}   from 6 N prod c_v #tors d_K = -2^14 * 3 * 7^2
+  S_an              : {}   a_5 = -2, #Etilde(F_5) = 8   (5 is not anomalous)
+  S_red             : {2}   from isogeny_degrees [1,2]: rhobar_{E,p} is irreducible at every odd p
+  S_cmp             : {2, 3, 7}   from 6 N Nm(f) = 2^15 * 3 * 7^4   union the quoted supp(omega_E) = {2,7}
+  S_cl              : {2, 3}   #Cl_f(K) = 384 = 2^7 * 3   structure [48, 4, 2]
+  S_E               : {2, 3, 7}
+  split primes in S_E                     : {}
+  of those, of good reduction             : {}
+  conj:EK guard #Cl_f(K) >= 6             : 1
+
+=== D = 17   E : y^2 = x^3 - 17x   LMFDB 9248.c1 ===
+  conductor N       : 9248 = 2^5 * 17^2
+  local c_q         : [[2, 2], [17, 2]]   product 4
+  #E(Q)_tors        : 2
+  isogeny_degrees   : [1, 2]   (quoted; a rational p-isogeny only at p = 2)
+  Nm(f) = N/|d_K|   : 2312 = 2^3 * 17^2
+  f                 : (1+i)^3 * (17)   generator f_0 = -34 + 34*I
+  ideals of Z[i] of norm 2312 : 3   f is the conjugation-stable one
+  Nm(f) - 1         : 2311 = 2311
+  S_bad             : {2, 3, 17}   from 6 N prod c_v #tors d_K = -2^11 * 3 * 17^2
+  S_an              : {5}   a_5 = -4, #Etilde(F_5) = 10   (5 is anomalous)
+  S_red             : {2}   from isogeny_degrees [1,2]: rhobar_{E,p} is irreducible at every odd p
+  S_cmp             : {2, 3, 17}   from 6 N Nm(f) = 2^9 * 3 * 17^4   union supp(omega_E) = {}
+  S_cl              : {2}   #Cl_f(K) = 256 = 2^8   structure [16, 16]
+  S_E               : {2, 3, 5, 17}
+  split primes in S_E                     : {5, 17}
+  of those, of good reduction             : {5}
+  conj:EK guard #Cl_f(K) >= 6             : 1
+
+=== D = -33   E : y^2 = x^3 - -33x   LMFDB 69696.i2 ===
+  conductor N       : 69696 = 2^6 * 3^2 * 11^2
+  local c_q         : [[2, 1], [3, 2], [11, 2]]   product 4
+  #E(Q)_tors        : 2
+  isogeny_degrees   : [1, 2]   (quoted; a rational p-isogeny only at p = 2)
+  Nm(f) = N/|d_K|   : 17424 = 2^4 * 3^2 * 11^2
+  f                 : (1+i)^4 * (33)   generator f_0 = 132
+  ideals of Z[i] of norm 17424 : 1   f is the conjugation-stable one
+  Nm(f) - 1         : 17423 = 7 * 19 * 131
+  S_bad             : {2, 3, 11}   from 6 N prod c_v #tors d_K = -2^12 * 3^3 * 11^2
+  S_an              : {5}   a_5 = -4, #Etilde(F_5) = 10   (5 is anomalous)
+  S_red             : {2}   from isogeny_degrees [1,2]: rhobar_{E,p} is irreducible at every odd p
+  S_cmp             : {2, 3, 11}   from 6 N Nm(f) = 2^11 * 3^5 * 11^4   union supp(omega_E) = {}
+  S_cl              : {2, 3, 5}   #Cl_f(K) = 1920 = 2^7 * 3 * 5   structure [120, 8, 2]
+  S_E               : {2, 3, 5, 11}
+  split primes in S_E                     : {5}
+  of those, of good reduction             : {5}
+  conj:EK guard #Cl_f(K) >= 6             : 1
+
+=== D = -34   E : y^2 = x^3 - -34x   LMFDB 73984.d2 ===
+  conductor N       : 73984 = 2^8 * 17^2
+  local c_q         : [[2, 2], [17, 2]]   product 4
+  #E(Q)_tors        : 2
+  isogeny_degrees   : [1, 2]   (quoted; a rational p-isogeny only at p = 2)
+  Nm(f) = N/|d_K|   : 18496 = 2^6 * 17^2
+  f                 : (1+i)^6 * (17)   generator f_0 = 136
+  ideals of Z[i] of norm 18496 : 3   f is the conjugation-stable one
+  Nm(f) - 1         : 18495 = 3^3 * 5 * 137
+  S_bad             : {2, 3, 17}   from 6 N prod c_v #tors d_K = -2^14 * 3 * 17^2
+  S_an              : {}   a_5 = -2, #Etilde(F_5) = 8   (5 is not anomalous)
+  S_red             : {2}   from isogeny_degrees [1,2]: rhobar_{E,p} is irreducible at every odd p
+  S_cmp             : {2, 3, 17}   from 6 N Nm(f) = 2^15 * 3 * 17^4   union supp(omega_E) = {}
+  S_cl              : {2}   #Cl_f(K) = 2048 = 2^11   structure [16, 16, 4, 2]
+  S_E               : {2, 3, 17}
+  split primes in S_E                     : {17}
+  of those, of good reduction             : {}
+  conj:EK guard #Cl_f(K) >= 6             : 1
+
+=== D = -39   E : y^2 = x^3 - -39x   LMFDB 48672.n2 ===
+  conductor N       : 48672 = 2^5 * 3^2 * 13^2
+  local c_q         : [[2, 2], [3, 2], [13, 2]]   product 8
+  #E(Q)_tors        : 2
+  isogeny_degrees   : [1, 2]   (quoted; a rational p-isogeny only at p = 2)
+  Nm(f) = N/|d_K|   : 12168 = 2^3 * 3^2 * 13^2
+  f                 : (1+i)^3 * (39)   generator f_0 = -78 + 78*I
+  ideals of Z[i] of norm 12168 : 3   f is the conjugation-stable one
+  Nm(f) - 1         : 12167 = 23^3
+  S_bad             : {2, 3, 13}   from 6 N prod c_v #tors d_K = -2^12 * 3^3 * 13^2
+  S_an              : {}   a_5 = -2, #Etilde(F_5) = 8   (5 is not anomalous)
+  S_red             : {2}   from isogeny_degrees [1,2]: rhobar_{E,p} is irreducible at every odd p
+  S_cmp             : {2, 3, 13}   from 6 N Nm(f) = 2^9 * 3^5 * 13^4   union supp(omega_E) = {}
+  S_cl              : {2, 3}   #Cl_f(K) = 1152 = 2^7 * 3^2   structure [24, 12, 4]
+  S_E               : {2, 3, 13}
+  split primes in S_E                     : {13}
+  of those, of good reduction             : {}
+  conj:EK guard #Cl_f(K) >= 6             : 1
+
+summary
+  D      S_E                     split primes in S_E   of good reduction
+  56     {2, 3, 7}            {}                 {}
+  17     {2, 3, 5, 17}            {5, 17}                 {5}
+  -33    {2, 3, 5, 11}            {5}                 {5}
+  -34    {2, 3, 17}            {17}                 {}
+  -39    {2, 3, 13}            {13}                 {}
+
+The split primes of bad reduction in S_E are excluded from the scan and from
+the p-adic BSD control as bad primes; the split primes of good reduction in
+S_E are the anomalous fives of lem:noanomalous.

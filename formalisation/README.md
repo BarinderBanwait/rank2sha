@@ -44,7 +44,7 @@ structure, and everything the paper deduces from them is machine-checked.
 What is assumed is visible in the source.
 
 **`ClassicalInputs`** (`Interface/Global.lean`) is the assumed classical
-material. Six fields: the excluded set `S` of (7); the Eisenstein–Kronecker
+material. Six fields: the excluded set `S` of (8); the Eisenstein–Kronecker
 package `ek`; the rational factor `torsSqOverTam` with its defining equation
 `torsSqOverTam_eq`; the per-prime bundle `dataAt`, which supplies a `PrimeData` at
 every split `p ∉ S`; and `notAnomalous`. `PrimeData` in turn aggregates five
@@ -225,11 +225,11 @@ confirms it. The status column takes five values:
 
 | Paper statement | Lean declaration(s) | File | Status |
 |---|---|---|---|
-| (6) | `HeightData.spr_padicBSD`, `HeightData.spr_nondeg` | `Interface/Heights.lean` | **interface field + citation** |
-| (7) | `ClassicalInputs.S`, `ClassicalInputs.notAnomalous` | `Interface/Global.lean` | data field + **interface field** |
-| (9) | `EKPackage.ι`, `EKPackage.D`, `EKPackage.D_nonempty` | `Interface/EK.lean` | data fields |
+| (7) | `HeightData.spr_padicBSD`, `HeightData.spr_nondeg` | `Interface/Heights.lean` | **interface field + citation** |
+| (8) | `ClassicalInputs.S`, `ClassicalInputs.notAnomalous` | `Interface/Global.lean` | data field + **interface field** |
+| (10) | `EKPackage.ι`, `EKPackage.D`, `EKPackage.D_nonempty` | `Interface/EK.lean` | data fields |
 | (11) | `EKPackage.r`; `jetIndex`, `jetIndex_image`, `jetIndex_injective` | `Interface/EK.lean` | data field + **kernel-proved** |
-| Lemma 2.3 | (2) `anomalous_iff_five`, `noAnomalous`, `ap_ne_one_of_hasse`, `two_dvd_ap` and two more; (1) — | `Kernel/Anomalous.lean` | (2) **kernel-proved**; (1) **no counterpart** |
+| Lemma 2.2 | (2) `anomalous_iff_five`, `noAnomalous`, `ap_ne_one_of_hasse`, `two_dvd_ap` and two more; (1) — | `Kernel/Anomalous.lean` | (2) **kernel-proved**; (1) **no counterpart** |
 | Lemma 3.1 | `c0_eq_zero`, `c1_eq_zero` | `Main/Lemma41.lean` | **kernel-proved** |
 | Definition 3.2 | `c2tilde`; `PrimeData.c2tilde` | `Defs.lean`; `Statements.lean` | formal def |
 | Proposition 3.3 | `isPUnit_c2tilde_iff`; `ClassicalInputs.isPUnit_one_sub_alphaInv` | `Kernel/Normalization.lean`; `Main/Consequence.lean` | **kernel-proved** |
@@ -249,7 +249,7 @@ confirms it. The status column takes five values:
 One difference changes what is established. Read it before concluding
 anything from a green audit.
 
-**Lemma 2.3(1) is not formalised.** It reduces to Deuring's reduction
+**Lemma 2.2(1) is not formalised.** It reduces to Deuring's reduction
 criterion, which mathlib does not have. Nothing depends on it: every statement in
 the project quantifies over split primes, where part (2) — which *is*
 kernel-proved, in the strengthened form the paper states — applies.
@@ -293,7 +293,7 @@ entails `Ш[p^∞] = 0`. It is a tripwire: strengthen an interface field until i
 does entail the conclusion, and this file stops compiling.
 
 One loose end you will meet in that file. `toySha_fails_c2_5_certificate` contains
-the seven leading 5-adic digits of `c₂(5)`, and identifies the datum that excludes
+the seven leading 5-adic digits of `c₂(4)`, and identifies the datum that excludes
 the anti-vacuity world. Those digits are this project's own computation,
 cross-checked by two independent implementations (PARI and Sage), and they
 correspond to no display in the paper; the lemma's docstring says so.

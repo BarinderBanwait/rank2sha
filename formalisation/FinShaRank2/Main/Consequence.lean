@@ -37,7 +37,7 @@ proof, which records that nothing in it assumes a conjecture.
 * `Ш(E/ℚ)[p^∞] = 0` ↦ `Subsingleton (…).selmer.ShaDual` (dual side).
 * "split prime `p ∉ S`" ↦ the binders `hsplit : p % 4 = 1` and `hpS : p ∉ H.S`.
   `hpS` now carries content: `ClassicalInputs.notAnomalous` is the `S_an` clause
-  of (7).
+  of (8).
 * "non-anomalous" is *not* an assumption of this theorem: it is `H.notAnomalous`
   at `p`, which is a clause of the definition of `S`.
 
@@ -53,7 +53,7 @@ Non-anomality is supplied by `ClassicalInputs.notAnomalous` at every split
 `Kernel.Anomalous.anomalous_iff_five` gives the clause unconditionally at every
 split `p ≥ 13`.
 
-Paper statements rendered here: Theorem A, Lemma 2.3, (7),
+Paper statements rendered here: Theorem A, Lemma 2.2, (8),
 Proposition 3.3.
 -/
 
@@ -62,14 +62,14 @@ open PowerSeries
 namespace FinShaRank2
 
 /-- **Non-anomality at a split prime `p ∉ S`, in the form Proposition 3.3
-consumes.** `ClassicalInputs.notAnomalous` is the `S_an` clause of (7),
+consumes.** `ClassicalInputs.notAnomalous` is the `S_an` clause of (8),
 stated as `a_p ≢ 1 (mod p)`; `Kernel.Anomalous.isPUnit_one_sub_alphaInv_iff`, fed
 the `AnalyticData` field `alpha_root`, converts it into the `p`-adic unit
 statement for the local factor `1 − α_p⁻¹`.
 
 This is the bridge that lets `prop_consequence` call
 `Kernel.Normalization.isPUnit_c2tilde_iff` with no residual `p = 5` hypothesis.
-PAPER: (7) (`eq:Sexc`) (`S_an`), Definition 2.2 (`def:anomalous`), Proposition 3.3
+PAPER: (8) (`eq:Sexc`) (`S_an`), Definition 2.1 (`def:anomalous`), Proposition 3.3
 (`prop:normalisation`). -/
 theorem ClassicalInputs.isPUnit_one_sub_alphaInv (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
     (hsplit : p % 4 = 1) (hpS : p ∉ H.S) :
@@ -113,7 +113,7 @@ theorem prop_consequence (H : ClassicalInputs) {p : ℕ} [Fact p.Prime]
       ∧ Subsingleton (H.dataAt p Fact.out hsplit hpS).selmer.ShaDual := by
   set D := H.dataAt p Fact.out hsplit hpS with hDdef
   -- **step 1** Proposition 3.3: the normalised jet is a unit iff `c₂` is.
-  --   Non-anomality comes from `H.notAnomalous`, the `S_an` clause of (7).
+  --   Non-anomality comes from `H.notAnomalous`, the `S_an` clause of (8).
   have step1 : IsUnit (coeff 2 D.analytic.Lp) :=
     (isPUnit_c2tilde_iff (coeff 2 D.analytic.Lp) _ H.torsSqOverTam
       (H.isPUnit_one_sub_alphaInv hsplit hpS) H.torsSqOverTam_eq).mp hc2

@@ -31,7 +31,7 @@ The argument has four gap-free pieces, matching the paper's proof:
   (`eq_five_or_thirteen_le`, `anomalous_iff_five`, the refactor). A prime
   `p ≡ 1 (mod 4)` is either `5` or at least `13`, since the residues `1` and `9`
   below `13` are not prime. Combining that with (i) gives part (2) of
-  Lemma 2.3 in the strengthened form the paper now states: for
+  Lemma 2.2 in the strengthened form the paper now states: for
   `p ≡ 1 (mod 4)` and `a` even with `a² ≤ 4p`, the prime is anomalous
   (`a ≡ 1 (mod p)`) if and only if `p = 5` and `a = −4`. `eq_five_or_thirteen_le`
   was moved here from `Kernel/Normalization.lean` (which imports this file, so it
@@ -52,7 +52,7 @@ local ring an element is a unit exactly when its residue is nonzero
 cancelling the unit `toZMod α` gives `toZMod α = (a : ZMod p)` directly, and the
 whole equivalence follows in the field `ZMod p`.
 
-## Descoped: part (1) of Lemma 2.3
+## Descoped: part (1) of Lemma 2.2
 
 Part (1) states that `p ≢ 1 (mod 4)` implies `p ∣ a_p`, hence that such a `p` is
 not anomalous. Its proof reduces to Deuring's reduction criterion: a prime inert
@@ -62,7 +62,7 @@ elliptic curve with complex multiplication, so part (1) is not formalised. The
 formalised statements above cover part (2), the split case, which is the case
 every downstream theorem uses.
 
-Paper statements: Lemma 2.3, Definition 3.2, Proposition 3.3.
+Paper statements: Lemma 2.2, Definition 3.2, Proposition 3.3.
 -/
 
 namespace FinShaRank2
@@ -186,7 +186,7 @@ class `1 mod 4` contains only `1` and `9`, neither of which is prime.
 
 This is exactly the disjunction `noAnomalous` consumes, so it is what turns the
 split hypothesis into the Hasse-squeeze / small-prime case split of
-Lemma 2.3. -/
+Lemma 2.2. -/
 theorem eq_five_or_thirteen_le {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) :
     p = 5 ∨ 13 ≤ p := by
   rcases Nat.lt_or_ge p 13 with hlt | hge
@@ -194,7 +194,7 @@ theorem eq_five_or_thirteen_le {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) :
     interval_cases p <;> first | omega | exact absurd hp (by norm_num)
   · exact Or.inr hge
 
-/-- **Lemma 2.3(2): anomality at a split prime happens only at `p = 5`.**
+/-- **Lemma 2.2(2): anomality at a split prime happens only at `p = 5`.**
 Let `p` be a prime with `p ≡ 1 (mod 4)` and let `a` be an even integer obeying
 the Hasse bound `a² ≤ 4p`. Then `a ≡ 1 (mod p)` holds if and only if `p = 5` and
 `a = −4`.
@@ -209,7 +209,7 @@ excludes `a = 1`; the only remaining value is `a = −4`. Backward: `−4 ≡ 1
 The trace of the testbed curve at `5` is `a₅ = −2` (see
 `neg_two_ne_one_zmod_five`), so the testbed is not the anomalous case.
 
-Part (1) of Lemma 2.3 — that `p ≢ 1 (mod 4)` implies `p ∣ a_p` — is not
+Part (1) of Lemma 2.2 — that `p ≢ 1 (mod 4)` implies `p ∣ a_p` — is not
 formalised; see the module docstring. -/
 theorem anomalous_iff_five {p : ℕ} (hp : p.Prime) (hsplit : p % 4 = 1) {a : ℤ}
     (heven : 2 ∣ a) (hhasse : a ^ 2 ≤ 4 * (p : ℤ)) :

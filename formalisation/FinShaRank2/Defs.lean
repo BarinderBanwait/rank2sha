@@ -116,7 +116,7 @@ theorem isPUnit_coe_iff {x : ℤ_[p]} : IsPUnit (x : ℚ_[p]) ↔ IsUnit x := by
 some coefficient of `f` is a `ℤ_[p]`-unit (equivalently, not every coefficient
 lies in the maximal ideal `(p)`). Paper: Theorem A (Theorem 3.8), Step 2.
 
-Kept **paired** with `lambdaAn` in downstream statements (conventions §2.5): the
+Kept **paired** with `lambdaAn` in downstream statements (conventions §2.4): the
 λ-invariant is meaningful only where `MuZero` holds. -/
 def MuZero (f : Λ p) : Prop := ∃ n, IsUnit (PowerSeries.coeff n f)
 
@@ -124,7 +124,7 @@ def MuZero (f : Λ p) : Prop := ∃ n, IsUnit (PowerSeries.coeff n f)
 `ℤ_[p]`-unit — i.e. the order of `f` modulo the maximal ideal, when `f ≠ 0` mod
 `(p)`.
 
-**Junk-value convention** (conventions §2.5): `sInf` of the empty set is `0`, so
+**Junk-value convention** (conventions §2.4): `sInf` of the empty set is `0`, so
 `lambdaAn f = 0` carries no information unless `MuZero f` holds. Statements must
 pair `lambdaAn f = 2` with `MuZero f`. The coefficient ring of `PowerSeries.coeff`
 is implicit in this mathlib release. -/
@@ -144,11 +144,11 @@ This file mentions no interface structure: `Interface/` supplies the arguments,
 and `isPUnit_c2tilde_iff` (Proposition 3.3) proves `IsPUnit (c2tilde …) ↔ IsUnit (coeff 2 L_p)`
 under the non-anomalous hypothesis.
 
-**Junk-value convention** (conventions §2.5): `c2tilde` is total. At an anomalous
+**Junk-value convention** (conventions §2.4): `c2tilde` is total. At an anomalous
 prime `1 − α_p⁻¹ = 0`, so `(1 − alphaInv)⁻¹ = 0` and the value degenerates; every
 theorem about `c2tilde` therefore carries the non-anomalous hypothesis
 `IsUnit (1 − alphaInv)` explicitly (for the testbed curve it is discharged via
-Lemma 2.3, `Kernel/Anomalous.lean`). -/
+Lemma 2.2, `Kernel/Anomalous.lean`). -/
 noncomputable def c2tilde (c2 alphaInv : ℚ_[p]) (torsSqOverTam : ℚ) : ℚ_[p] :=
   c2 * (1 - alphaInv)⁻¹ ^ 2 * (torsSqOverTam : ℚ_[p])
 

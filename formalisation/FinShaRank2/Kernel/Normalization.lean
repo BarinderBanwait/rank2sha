@@ -45,17 +45,17 @@ the multiplicative norm collapses the two extra factors, so
   adapter. Its `tors = 1` hypothesis is discharged by
   `ClassicalInputs.torsSqOverTam_eq`, and its `IsPUnit (1 − alphaInv)` hypothesis
   by `ClassicalInputs.isPUnit_one_sub_alphaInv` (`Main/Consequence.lean`) from
-  the `notAnomalous` field, the `S_an` clause of (7).
+  the `notAnomalous` field, the `S_an` clause of (8).
 * **The two `_of_split` lemmas are off that route.** They compose
   (B) with (A) and so carry the residual side condition `p = 5 → a = −2`, which
   the caller had to supply at `p = 5`; `notAnomalous` supplies non-anomality at
   every split `p ∉ S` instead. They are kept because (B) is the *proved*
-  Lemma 2.3(2) — it derives non-anomality from the Hasse bound and the CM
+  Lemma 2.2(2) — it derives non-anomality from the Hasse bound and the CM
   shape at every split `p ≥ 13`, which bounds what `notAnomalous` assumes beyond
   the proved lemma to the single value `a₅`.
 
 Paper statements quoted below: Proposition 3.3, Definition 3.2,
-Lemma 2.3.
+Lemma 2.2.
 -/
 
 open PowerSeries
@@ -65,7 +65,7 @@ namespace FinShaRank2
 /-! ### (A) Proposition 3.3 — the normalisation is invisible to the unit test -/
 
 /-- **Proposition 3.3.** At a non-anomalous prime (`IsPUnit (1 − α_p⁻¹)`,
-supplied by Lemma 2.3 / `Kernel/Anomalous.lean`) and with the testbed's rational factor
+supplied by Lemma 2.2 / `Kernel/Anomalous.lean`) and with the testbed's rational factor
 `(#tors)²/∏cᵥ = 1`, the normalised second jet is a `p`-adic unit exactly when the
 raw second jet is:
 `IsPUnit (c̃₂(p)) ↔ IsUnit (c₂(p))`.
@@ -104,14 +104,14 @@ The side condition `h5 : p = 5 → a = -2` is vacuous at every split prime `p �
 at `p = 5`.
 
 **Not on the route the main theorems take.** They obtain non-anomality from
-`ClassicalInputs.notAnomalous`, the `S_an` clause of (7), through
+`ClassicalInputs.notAnomalous`, the `S_an` clause of (8), through
 `ClassicalInputs.isPUnit_one_sub_alphaInv` (`Main/Consequence.lean`), and so carry
 no `p = 5` side condition. This lemma is what makes that assumption small: it
 proves the same conclusion outright at every split `p ≥ 13`, from the
 `AnalyticData` fields alone.
 
 Route: `eq_five_or_thirteen_le` supplies `noAnomalous`'s case split. PAPER:
-Lemma 2.3, Proposition 3.3. -/
+Lemma 2.2, Proposition 3.3. -/
 theorem isPUnit_one_sub_alphaInv_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α : ℤ_[p]ˣ}
     (hsplit : p % 4 = 1)
     (hasse : a ^ 2 ≤ 4 * (p : ℤ))
@@ -122,7 +122,7 @@ theorem isPUnit_one_sub_alphaInv_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α
   noAnomalous hasse ap_from_CM alpha_root
     ((eq_five_or_thirteen_le (Fact.out : p.Prime) hsplit).symm.imp_right fun h => ⟨h, h5 h⟩)
 
-/-- **Proposition 3.3 composed with Lemma 2.3(2).** The
+/-- **Proposition 3.3 composed with Lemma 2.2(2).** The
 composition of `isPUnit_one_sub_alphaInv_of_split` and `isPUnit_c2tilde_iff`:
 from the `AnalyticData` fields alone (plus `p = 5 → a = −2` and the pinned
 rational factor `torsSqOverTam = 1` of `ClassicalInputs.torsSqOverTam_eq`),
@@ -135,7 +135,7 @@ with `c̃₂(p)` in the mandatory double-coercion spelling
 
 Like `isPUnit_one_sub_alphaInv_of_split`, it is off the route the main theorems
 take; see that lemma's docstring. PAPER: Proposition 3.3,
-Definition 3.2, Lemma 2.3. -/
+Definition 3.2, Lemma 2.2. -/
 theorem isPUnit_c2tilde_iff_of_split {p : ℕ} [Fact p.Prime] {a : ℤ} {α : ℤ_[p]ˣ}
     (c2 : ℤ_[p]) (tors : ℚ)
     (hsplit : p % 4 = 1)

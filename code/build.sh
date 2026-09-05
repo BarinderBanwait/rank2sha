@@ -227,6 +227,20 @@ check_file data/scan_D-39.txt         "output of gp/scan_family.gp at D = -39 (e
 check_file data/family_checks.out     "output of gp/family_checks.gp"
 check_file data/family_crosscheck.out "output of sage/family_crosscheck.py"
 check_file data/e4_577.out "output of sage/e4_577.py, the 577-adic L-function of y^2 = x^3 + 34x"
+check_file data/lmfdb_five_curves.json "the LMFDB rows of the five curves, quoted in Section 7"
+check_file data/epsilon_family.out     "output of gp/epsilon_family.gp"
+check_file data/excluded_set_family.out "output of gp/excluded_set_family.gp"
+for d in 17 -33 -34 -39; do
+  check_file "data/lmfdb_iwasawa_D$d.txt" "input to sage/check_agreement.py, check C7, at D = $d"
+  check_file "data/m2_msd_D$d.out"        "output of sage/m2_msd_family.sage at D = $d"
+  check_file "data/m2_w1_D$d.out"         "output of gp/m2_w1_family.gp at D = $d"
+done
+for d in 56 17 -33 -34 -39; do
+  check_file "data/unit_ms_D$d.txt" "output of sage/unit_ms_family.py at D = $d"
+done
+for c in D17_p13 D17_p29 D-33_p13 D-33_p17 D-33_p37 D-34_p5 D-34_p13 D-39_p5 D-39_p17; do
+  check_file "data/cert_$c.out" "output of sage/run.sh at $(echo "$c" | tr '_' ' ')"
+done
 
 # ---------------------------------------------------------------------------
 head2 "4. Smoke test"
@@ -466,6 +480,49 @@ else
   skip "S12 sage/verify_family_scan.py on the four CLS scans" "no python3 or script not present"
 fi
 
+# S13 -- the excluded sets of the five curves, recomputed.
+if [ -n "$GP_BIN" ] && [ -f "$GPDIR/excluded_set_family.gp" ]; then
+  if (cd "$GPDIR" && OUT="$WORK/exc.out" "$GP_BIN" -q excluded_set_family.gp >"$WORK/e.txt" 2>&1) \
+     && grep -q "EXCLUDEDSETFAMILYDONE" "$WORK/e.txt"; then
+    pass "S13 gp/excluded_set_family.gp, the five S_E" \
+         "split primes of good reduction in S_E: $(awk '/of those, of good reduction/ {printf "%s ", $NF}' "$WORK/e.txt")"
+  else
+    fail "S13 gp/excluded_set_family.gp, the five S_E" ""
+    sed -n 's/^/      /p' "$WORK/e.txt" | tail -8
+  fi
+else
+  skip "S13 gp/excluded_set_family.gp, the five S_E" "no PARI/GP or script not present"
+fi
+
+# S14 -- the bracket at the failing prime (D, p) = (-39, 5): every gate passes
+# and v_p(B_alg) >= 3, against kappa(5) = 0 in data/m2_msd_D-39.out.
+if [ -n "$GP_BIN" ] && [ -f "$GPDIR/m2_w1_family.gp" ]; then
+  if (cd "$GPDIR" && D=-39 W1PRIMES=5 W1PREC=400 W1OUT="$WORK/b.out" \
+        "$GP_BIN" -q m2_w1_family.gp >"$WORK/b.txt" 2>&1) \
+     && grep -q "^M2W1DONE" "$WORK/b.txt"; then
+    pass "S14 gp/m2_w1_family.gp at D = -39, p = 5" \
+         "$(awk '/^ +v_p\(B_alg\) =/ {print $1, $2, $3}' "$WORK/b.txt"), gates $(awk '/^gates passed/ {print $4, $5, $6}' "$WORK/b.txt")"
+  else
+    fail "S14 gp/m2_w1_family.gp at D = -39, p = 5" ""
+    sed -n 's/^/      /p' "$WORK/b.txt" | grep -i "FAIL\|error" | head -8
+  fi
+else
+  skip "S14 gp/m2_w1_family.gp at D = -39, p = 5" "no PARI/GP or script not present"
+fi
+
+# S15 -- the modular-symbol unit condition against the scan and the LMFDB.
+if [ -n "$PY_BIN" ] && [ -f "$SAGEDIR/verify_unit_ms.py" ]; then
+  if (cd "$SAGEDIR" && python3 verify_unit_ms.py >"$WORK/u.txt" 2>&1); then
+    pass "S15 sage/verify_unit_ms.py on the five unit_ms files" \
+         "$(grep -c ": PASS" "$WORK/u.txt") checks pass, 0 fail"
+  else
+    fail "S15 sage/verify_unit_ms.py on the five unit_ms files" ""
+    sed -n 's/^/      /p' "$WORK/u.txt" | grep -i fail | head -8
+  fi
+else
+  skip "S15 sage/verify_unit_ms.py on the five unit_ms files" "no python3 or script not present"
+fi
+
 # ---------------------------------------------------------------------------
 head2 "5. Scripts not exercised here"
 # ---------------------------------------------------------------------------
@@ -479,7 +536,10 @@ for s in gp/scan.gp:"1611 primes, every split prime below 30000; produces data/a
          sage/family_crosscheck.py:"the Sage regulator at those primes and the eclib modular symbols at level 48672; produces data/family_crosscheck.out" \
          sage/e4_577.py:"the 577-adic L-function of y^2 = x^3 + 34x from eclib modular symbols, the case CLS2 left open; about a minute; produces data/e4_577.out" \
          gp/m2_w1.gp:"the bracket B(fp) of Section 6.8; 25 s at p = 5, 13, 17 and about 18 min at p = 29, 37 (W1PRIMES=29,37 W1PREC=600)" \
-         sage/m2_msd.sage:"kappa(p) at fourteen split primes, the modular-symbol side of Section 6.8; 3 minutes"; do
+         sage/m2_msd.sage:"kappa(p) at fourteen split primes, the modular-symbol side of Section 6.8; 3 minutes" \
+         gp/epsilon_family.gp:"the conductor, the divisor and the unit character of the five curves over the split primes below 10^6; about 5 s; produces data/epsilon_family.out" \
+         sage/m2_msd_family.sage:"kappa(p) per curve, read by gp/m2_w1_family.gp; seconds to a few minutes; produces data/m2_msd_D<D>.out" \
+         sage/unit_ms_family.py:"the unit condition at every split prime below 1000, one curve per run; about 15 minutes; produces data/unit_ms_D<D>.txt"; do
   name="${s%%:*}"; why="${s#*:}"
   if [ -f "$HERE/$name" ]; then
     info "$name  present, not run: $why"
@@ -494,12 +554,15 @@ EXTRA=""
 for f in "$GPDIR"/*.gp "$SAGEDIR"/*.sage "$SAGEDIR"/*.py "$SAGEDIR"/*.sh; do
   [ -e "$f" ] || continue
   case "${f#"$HERE"/}" in
+    *.sage.py) ;;                     # Sage's preparse artefact, not a script
     gp/regulator.gp|gp/scan.gp|gp/scan_family.gp) ;;
     gp/excluded_set.gp|gp/timings.gp|gp/epsilon_check.gp) ;;
     gp/m2_w1.gp|gp/family_checks.gp) ;;
+    gp/epsilon_family.gp|gp/excluded_set_family.gp|gp/m2_w1_family.gp) ;;
     sage/regulator.sage|sage/certificates.sage|sage/check_agreement.py|sage/run.sh) ;;
     sage/verify_scan.py|sage/null_model.py|sage/m2_msd.sage) ;;
     sage/family_crosscheck.py|sage/verify_family_scan.py|sage/e4_577.py) ;;
+    sage/m2_msd_family.sage|sage/unit_ms_family.py|sage/verify_unit_ms.py) ;;
     *) EXTRA="$EXTRA ${f#"$HERE"/}" ;;
   esac
 done

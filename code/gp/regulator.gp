@@ -1,45 +1,54 @@
-/* regulator.gp -- height side of eq:padicbsd for E: y^2 = x^3 - 56x, by PARI/GP.
+/* regulator.gp -- height side of eq:padicbsd for E: y^2 = x^3 - D x, by PARI/GP.
  *
  * The first of two independent implementations of Reg_p.  The second is
  * ../sage/regulator.sage, which uses Sage's padic_regulator.  The two supply
  * the "two implementations agreeing digit for digit" of the control on the
  * normalisation at the end of ssec:scan.
  *
- * Method: ellpadicregulator(E, p, n, G) on the Mordell-Weil basis of
- * tab:testbed; the unit root alpha of X^2 - a_p X + p by polrootspadic; the
- * quantity reported is (1-alpha^-1)^2 Reg_p / log_p(1+p)^2, which is the
- * right-hand side of eq:padicbsd with #Sha(E/Q)[p^oo] = 1.  That value of the
- * Sha factor is a theorem at every split p < 30000 (cor:shavanishing), not an
- * assumption.
+ * Method: ellpadicregulator(E, p, n, G) on the saturated Mordell-Weil basis;
+ * the unit root alpha of X^2 - a_p X + p by polrootspadic; the quantity
+ * reported is (1-alpha^-1)^2 (prod_v c_v / #E(Q)_tors^2) Reg_p / log_p(1+p)^2,
+ * which is the right-hand side of eq:padicbsd with #Sha(E/Q)[p^oo] = 1.  The
+ * normalising factor is 1 for four of the five curves and 2 for D = -39.  That
+ * value of the Sha factor is a theorem at every split p < 30000
+ * (cor:shavanishing), not an assumption.
  *
  * Parameters are read from the environment so that ../sage/run.sh can drive it:
  *   P       -- the prime
  *   NPREC   -- p-adic working precision (number of digits), default 14
+ *   D       -- the curve y^2 = x^3 - D x, default 56
+ *   G       -- the saturated Mordell-Weil basis, default [[8,8],[9,15]]
  *
  * Usage:  P=5 NPREC=14 gp -q regulator.gp
+ *         D=-39 G="[[3,12],[27,144]]" P=17 NPREC=14 gp -q regulator.gp
  */
 
 default(parisize, 1000000000);
 
 p = eval(getenv("P"));
-nstr = getenv("NPREC");
-n = if(nstr == "", 14, eval(nstr));
+getdef(name, dflt) = { my(s = getenv(name)); if(type(s) == "t_STR" && s != "", eval(s), dflt) };
+n = getdef("NPREC", 14);
+D = getdef("D", 56);
+G = getdef("G", [[8,8],[9,15]]);
 
 print("### PARI/GP height side");
 print("pari version      : ", version());
 print("p                 : ", p);
 print("working precision : O(p^", n, ")");
 
-E = ellinit([0,0,0,-56,0]);
-print("curve             : y^2 = x^3 - 56x   [0,0,0,-56,0]");
+E = ellinit([0,0,0,-D,0]);
+print("curve             : y^2 = x^3 - ", D, "x   [0,0,0,", -D, ",0]");
 print("conductor         : ", ellglobalred(E)[1]);
 print("discriminant      : ", E.disc);
-print("Tamagawa product  : ", ellglobalred(E)[4]);
+cprod = 1;
+{foreach(factor(ellglobalred(E)[1])[,1], q, cprod *= elllocalred(E,q)[4]);}
+print("Tamagawa product  : ", cprod);
 print("torsion order     : ", elltors(E)[1]);
 
-/* the saturated Mordell-Weil basis of tab:testbed */
-P1 = [8, 8];
-P2 = [9, 15];
+/* the saturated Mordell-Weil basis: tab:testbed for D = 56, and
+ * ../data/family_bases.txt for the other curves */
+P1 = G[1];
+P2 = G[2];
 print("MW basis          : ", P1, ", ", P2);
 print("on curve?         : ", ellisoncurve(E, P1), " ", ellisoncurve(E, P2));
 
@@ -72,8 +81,10 @@ print("log_p(1+p)        : ", lg);
 print("v_p(log_p(1+p))   : ", valuation(lg, p), "   (expected 1)");
 
 /* right-hand side of eq:padicbsd with Sha-factor 1 (cor:shavanishing) */
-hs = eul * reg / lg^2;
-print("HEIGHT SIDE       : (1-alpha^-1)^2 * Reg_p / log_p(1+p)^2 , Sha-factor 1");
+bsdfac = cprod/elltors(E)[1]^2;
+print("prod c_v/#tors^2  : ", bsdfac, "   (eq:padicbsd normalising factor)");
+hs = eul * bsdfac * reg / lg^2;
+print("HEIGHT SIDE       : (1-alpha^-1)^2 * (prod c_v/#tors^2) * Reg_p / log_p(1+p)^2 , Sha-factor 1");
 print("height side       : ", hs);
 print("v_p(height side)  : ", valuation(hs, p), "   (expected 0)");
 

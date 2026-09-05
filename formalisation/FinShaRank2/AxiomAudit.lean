@@ -48,7 +48,7 @@ rename tripwire. -/
 def auditedDecls : List Name :=
   -- core σ facts (Defs.lean)
   [``FinShaRank2.constantCoeff_σ, ``FinShaRank2.coeff_one_σ, ``FinShaRank2.hasSubst_σ,
-  -- anomalous-prime arithmetic (Lemma 2.3)
+  -- anomalous-prime arithmetic (Lemma 2.2)
    ``FinShaRank2.isUnit_one_sub_alphaInv_iff, ``FinShaRank2.isPUnit_one_sub_alphaInv_iff,
    ``FinShaRank2.ap_ne_one_of_hasse, ``FinShaRank2.neg_two_ne_one_zmod_five,
    ``FinShaRank2.two_dvd_ap, ``FinShaRank2.noAnomalous,
@@ -84,7 +84,7 @@ def auditedDecls : List Name :=
   -- THE HEADLINE THEOREMS
    ``FinShaRank2.c0_eq_zero, ``FinShaRank2.c1_eq_zero,
    ``FinShaRank2.prop_consequence, ``FinShaRank2.prop_dictionary,
-  -- the (7) non-anomality clause, bridged to Proposition 3.3
+  -- the (8) non-anomality clause, bridged to Proposition 3.3
    ``FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv,
   -- non-vacuity: ClassicalInputs is satisfiable, layer by layer
    ``FinShaRank2.Toy.toyAnalytic, ``FinShaRank2.Toy.toySelmer, ``FinShaRank2.Toy.toyIwasawa,
@@ -96,7 +96,7 @@ def auditedDecls : List Name :=
    ``FinShaRank2.ToySha, ``FinShaRank2.interface_does_not_force_sha_trivial,
    ``FinShaRank2.toySha_conclusions_fail, ``FinShaRank2.toySha_fails_c2_5_certificate,
    ``FinShaRank2.ToyTrivial,
-  -- anomalous primes at split p (Lemma 2.3(2))
+  -- anomalous primes at split p (Lemma 2.2(2))
    ``FinShaRank2.anomalous_iff_five,
   -- the Eisenstein–Kronecker package ((11))
    ``FinShaRank2.jetIndex_image, ``FinShaRank2.jetIndex_injective]

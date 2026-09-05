@@ -17,7 +17,7 @@ and the Shafarevich–Tate group of rank-two CM elliptic curves*.
 welds them together with the **definitional tie-equations** each layer leaves
 open, so that the layers can be read one at a time. `ClassicalInputs` then quantifies
 `PrimeData` over
-every split prime outside the excluded set (7), together with the global
+every split prime outside the excluded set (8), together with the global
 Eisenstein–Kronecker package `ek` and the rational datum `(#tors)²/∏cᵥ`.
 
 Nothing here is a global axiom: `ClassicalInputs` is a structure consumed as a
@@ -62,8 +62,8 @@ The standalone `HeightData` layer exposes two `ℚ_[p]` proxies (`c2norm`,
 so there is nothing to weld: a statement about it reads `H.ek` directly. The
 rational factor `torsSqOverTam` is a `PrimeData` parameter.
 
-Paper statements quoted below: (7), Definition 3.2, Proposition 4.2,
-(6), Definition 2.2, Theorem A (Theorem 3.8).
+Paper statements quoted below: (8), Definition 3.2, Proposition 4.2,
+(7), Definition 2.1, Theorem A (Theorem 3.8).
 -/
 
 open PowerSeries
@@ -88,7 +88,7 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   /-- The analytic layer: the MTT p-adic L-function `Lp` and its classical facts
   (`AnalyticData`, `AnalyticData`). Supplies the genuine `Lp : Λ p` reused by `iwasawa` and
   `katz`.
-  SOURCE: `AnalyticData` (`AnalyticData`). PAPER: Lemma 3.1 (`lem:c0c1`), Lemma 2.3
+  SOURCE: `AnalyticData` (`AnalyticData`). PAPER: Lemma 3.1 (`lem:c0c1`), Lemma 2.2
   (`lem:noanomalous`).
   STATUS: interface (see `AnalyticData`). -/
   analytic : AnalyticData p hsplit
@@ -106,7 +106,7 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   iwasawa : IwasawaData p analytic.Lp selmer.SelDual
   /-- The height / p-adic-BSD layer (`HeightData`, `KatzData`). Its `ℚ_[p]` proxies
   `c2norm`, `shaOrd` are tied to the genuine objects by `c2norm_tie`, `shaOrd_tie`.
-  SOURCE: `HeightData` (`KatzData`). PAPER: Proposition 4.2 (`prop:dictionary`), (6)
+  SOURCE: `HeightData` (`KatzData`). PAPER: Proposition 4.2 (`prop:dictionary`), (7)
   (`eq:padicbsd`).
   STATUS: interface (see `HeightData`). -/
   height : HeightData p
@@ -134,7 +134,7 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   c2norm_tie : height.c2norm
       = c2tilde ((PowerSeries.coeff 2 analytic.Lp : ℤ_[p]) : ℚ_[p])
           (((analytic.α : ℤ_[p]) : ℚ_[p])⁻¹) torsSqOverTam
-  /-- **Tie-equation for the Ш-order proxy** (`ClassicalInputs` mandate; (6)): the
+  /-- **Tie-equation for the Ш-order proxy** (`ClassicalInputs` mandate; (7)): the
   height-side proxy `shaOrd` is a p-adic unit exactly when the Selmer-dual Ш
   vanishes. Since `shaOrd` is the group order `#Ш(E/ℚ)[p^∞]` (a power of `p`) cast
   to `ℚ_[p]`, it is a p-adic unit iff it equals `1` iff `Ш[p^∞] = 0` iff
@@ -146,7 +146,7 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   theorem. `ToySha` (`ToySha`) stays constructible — a non-unit `shaOrd` with a
   nontrivial `ShaDual` satisfies this iff.
   SOURCE: proxy-meaning assignment tying the `KatzData` proxy to `SelmerData.ShaDual`.
-  PAPER:  (6) (`eq:padicbsd`) (`#Ш(E/ℚ)[p^∞]` factor).
+  PAPER:  (7) (`eq:padicbsd`) (`#Ш(E/ℚ)[p^∞]` factor).
   STATUS: data (definitional tie-equation; `KatzData` proxy-meaning, the
   conclusion-vocabulary ban exception). -/
   shaOrd_tie : IsPUnit height.shaOrd ↔ Subsingleton selmer.ShaDual
@@ -155,27 +155,27 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
 consumed by every headline theorem. It quantifies the
 per-prime bundle `PrimeData` over all split primes outside the excluded set,
 carries the global Eisenstein–Kronecker package, pins the rational factor of the
-normalisation, and records the non-anomality content of (7).
+normalisation, and records the non-anomality content of (8).
 
 No global axioms: this is an ordinary structure; the main theorems are literal
 implications `theorem … (H : ClassicalInputs) … : …`. No conjectural statement of
 the paper is a field of it.
 
-SOURCE: the paper's standing hypotheses ((7) (`eq:Sexc`); `#tors²/∏cᵥ = 1` for the
+SOURCE: the paper's standing hypotheses ((8) (`eq:Sexc`); `#tors²/∏cᵥ = 1` for the
         testbed; the Eisenstein–Kronecker data of the Bannai–Kobayashi jet).
-PAPER:  (7) (`eq:Sexc`), (9) (`eq:DEdef`), (11) (`eq:jetpackage`), Theorem A
+PAPER:  (8) (`eq:Sexc`), (10) (`eq:DEdef`), (11) (`eq:jetpackage`), Theorem A
 (Theorem 3.8, `prop:consequence`).
 STATUS: interface aggregate. -/
 structure ClassicalInputs where
-  /-- The **excluded set** `S ⊆ ℕ` of (7). Downstream code uses `p ∉ S`
+  /-- The **excluded set** `S ⊆ ℕ` of (8). Downstream code uses `p ∉ S`
   together with `notAnomalous` below; the five membership reasons are recorded
   here for the referee.
 
   A prime `p` lies in `S` iff at least one of:
   1. `S_bad`: `p ∣ 6N · ∏_v c_v · #E(ℚ)_tors · d_K` (bad-reduction / torsion /
      discriminant primes; here `N = 12544`, `∏c_v = 4`, `#tors = 2`, `d_K = -4`);
-  2. `S_an`: `p` is **anomalous**, `a_p ≡ 1 (mod p)` (Definition 2.2; for
-     `K = ℚ(i)` this excludes no split prime — Lemma 2.3);
+  2. `S_an`: `p` is **anomalous**, `a_p ≡ 1 (mod p)` (Definition 2.1; for
+     `K = ℚ(i)` this excludes no split prime — Lemma 2.2);
   3. `S_red`: the residual representation `ρ̄_{E,p}` is **reducible** (a rational
      `p`-isogeny exists — finitely many `p`, none for `p ∈ {5, 13}`);
   4. `S_cmp`: `p` lies in the finite set of Lemma 3.5 (where the comparison
@@ -185,14 +185,14 @@ structure ClassicalInputs where
      conductor `𝔣`.
 
   Only clause 2 has formal content downstream; it is carried by `notAnomalous`.
-  SOURCE: (7) (`eq:Sexc`) (explicit definition of `S` for the fixed curve `E`).
-  PAPER:  (7) (`eq:Sexc`); Theorem A (Theorem 3.8, `prop:consequence`) (quantifies over `p ∉ S`).
+  SOURCE: (8) (`eq:Sexc`) (explicit definition of `S` for the fixed curve `E`).
+  PAPER:  (8) (`eq:Sexc`); Theorem A (Theorem 3.8, `prop:consequence`) (quantifies over `p ∉ S`).
   STATUS: data. -/
   S : Finset ℕ
   /-- The **Eisenstein–Kronecker package** of the Bannai–Kobayashi jet: the divisor
-  `D_E` ((9)), the six-function package `𝓡_E` ((11)), and the valuations `v_𝔭`.
+  `D_E` ((10)), the six-function package `𝓡_E` ((11)), and the valuations `v_𝔭`.
   SOURCE: `EKPackage` (`Interface/EK.lean`); per-field citations live there.
-  PAPER:  (9) (`eq:DEdef`), (11) (`eq:jetpackage`), `def:BKjet`.
+  PAPER:  (10) (`eq:DEdef`), (11) (`eq:jetpackage`), `def:BKjet`.
   STATUS: data. -/
   ek : EKPackage
   /-- The global rational factor `(#E(ℚ)_tors)² / ∏_v c_v` of Definition 3.2,
@@ -220,19 +220,19 @@ structure ClassicalInputs where
   STATUS: interface aggregate. -/
   dataAt : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1), p ∉ S →
     @PrimeData p (Fact.mk hp) hsplit torsSqOverTam
-  /-- The `S_an` clause of (7): no prime outside `S` is anomalous. Stated
+  /-- The `S_an` clause of (8): no prime outside `S` is anomalous. Stated
   in the spelling of `Kernel/Anomalous.isUnit_one_sub_alphaInv_iff`, so it feeds
   that lemma with no adapter.
 
-  This is the one membership reason of (7) with formal content downstream.
+  This is the one membership reason of (8) with formal content downstream.
   Without it `p ∉ S` says nothing — `S` is opaque `Finset` data — and every
   headline theorem had to carry the curve-specific residual hypothesis
-  `p = 5 → a_p = −2` in its place. Lemma 2.3(2), formalised as
+  `p = 5 → a_p = −2` in its place. Lemma 2.2(2), formalised as
   `Kernel/Anomalous.anomalous_iff_five`, proves this clause outright at every
   split `p ≥ 13` and reduces it at `p = 5` to `a₅ ≠ −4`, so what is assumed here
   beyond the proved lemma is a single numerical value.
-  SOURCE: (7) (`eq:Sexc`) (`S_an`), Definition 2.2 (`def:anomalous`).
-  PAPER:  (7) (`eq:Sexc`), Definition 2.2 (`def:anomalous`), Lemma 2.3 (`lem:noanomalous`).
+  SOURCE: (8) (`eq:Sexc`) (`S_an`), Definition 2.1 (`def:anomalous`).
+  PAPER:  (8) (`eq:Sexc`), Definition 2.1 (`def:anomalous`), Lemma 2.2 (`lem:noanomalous`).
   STATUS: data (a clause of the definition of `S`). -/
   notAnomalous : ∀ (p : ℕ) (hp : p.Prime) (hsplit : p % 4 = 1) (hpS : p ∉ S),
     letI : Fact p.Prime := ⟨hp⟩

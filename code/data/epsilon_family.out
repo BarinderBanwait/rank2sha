@@ -1,0 +1,138 @@
+### the Grossencharacter conductor, the divisor D_E and the unit character eps
+pari version      : [2, 17, 2]
+field             : K = Q(i), d_K = -4, class number 1
+prime range       : split 5 <= p <= 1000000, p prime to Nm(f)
+LMFDB rows quoted from ../data/lmfdb_five_curves.json (pulled 2026-09-05)
+
+=== D = 56   E : y^2 = x^3 - 56x   LMFDB 12544.g1 ===
+  conductor N     : 12544 = 2^8 * 7^2
+  Nm(f) = N/4     : 3136 = 2^6 * 7^2   (m = 7 odd)
+  f               : (1+i)^6 * (7)   generator f_0 = 56
+  idealhnf(K,f_0) : [56, 0; 0, 56]   norm 3136
+  ideals of norm 3136 in Z[i] : 1   (the uniqueness shortcut is available only when that is 1)
+  root number w(E): 1
+  a_5             : -2   #Etilde(F_5) = 8   anomalous at 5: 0
+  conductor closed form   : PASS
+  split primes tested     : 39175   with no unique candidate: 0
+  conflicts mod f         : 0
+  eps != (D/.)_4^{-1} at  : 0
+  eps well defined mod f  : PASS
+  eps = (D/.)_4^{-1}      : PASS
+  classes of D_E          : 384   unreached by the prime range: 0
+  #Cl_f(K)                : 384 = 2^7 * 3   structure [48, 4, 2]
+  eps(conj g) != conj eps : 0
+  class count = #Cl_f(K)  : PASS
+  eps covers D_E          : PASS
+  eps conjugation         : PASS
+  saturated basis on file : none (../data/family_bases.txt covers D = 17, -33, -34, -39)
+  (0.80000000000000000000000000000000000000 s)
+
+=== D = 17   E : y^2 = x^3 - 17x   LMFDB 9248.c1 ===
+  conductor N     : 9248 = 2^5 * 17^2
+  Nm(f) = N/4     : 2312 = 2^3 * 17^2   (m = 17 odd)
+  f               : (1+i)^3 * (17)   generator f_0 = -34 + 34*I
+  idealhnf(K,f_0) : [68, 34; 0, 34]   norm 2312
+  ideals of norm 2312 in Z[i] : 3   (the uniqueness shortcut is available only when that is 1)
+  root number w(E): 1
+  a_5             : -4   #Etilde(F_5) = 10   anomalous at 5: 1
+  conductor closed form   : PASS
+  split primes tested     : 39174   with no unique candidate: 0
+  conflicts mod f         : 0
+  eps != (D/.)_4^{-1} at  : 0
+  eps well defined mod f  : PASS
+  eps = (D/.)_4^{-1}      : PASS
+  classes of D_E          : 256   unreached by the prime range: 0
+  #Cl_f(K)                : 256 = 2^8   structure [16, 16]
+  eps(conj g) != conj eps : 0
+  class count = #Cl_f(K)  : PASS
+  eps covers D_E          : PASS
+  eps conjugation         : PASS
+  LMFDB generators        : [[-1, 4], [-4, 2]]
+  saturated basis on file : [[-1, 4], [-4, -2]]
+  regulators              : 1.8567788824106906566401243649369485009 and 1.8567788824106906566401243649369485009
+  index of LMFDB gens     : 1
+  index is 1              : PASS
+  (0.80000000000000000000000000000000000000 s)
+
+=== D = -33   E : y^2 = x^3 - -33x   LMFDB 69696.i2 ===
+  conductor N     : 69696 = 2^6 * 3^2 * 11^2
+  Nm(f) = N/4     : 17424 = 2^4 * 33^2   (m = 33 odd)
+  f               : (1+i)^4 * (33)   generator f_0 = 132
+  idealhnf(K,f_0) : [132, 0; 0, 132]   norm 17424
+  ideals of norm 17424 in Z[i] : 1   (the uniqueness shortcut is available only when that is 1)
+  root number w(E): 1
+  a_5             : -4   #Etilde(F_5) = 10   anomalous at 5: 1
+  conductor closed form   : PASS
+  split primes tested     : 39175   with no unique candidate: 0
+  conflicts mod f         : 0
+  eps != (D/.)_4^{-1} at  : 0
+  eps well defined mod f  : PASS
+  eps = (D/.)_4^{-1}      : PASS
+  classes of D_E          : 1920   unreached by the prime range: 0
+  #Cl_f(K)                : 1920 = 2^7 * 3 * 5   structure [120, 8, 2]
+  eps(conj g) != conj eps : 0
+  class count = #Cl_f(K)  : PASS
+  eps covers D_E          : PASS
+  eps conjugation         : PASS
+  LMFDB generators        : [[4, 14], [16, 68]]
+  saturated basis on file : [[4, 14], [16, 68]]
+  regulators              : 5.3220381358763085973033856917550404815 and 5.3220381358763085973033856917550404815
+  index of LMFDB gens     : 1
+  index is 1              : PASS
+  (1.0000000000000000000000000000000000000 s)
+
+=== D = -34   E : y^2 = x^3 - -34x   LMFDB 73984.d2 ===
+  conductor N     : 73984 = 2^8 * 17^2
+  Nm(f) = N/4     : 18496 = 2^6 * 17^2   (m = 17 odd)
+  f               : (1+i)^6 * (17)   generator f_0 = 136
+  idealhnf(K,f_0) : [136, 0; 0, 136]   norm 18496
+  ideals of norm 18496 in Z[i] : 3   (the uniqueness shortcut is available only when that is 1)
+  root number w(E): 1
+  a_5             : -2   #Etilde(F_5) = 8   anomalous at 5: 0
+  conductor closed form   : PASS
+  split primes tested     : 39174   with no unique candidate: 0
+  conflicts mod f         : 0
+  eps != (D/.)_4^{-1} at  : 0
+  eps well defined mod f  : PASS
+  eps = (D/.)_4^{-1}      : PASS
+  classes of D_E          : 2048   unreached by the prime range: 0
+  #Cl_f(K)                : 2048 = 2^11   structure [16, 16, 4, 2]
+  eps(conj g) != conj eps : 0
+  class count = #Cl_f(K)  : PASS
+  eps covers D_E          : PASS
+  eps conjugation         : PASS
+  LMFDB generators        : [[8, 28], [32, 184]]
+  saturated basis on file : [[8, 28], [32, 184]]
+  regulators              : 5.8002639722532484966083768687228220644 and 5.8002639722532484966083768687228220644
+  index of LMFDB gens     : 1
+  index is 1              : PASS
+  (1.1000000000000000000000000000000000000 s)
+
+=== D = -39   E : y^2 = x^3 - -39x   LMFDB 48672.n2 ===
+  conductor N     : 48672 = 2^5 * 3^2 * 13^2
+  Nm(f) = N/4     : 12168 = 2^3 * 39^2   (m = 39 odd)
+  f               : (1+i)^3 * (39)   generator f_0 = -78 + 78*I
+  idealhnf(K,f_0) : [156, 78; 0, 78]   norm 12168
+  ideals of norm 12168 in Z[i] : 3   (the uniqueness shortcut is available only when that is 1)
+  root number w(E): 1
+  a_5             : -2   #Etilde(F_5) = 8   anomalous at 5: 0
+  conductor closed form   : PASS
+  split primes tested     : 39174   with no unique candidate: 0
+  conflicts mod f         : 0
+  eps != (D/.)_4^{-1} at  : 0
+  eps well defined mod f  : PASS
+  eps = (D/.)_4^{-1}      : PASS
+  classes of D_E          : 1152   unreached by the prime range: 0
+  #Cl_f(K)                : 1152 = 2^7 * 3^2   structure [24, 12, 4]
+  eps(conj g) != conj eps : 0
+  class count = #Cl_f(K)  : PASS
+  eps covers D_E          : PASS
+  eps conjugation         : PASS
+  LMFDB generators        : [[3, 12], [27, 144]]
+  saturated basis on file : [[3, 12], [27, 144]]
+  regulators              : 2.9178431649936463423431710315231030929 and 2.9178431649936463423431710315231030929
+  index of LMFDB gens     : 1
+  index is 1              : PASS
+  (0.90000000000000000000000000000000000000 s)
+
+checks passed     : 34 of 34
