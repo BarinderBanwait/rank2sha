@@ -16,6 +16,12 @@
 \\ the criterion class kappa(p) of the Mazur--Tate--Teitelbaum normalisation,
 \\ read from the output of sage/m2_msd_family.sage.  (W2) predicts
 \\ v_p(B_alg) = 2 exactly when kappa(p) != 0 and v_p(B_alg) >= 3 when it is 0.
+\\ It also checks the residue identity of the paper (cor:residue),
+\\     kappa(p) = (f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg   mod p,
+\\ where omega_E = Omega_E/Omega is 2 for D > 0 (two real components,
+\\ Omega = omega_1) and 1 - i for D < 0 (one component, Omega = omega_1 (1+i)/2),
+\\ embedded by i |-> i_p; the predicted kappa(p) is printed and gated against
+\\ the kappa(p) read from the modular-symbol side.
 \\
 \\ THE THREE THINGS THAT DEPEND ON THE CURVE
 \\  1. The Grossencharacter conductor.  N(f) = N/4 = 2^e m^2 with m odd, and f is
@@ -360,6 +366,9 @@ say(Str("kappa lines found : ", #KAPPA));
   my(B = E1*P1 - 2*E2*NF^(p-1)*P2 + E3*NF^(2*p-2)*P3);
   my(vB = valuation(B + O(p^8), p));
   my(kp = kapof(p), pred = if(kp < 0, -1, if(kp != 0, 2, 3)));
+  \\ the residue identity (cor:residue): f_0 omega_E through i |-> i_p
+  my(uK = (real(F0) + imag(F0)*ip) * if(D > 0, 2, 1 - ip), apv = ellap(E, p));
+  my(predk = lift(Mod(lift(B/p^2/uK/apv^2 + O(p)), p)));
   say("");
   say(Str("p = ", p, "   fp = (", fa, " + ", fb, "i)   i_p = ", ipm,
           "   eps(pi) = i^", ck, "   [labelling ", if(lab_ok,"OK","BAD"), "]"));
@@ -383,12 +392,16 @@ say(Str("kappa lines found : ", #KAPPA));
           "   predicted v_p(B_alg) = ", if(pred < 0, "n/a", if(pred == 2, "2 exactly", ">= 3")),
           "   -> ", if(pred < 0, "no comparison",
                        if((pred == 2 && vB == 2) || (pred == 3 && vB >= 3), "AGREE", "MISMATCH"))));
+  say(Str("   predicted kappa(p) = ", predk,
+          "   ((f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg mod p, f_0 omega_E mod p = ",
+          lift(uK + O(p)), ", a_p = ", apv, ")"));
   say(Str("   (", round((getabstime()-t0)/100)/10., " s)"));
   gate(Str("  p = ", p, " exactness   : "), ex && ht && cj && pi_ok && lab_ok);
   gate(Str("  p = ", p, " v>=2 (W1)   : "), vB >= 2);
   if(pred > 0, gate(Str("  p = ", p, " vs kappa(p) : "),
                     (pred == 2 && vB == 2) || (pred == 3 && vB >= 3)),
-     say(Str("  p = ", p, " vs kappa(p) : SKIPPED (no KAPPA line in ", KFILE, ")"))));}
+     say(Str("  p = ", p, " vs kappa(p) : SKIPPED (no KAPPA line in ", KFILE, ")")));
+  if(kp >= 0, gate(Str("  p = ", p, " residue     : "), predk == kp)));}
 
 say("");
 say(Str("gates passed      : ", NGATE, " of ", NGTOT));

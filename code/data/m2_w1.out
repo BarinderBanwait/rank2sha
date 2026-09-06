@@ -6,12 +6,12 @@ primes            : [5, 13, 17]
 classes of D_E    : 384
 384 classes      : PASS
 
---- gate: the fast slot routines against m2_katz.gp (full bivariate) ---
+--- gate: the fast slot routines against legacy/gp/m2_katz.gp (bivariate) ---
   14 reference class sums checked, mismatches: 0
 slot routines    : PASS
 
 --- B_alg per prime ---
-kappa(p) is read from m2_msd.out (MSD normalisation); (W2) predicts
+kappa(p) is read from ../data/m2_msd.out (MSD normalisation); (W2) predicts
 v_p(B_alg) = 2 exactly when kappa(p) != 0, and v_p(B_alg) >= 3 when it is 0.
 
 p = 5   fp = (-1 + 2i)   i_p = 3   eps(pi) = i^0   [labelling OK]
@@ -22,12 +22,14 @@ p = 5   fp = (-1 + 2i)   i_p = 3   eps(pi) = i^0   [labelling OK]
    E(2p-2,0) = 4 + 2*5 + 5^2 + O(5^3)    E(p-1,p-1) = 1 + O(5^3)
    term valuations : 2 2 2
    v_p(B_alg) = 2   B_alg = 5^2 + O(5^4)
-   p^{-2} B_alg mod p = 1     [alpha^{-2} mod p = 4]
+   p^{-2} B_alg mod p = 1     [alpha^2 mod p = 4]
    kappa(p) = 2   predicted v_p(B_alg) = 2 exactly   -> AGREE
+   predicted kappa(p) = 2   ((f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg mod p, f_0 omega_E = 112, a_p = -2)
    (2.200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 s)
   p = 5 exactness   : PASS
   p = 5 v>=2 (W1)   : PASS
   p = 5 vs kappa(p) : PASS
+  p = 5 residue     : PASS
 
 p = 13   fp = (3 + 2i)   i_p = 5   eps(pi) = i^2   [labelling OK]
    S[2p-2,0] = (68 digits)/1   residual 2^-1113
@@ -37,12 +39,14 @@ p = 13   fp = (3 + 2i)   i_p = 5   eps(pi) = i^2   [labelling OK]
    E(2p-2,0) = 12 + 10*13 + 4*13^2 + O(13^3)    E(p-1,p-1) = 1 + O(13^3)
    term valuations : 2 2 2
    v_p(B_alg) = 2   B_alg = 4*13^2 + 2*13^3 + O(13^4)
-   p^{-2} B_alg mod p = 4     [alpha^{-2} mod p = 10]
+   p^{-2} B_alg mod p = 4     [alpha^2 mod p = 10]
    kappa(p) = 2   predicted v_p(B_alg) = 2 exactly   -> AGREE
+   predicted kappa(p) = 2   ((f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg mod p, f_0 omega_E = 112, a_p = -6)
    (6.400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 s)
   p = 13 exactness   : PASS
   p = 13 v>=2 (W1)   : PASS
   p = 13 vs kappa(p) : PASS
+  p = 13 residue     : PASS
 
 p = 17   fp = (1 + 4i)   i_p = 4   eps(pi) = i^1   [labelling OK]
    S[2p-2,0] = (94 digits)/1   residual 2^-1027
@@ -52,11 +56,13 @@ p = 17   fp = (1 + 4i)   i_p = 4   eps(pi) = i^1   [labelling OK]
    E(2p-2,0) = 16 + 8*17 + 4*17^2 + O(17^3)    E(p-1,p-1) = 1 + O(17^3)
    term valuations : 2 2 2
    v_p(B_alg) = 2   B_alg = 12*17^2 + 5*17^3 + O(17^4)
-   p^{-2} B_alg mod p = 12     [alpha^{-2} mod p = 13]
+   p^{-2} B_alg mod p = 12     [alpha^2 mod p = 13]
    kappa(p) = 15   predicted v_p(B_alg) = 2 exactly   -> AGREE
-   (14.10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 s)
+   predicted kappa(p) = 15   ((f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg mod p, f_0 omega_E = 112, a_p = -8)
+   (14.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 s)
   p = 17 exactness   : PASS
   p = 17 v>=2 (W1)   : PASS
   p = 17 vs kappa(p) : PASS
+  p = 17 residue     : PASS
 
-gates passed      : 11 of 11
+gates passed      : 14 of 14

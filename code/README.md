@@ -182,7 +182,10 @@ $K = \mathbb{Q}(i)$; the run gates the conductor, the class count against
 `bnrinit`, the character $\varepsilon$ and its closed form, the quasi-period
 identity that fixes the period-lattice generator, the fast slot routines against
 a full bivariate expansion, and, for $D = 56$, the fourteen class sums of
-`gp/m2_w1.gp`.
+`gp/m2_w1.gp`. Both scripts also check the residue identity of the paper
+(Corollary `cor:residue`), $\kappa(p) = (f_0\omega_E)^{-1} a_p^{-2}\, p^{-2}B(\mathfrak{p})
+\bmod p$: the line `predicted kappa(p)` records the right-hand side, and the
+gate `residue` demands equality with the $\kappa(p)$ of the modular-symbol side.
 
 The modular-symbol side the bracket is checked against is
 

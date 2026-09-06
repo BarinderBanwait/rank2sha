@@ -25,6 +25,13 @@
 \\ and compares the vanishing against the independently computed MSD-normalised
 \\ criterion class kappa(p) of ../data/m2_msd.out.
 \\
+\\ THE RESIDUE GATE (paper, cor:residue)
+\\     kappa(p) = (f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg   mod p,
+\\ with f_0 = 56 the generator of the conductor and omega_E = Omega_E/Omega = 2
+\\ (two real components, Omega = omega_1), so f_0 omega_E = 112.  The script
+\\ prints this predicted kappa(p) and gates on its equality with the kappa(p)
+\\ of ../data/m2_msd.out.
+\\
 \\ INDEXING (SINNOT_C1A_NOTE section 3, SINNOT_W_NOTE (A))
 \\   c_{k,l}(t) = coefficient of z^k w^l/(k! l!) in Theta_{t,0}(z,w) - 1/w
 \\              = (-1)^{k+l} k! e*_{l,k+1}(t,0)/A^l ,
@@ -219,6 +226,9 @@ kapof(p) = { my(r = -1); for(j = 1, #KAPPA, if(KAPPA[j][1] == p, r = KAPPA[j][2]
   my(B = E1*v1 - 2*E2*NF^(p-1)*v2 + E3*NF^(2*p-2)*v3);
   my(vB = valuation(B + O(p^8), p));
   my(kp = kapof(p), pred = if(kp < 0, -1, if(kp != 0, 2, 3)));
+  \\ the residue identity (cor:residue): f_0 omega_E = 56 * 2 = 112
+  my(uK = 112, apv = ellap(E, p));
+  my(predk = lift(Mod(lift(B/p^2/uK/apv^2 + O(p)), p)));
   say("");
   say(Str("p = ", p, "   fp = (", fa, " + ", fb, "i)   i_p = ", ipm,
           "   eps(pi) = i^", ck, "   [labelling ", if(lab_ok,"OK","BAD"), "]"));
@@ -244,11 +254,15 @@ kapof(p) = { my(r = -1); for(j = 1, #KAPPA, if(KAPPA[j][1] == p, r = KAPPA[j][2]
           "   predicted v_p(B_alg) = ", if(pred < 0, "n/a", if(pred == 2, "2 exactly", ">= 3")),
           "   -> ", if(pred < 0, "no comparison",
                        if((pred == 2 && vB == 2) || (pred == 3 && vB >= 3), "AGREE", "MISMATCH"))));
+  say(Str("   predicted kappa(p) = ", predk,
+          "   ((f_0 omega_E)^{-1} a_p^{-2} p^{-2} B_alg mod p, f_0 omega_E = ", uK,
+          ", a_p = ", apv, ")"));
   say(Str("   (", round((getabstime()-t0)/100)/10., " s)"));
   gate(Str("  p = ", p, " exactness   : "), ex && ra && pi_ok && lab_ok);
   gate(Str("  p = ", p, " v>=2 (W1)   : "), vB >= 2);
   if(pred > 0, gate(Str("  p = ", p, " vs kappa(p) : "),
-                    (pred == 2 && vB == 2) || (pred == 3 && vB >= 3))));}
+                    (pred == 2 && vB == 2) || (pred == 3 && vB >= 3)));
+  if(kp >= 0, gate(Str("  p = ", p, " residue     : "), predk == kp)));}
 
 say("");
 say(Str("gates passed      : ", NGATE, " of ", NGTOT));
