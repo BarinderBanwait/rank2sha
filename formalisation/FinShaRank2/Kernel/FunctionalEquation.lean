@@ -21,8 +21,8 @@ so the ℤ_[p]-specialisation at the end phrases everything against the `σ` of
 
 * `coeff_one_subst_σR` (core sub-lemma): `coeff 1 (f.subst σ_R) = − coeff 1 f`
   for every `f`. Only the degree-`≤ 1` data of `f` and `σ_R` enters; the
-  `coeff 0 f = 0` side condition mentioned in the task board is **not needed**
-  for this half (see the module report), it is used only on the product side.
+  `coeff 0 f = 0` hypothesis is not needed for this half; it is used only on the
+  product side.
 * `coeff_one_eq_zero_of_functionalEquation` (ring-generic main theorem): if
   `constantCoeff U = 1`, `f.subst σ_R = U * f` and `coeff 0 f = 0`, then
   `coeff 1 f = 0`, provided `R` is 2-torsion-free.
@@ -33,7 +33,7 @@ so the ℤ_[p]-specialisation at the end phrases everything against the `σ` of
 ## 2-torsion-freeness
 
 The ring hypothesis is the explicit, referee-transparent spelling
-`∀ x : R, 2 • x = 0 → x = 0` (the first option offered by the task board). It is
+`∀ x : R, 2 • x = 0 → x = 0`. It is
 exactly what the final step needs — the functional equation forces
 `− coeff 1 f = coeff 1 f`, i.e. `2 • coeff 1 f = 0` — and is trivially true for
 `ℤ_[p]`, so it never surfaces in the specialisation.

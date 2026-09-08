@@ -34,7 +34,4 @@ lemmas they feed (`Kernel/`), Theorem A and the analytic-arithmetic dictionary
 Everything imported (transitively) from this module is audited by
 `scripts/audit.sh`: it must contain no incomplete proofs and use only the
 standard axioms `propext`, `Classical.choice`, `Quot.sound`.
-
-`FinShaRank2/Scratch/` is deliberately *not* imported here and is excluded
-from the audit.
 -/

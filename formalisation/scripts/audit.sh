@@ -4,8 +4,8 @@
 # Run from anywhere; operates on the Lake project containing this script.
 # Exits 0 iff ALL of:
 #   [1/3] `lake build` is green;
-#   [2/3] no sorry/admit anywhere in FinShaRank2.lean + FinShaRank2/
-#         (excluding FinShaRank2/Scratch/), modulo scripts/sorry-allowlist.txt;
+#   [2/3] no sorry/admit anywhere in FinShaRank2.lean + FinShaRank2/,
+#         modulo scripts/sorry-allowlist.txt;
 #   [3/3] the axiom gate FinShaRank2/AxiomAudit.lean elaborates cleanly
 #         (every audited decl uses only propext, Classical.choice, Quot.sound;
 #         this also catches native_decide via Lean.ofReduceBool).
@@ -27,10 +27,9 @@ else
 fi
 
 echo
-echo "=== [2/3] sorry/admit scan (FinShaRank2/, excluding Scratch/) ==="
+echo "=== [2/3] sorry/admit scan (FinShaRank2/) ==="
 ALLOWLIST="scripts/sorry-allowlist.txt"
-matches=$(grep -rnE --include='*.lean' '\b(sorry|admit)\b' FinShaRank2.lean FinShaRank2/ 2>/dev/null \
-            | grep -v '^FinShaRank2/Scratch/' || true)
+matches=$(grep -rnE --include='*.lean' '\b(sorry|admit)\b' FinShaRank2.lean FinShaRank2/ 2>/dev/null || true)
 
 if [ -n "$matches" ]; then
   while IFS= read -r m; do

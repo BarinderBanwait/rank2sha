@@ -2,9 +2,8 @@
 # m2_msd.sage -- the criterion class in the Mazur-Tate-Teitelbaum normalisation,
 # for E: y^2 = x^3 - 56x.
 # ---------------------------------------------------------------------------
-# Task C1a of project_management/SINNOT_HYPOTHESIS_PLAN.md.  Companion note:
-# project_management/SINNOT_C1A_NOTE.md.  Companion script: legacy/gp/m2_katz.gp, which
-# does the Katz side.
+# Companion script: ../gp/m2_w1.gp, the Eisenstein--Kronecker side, which gates
+# against the kappa(p) table this script writes.
 #
 # WHAT THIS COMPUTES
 #   c_2(p), the second Taylor coefficient of L_p(E,T), and the quantity

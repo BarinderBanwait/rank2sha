@@ -18,7 +18,7 @@ together with the fact — established upstream (`Kernel/TsqUnit.lean` and
 * `Subsingleton Sha` (i.e. `Ш(E/ℚ)[p^∞] = 0` on the dual side), and
 * `Module.finrank ℤ_[p] Sel = 2` (i.e. `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2`).
 
-## Proof route (Orzech property; `NOTES/MathlibAudit.md` §1.5, §4)
+## Proof route (Orzech property)
 
 The surjection `π : Sel ↠ ℤ_p^2` composed with a rank-two identification
 `e : Sel ≃ ℤ_p^2` gives a **surjective endomorphism** `π ∘ e⁻¹` of the finitely

@@ -1,14 +1,11 @@
-\\ m2_w1.gp -- the algebraic bracket of (W1)/(W2), for E: y^2 = x^3 - 56x.
+\\ m2_w1.gp -- the algebraic bracket B(fp) of the paper's eq:bracket, for
+\\ E: y^2 = x^3 - 56x, written B_alg below.
 \\ ---------------------------------------------------------------------------
-\\ Task C1b of project_management/SINNOT_HYPOTHESIS_PLAN.md, in the form task M1
-\\ gave it.  Companion notes: project_management/SINNOT_C1B_NOTE.md (this run),
-\\ SINNOT_W_NOTE.md (which proves (W1) and (W2)), SINNOT_C1A_NOTE.md (which
-\\ supplies the conventions and the dictionary this script reuses).  Companion
-\\ script: legacy/gp/m2_katz.gp, whose class sums the fast routines here reproduce.
-\\ Bannai--Kobayashi (BK) is cited in Duke numbering.
+\\ Companion script: ../sage/m2_msd.sage, the modular-symbol side kappa(p) that
+\\ this script gates against.  Bannai--Kobayashi (BK) is cited in Duke numbering.
 \\
 \\ WHAT THIS COMPUTES
-\\ SINNOT_W_NOTE.md (W2) states
+\\ Proposition prop:exactreduction of the paper states
 \\     c(fp) = kappa . Omega_p^{2p-2} . p^{-2} . B_alg   mod m_W,
 \\ with kappa and Omega_p^{2p-2} units of W and
 \\     B_alg = E(2p-2,0) (2p-2)!             P_{0,2p-1}
@@ -20,8 +17,7 @@
 \\ B_alg are units,
 \\     c(fp) != 0   <=>   v_p(B_alg) = 2 exactly.
 \\ No p-adic period enters: the same power Omega_p^{2p-2} multiplies all three
-\\ terms, which is why (W1) escapes the obstruction recorded in SINNOT_C1A_NOTE
-\\ section 8.  The script computes B_alg, reports v_p(B_alg) and p^{-2}B_alg mod p,
+\\ terms.  The script computes B_alg, reports v_p(B_alg) and p^{-2}B_alg mod p,
 \\ and compares the vanishing against the independently computed MSD-normalised
 \\ criterion class kappa(p) of ../data/m2_msd.out.
 \\
@@ -32,7 +28,7 @@
 \\ prints this predicted kappa(p) and gates on its equality with the kappa(p)
 \\ of ../data/m2_msd.out.
 \\
-\\ INDEXING (SINNOT_C1A_NOTE section 3, SINNOT_W_NOTE (A))
+\\ INDEXING
 \\   c_{k,l}(t) = coefficient of z^k w^l/(k! l!) in Theta_{t,0}(z,w) - 1/w
 \\              = (-1)^{k+l} k! e*_{l,k+1}(t,0)/A^l ,
 \\   S[k,l] := sum_g eps(g)^{-(k+l+1)} c_{k,l}(t_g) = (-1)^{k+l} k! P_{l,k+1} .
@@ -54,10 +50,10 @@
 \\   (k,l):  the w-recursion j Phi_j = sum_{m<=j} m X_m Phi_{j-m} on z-series of
 \\           length k+1, X_m = [w^m](L(z+w) - L(z) - l0(w) - w conj(t)/A).
 \\ The d_n come from the ODE wp'' = 6 wp^2 - g2/2.  Gate 1 below checks all three
-\\ routines against the 25 class sums legacy/gp/m2_katz.gp computes by full bivariate
+\\ routines against 25 class sums computed independently by full bivariate
 \\ expansion; they agree exactly, denominators included.
 \\
-\\ CONVENTIONS: those of legacy/gp/m2_katz.gp and numerics.tex, unchanged.  fp is labelled
+\\ CONVENTIONS: those of the paper's Section 5.  fp is labelled
 \\ as there: pi_gen = a + b*i primary with b > 0, fp := (pi_gen), iota_p fixed by
 \\ i |-> i_p with i_p = -a/b mod p, and psi_E(fp) = eps(pi_gen) pi_gen.
 \\
@@ -91,7 +87,7 @@ system(Str("rm -f ", TMP));
 say(s) = { print(s); write(TMP, s); };
 gate(name, ok) = { NGTOT++; if(ok, NGATE++); say(Str(name, if(ok, "PASS", "FAIL"))); };
 
-say("=== m2_w1.gp : the algebraic bracket B_alg of (W1)/(W2), task C1b ===");
+say("=== m2_w1.gp : the algebraic bracket B_alg of eq:bracket ===");
 say(Str("pari version      : ", version()));
 say("curve             : E : y^2 = x^3 - 56x   [0,0,0,-56,0],  ff = (56), N(ff) = 3136");
 say(Str("realprecision     : ", default(realprecision)));
@@ -166,9 +162,9 @@ rec(x) = {
   [re, im, if(err == 0, -oo, exponent(err))];
 };
 
-\\ --- gate: the fast routines reproduce legacy/gp/m2_katz.gp's class sums ------
+\\ --- gate: the fast routines reproduce a full bivariate expansion's class sums ---
 say("");
-say("--- gate: the fast slot routines against legacy/gp/m2_katz.gp (bivariate) ---");
+say("--- gate: the fast slot routines against a full bivariate expansion ---");
 {my(l0s = mkl0(11), SW = matrix(5,5), bad = 0);
  for(j = 1, NC,
    my(t = (CA[j] + CB[j]*I)*w1/56, ep = I^CK[j], de = mkde(t, 8));

@@ -1,4 +1,4 @@
-### the excluded set S_E of eq:Sexc, paper Section 5.1 (ssec:testbed)
+### the excluded set S_E of eq:Sexc, paper Section 7.1 (ssec:testbed)
 pari version      : [2, 17, 2]
 curve             : E : y^2 = x^3 - 56x   [0,0,0,-56,0]
 field             : K = Q(i), d_K = -4
@@ -17,7 +17,7 @@ the Grossencharacter conductor f, from N = |d_K| * Nm(f)
     ideal 1 : [56, 0; 0, 56]   norm 3136
   (56) in HNF       : [56, 0; 0, 56]
   unique ideal of norm 3136 equals (56) : 1
-  Nm(f) - 1         : 3135 = 3 * 5 * 11 * 19   (Section 6.4 check (iii): 3135 = 3 * 5 * 11 * 19)
+  Nm(f) - 1         : 3135 = 3 * 5 * 11 * 19   (3135 = 3 * 5 * 11 * 19)
 
 S_bad : the primes dividing 6N * prod_v c_v * #tors * d_K
   product           : -2408448 = -2^14 * 3 * 7^2   (paper: 2^14 * 3 * 7^2, up to sign)
@@ -31,7 +31,7 @@ S_an : the anomalous primes
   E  : 5 | #Etilde(F_5)? : 0   (0 = not anomalous)
   S_an              : {}   (paper: empty)
   The exception at p = 5 is not vacuous.  The counterexample of
-  Section 5.1 is E' : y^2 = x^3 + 3x.
+  Section 7.1 is E' : y^2 = x^3 + 3x.
   E' : j            : 1728   (1728: CM by Z[i])
   E' : discriminant : -1728 = -2^6 * 3^3
   E' : good reduction at 5? : 1
@@ -50,7 +50,7 @@ S_cmp : the set of lem:comparison: the primes dividing 6N * Nm(f),
         together with supp(omega_E)
   6N * Nm(f)        : 236027904 = 2^15 * 3 * 7^4   (paper: 2^15 * 3 * 7^4)
   its prime support : {2, 3, 7}
-  supp(omega_E)     : {2, 7}   (quoted from Section 5.1, not computed)
+  supp(omega_E)     : {2, 7}   (quoted from Section 7.1, not computed)
   S_cmp             : {2, 3, 7}   (paper: <= {2, 3, 7})
 
 S_cl : the primes dividing #Cl_f(K), the ray class group of K = Q(i)

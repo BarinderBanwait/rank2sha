@@ -5,14 +5,14 @@
 \\ pairing on the Mordell-Weil basis P1 = (8,8), P2 = (9,15), obtained from the
 \\ p-adic sigma function of Mazur-Stein-Tate through PARI's ellpadicregulator.
 \\
-\\ Backs: paper Section 5.3 (ssec:scan), the statement "1611 primes; zero
+\\ Backs: paper Section 7.4 (ssec:scan), the statement "1611 primes; zero
 \\ exceptions; zero escalations".  By Proposition prop:scaneq a prime with
 \\ v_fp(Reg_fp) = 2 and p < 30000 has tilde c_2(p) in Z_p^*, so the scanned
 \\ range is exactly the range in which the scan verifies.
 \\
-\\ Precision rule, verbatim from Section 5.3:
+\\ Precision rule, verbatim from Section 7.4:
 \\     n = 6  (p < 2000),  n = 5  (2000 <= p < 10^4),  n = 4  (p >= 10^4).
-\\ Escalation rule, verbatim from Section 5.3: if the computed valuation v
+\\ Escalation rule, verbatim from Section 7.4: if the computed valuation v
 \\ satisfies v >= n-1, recompute at precision n+4 and flag the output line
 \\ with " ESC", and with " MAXED" as well if v >= n-1 still.
 \\
@@ -58,7 +58,7 @@ LOG = getdef("LOG", "../data/scan.out");
 fileclose(fileopen(LOG, "w"));
 say(s) = {print(s); write(LOG, s)};
 
-say("### horizontal regulator scan, paper Section 5.3 (ssec:scan)");
+say("### horizontal regulator scan, paper Section 7.4 (ssec:scan)");
 say(Str("pari version      : ", version()));
 say("curve             : y^2 = x^3 - 56x   [0,0,0,-56,0]");
 say("MW basis          : (8,8), (9,15)");

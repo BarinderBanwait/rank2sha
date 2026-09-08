@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """verify_scan.py -- re-parse and re-verify the committed scan output.
 
-Backs the sentence of paper Section 5.3 (ssec:scan): "The output file was
+Backs the sentence of paper Section 7.4 (ssec:scan): "The output file was
 re-parsed and re-verified in preparing this paper, for primality, for
 p = 1 mod 4, for completeness of the range and for absence of flags."  It
 also checks the count and the range bound that Corollary cor:shavanishing
@@ -32,7 +32,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, os.pardir, "data")
 
-# The scanned range of Section 5.3: every split prime below the bound of
+# The scanned range of Section 7.4: every split prime below the bound of
 # cor:shavanishing.
 SCAN_LO = 5
 SHA_BOUND = 30000
@@ -106,9 +106,9 @@ def read_entries(path):
 
 
 def main():
-    say("### verification of the committed scan output, paper Section 5.3")
+    say("### verification of the committed scan output, paper Section 7.4")
     say("python            : %s" % sys.version.split()[0])
-    say("data directory    : %s" % os.path.normpath(DATA))
+    say("data directory    : %s" % os.path.relpath(DATA, HERE))
     say("sieve bound       : %d" % SHA_BOUND)
     say("")
 

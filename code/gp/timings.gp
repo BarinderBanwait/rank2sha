@@ -1,13 +1,13 @@
-\\ timings.gp -- the four per-prime timings quoted in paper Section 5.3.
+\\ timings.gp -- the four per-prime timings quoted in paper Section 7.4.
 \\ ---------------------------------------------------------------------------
-\\ Section 5.3 (ssec:scan) states: "Timings per prime were 5 ms at p = 101
+\\ Section 7.4 (ssec:scan) states: "Timings per prime were 5 ms at p = 101
 \\ (n = 6), 97 ms at p = 1009, 0.55 s at p = 5003 (n = 5) and 4.9 s at
 \\ p = 29989 (n = 4)."  This script measures those four calls, at those
 \\ precisions, on the Mordell-Weil basis P1 = (8,8), P2 = (9,15) of
 \\ tab:testbed, and prints the paper's value beside each measurement.
 \\
 \\ The precision at p = 1009 is not printed in that sentence; the precision
-\\ rule of Section 5.3 gives n = 6, since 1009 < 2000.
+\\ rule of Section 7.4 gives n = 6, since 1009 < 2000.
 \\
 \\ What is timed is one call to ellpadicregulator(E, p, n, G), the call the
 \\ scan makes.  Each is repeated three times on a freshly initialised curve,
@@ -16,7 +16,7 @@
 \\ ../data/all_primes_vreg.txt records.
 \\
 \\ Timings are hardware-dependent.  The paper's figures were measured on an
-\\ Apple M1 Pro (arm64), 16 GB RAM, with PARI/GP 2.17.2 (Section 1.8,
+\\ Apple M1 Pro (arm64), 16 GB RAM, with PARI/GP 2.17.2 (Section 1.6,
 \\ ssec:software).
 \\
 \\ Output: stdout and ../data/timings.out.
@@ -38,7 +38,7 @@ CASES = [[101, 6, "5 ms", 5], [1009, 6, "97 ms", 97], [5003, 5, "0.55 s", 550], 
 median3(v) = vecsort(v)[2];
 pad(s, w) = {my(t = Str(s)); while(#t < w, t = Str(" ", t)); t};
 
-say("### per-prime timings of ellpadicregulator, paper Section 5.3 (ssec:scan)");
+say("### per-prime timings of ellpadicregulator, paper Section 7.4 (ssec:scan)");
 say(Str("pari version      : ", version()));
 say("curve             : y^2 = x^3 - 56x   [0,0,0,-56,0]");
 say("MW basis          : (8,8), (9,15)");

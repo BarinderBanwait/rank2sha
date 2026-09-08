@@ -39,11 +39,10 @@
 % fill a proved node gets.
 \newtheorem{assumption}[theorem]{Assumption}
 
-%% --- Paper macros, ported verbatim from main.tex (T51 / Wave 7 fix, 2026-08-18).
-%% The blueprint restates the paper's results, so it needs the paper's notation.
-%% Keep this block in sync with main.tex's preamble (main.tex lines 11-31).
+%% --- The paper's macros. The blueprint restates the paper's results, so it
+%% needs the paper's notation; keep this block in sync with the paper's preamble.
 %%
-%% BRACE-TRANSPARENCY FIX (2026-08-18, W7-A): this blueprint builds with
+%% BRACE TRANSPARENCY: this blueprint builds with
 %% xelatex + unicode-math (see src/latexmkrc), under which \mathfrak (and,
 %% for safety, \mathcal/\overline/\widehat) are NOT brace-transparent, so an
 %% unbraced subscript/superscript use like `_\fp` fails with

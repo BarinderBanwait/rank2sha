@@ -1,6 +1,6 @@
-### verification of the committed scan output, paper Section 5.3
+### verification of the committed scan output, paper Section 7.4
 python            : 3.14.2
-data directory    : /Users/barinder/Documents/fin_sha_rank_2/code/data
+data directory    : ../data
 sieve bound       : 30000
 
 all_primes_vreg.txt   range [5, 30000)

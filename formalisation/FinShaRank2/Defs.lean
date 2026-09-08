@@ -28,14 +28,14 @@ Contents:
 Paper statements quoted below: Definition 3.2, Proposition 3.3, Lemma 3.1,
 Theorem A.
 
-## API notes for downstream tasks
+## API notes
 
 * `PowerSeries.coeff` carries its coefficient ring **implicitly** in this mathlib
   release (`coeff n f`, not `coeff R n f`); `MuZero`/`lambdaAn` are written that
-  way. See `NOTES/MathlibAudit.md` §3(1).
+  way.
 * `Λ` is an `abbrev`, so it is reducibly equal to `PowerSeries ℤ_[p]` and every
   `PowerSeries`/`MvPowerSeries` instance is available on it without glue.
-* `σ` is fixed at coefficient ring `ℤ_[p]` (its type is `Λ p`). A task needing
+* `σ` is fixed at coefficient ring `ℤ_[p]` (its type is `Λ p`). A proof needing
   the ring-generic substitution `Σₙ (−1)ⁿ Tⁿ` over an arbitrary base (e.g. the
   ring-generic half of `Kernel/FunctionalEquation.lean`) should replicate the one-line
   `PowerSeries.mk`; the
@@ -51,7 +51,7 @@ variable {p : ℕ} [Fact p.Prime]
 /-- The Iwasawa algebra `Λ = ℤ_[p]⟦X⟧` in which the p-adic L-function `L_p(E, T)`
 of the testbed curve lives. Declared as an `abbrev` so it is reducibly
 `PowerSeries ℤ_[p]`: all ring, algebra, local-ring and Noetherian instances flow
-automatically (see `NOTES/MathlibAudit.md`). The variable `T` of the paper is
+automatically. The variable `T` of the paper is
 mathlib's `PowerSeries.X`. -/
 abbrev Λ (p : ℕ) [Fact p.Prime] : Type := PowerSeries ℤ_[p]
 

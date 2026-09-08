@@ -2,21 +2,19 @@
 # Local-only driver for the blueprint — replacement for the `leanblueprint`
 # CLI subcommands (pdf / web / serve / checkdecls).
 #
-# WHY THIS EXISTS: leanblueprint v0.0.20 opens the enclosing git repository at
-# module-import time (client.py, `Repo(".", search_parent_directories=True)`),
-# so EVERY `leanblueprint <cmd>` fails with
-#   "Error: Could not find a Lean project. Please run this command from
-#    inside your project folder."
-# in a project that is not a git repo.  That was this project's situation when
-# this driver was written; since 2026-08-29 formalisation/ is part of the
-# rank2sha repository, so the real CLI may now work.  Each case below
-# runs the EXACT command leanblueprint's client.py would run (see mk_pdf,
-# mk_web, do_checkdecls there), so switching back to the real CLI is a no-op.
+# leanblueprint v0.0.20 opens the enclosing git repository at module-import
+# time (client.py, `Repo(".", search_parent_directories=True)`), which makes
+# every `leanblueprint <cmd>` fail in a directory that is not a git repository.
+# Each case below runs the exact command leanblueprint's client.py would run
+# (see mk_pdf, mk_web, do_checkdecls there), so the real CLI can take over with
+# no change to the sources.
 #
 # Usage, from formalisation/ (or anywhere):  blueprint/bp pdf | web | all | serve | checkdecls
+# The Python environment holding leanblueprint is taken from $LEANBLUEPRINT_VENV,
+# default ~/.venvs/leanblueprint.
 set -e
 BP_DIR="$(cd "$(dirname "$0")" && pwd)"
-VENV=/Users/barinder/.venvs/leanblueprint
+VENV="${LEANBLUEPRINT_VENV:-$HOME/.venvs/leanblueprint}"
 export PATH="$VENV/bin:$PATH"
 
 case "$1" in

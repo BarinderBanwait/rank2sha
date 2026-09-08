@@ -2,18 +2,10 @@
 #
 # One entry per line; '#' starts a comment; blank lines ignored.
 # An entry is either:
-#   * a file path relative to formal/ (e.g. FinShaRank2/Main/Thm88.lean)
+#   * a file path relative to formalisation/ (e.g. FinShaRank2/Main/Foo.lean)
 #     — every sorry/admit in that file is allowed; or
-#   * a declaration-name substring (e.g. thm_reduction)
+#   * a declaration-name substring (e.g. some_lemma)
 #     — a sorry/admit is allowed if the entry appears on the same source line.
 #
-# Board policy (TASK_BOARD.md §5 T02, §8): this file is nonempty ONLY during
-# the T15→T34 window, when Main/*.lean carries frozen sorried signatures.
-# T42 empties it.
-
-# --- EMPTY as of 2026-08-18 (Wave 5 / T42) ---------------------------------
-# The T15 freeze window is closed: T30-T34 proved all seven frozen headline
-# signatures, so every entry has been retired. Per the board policy (§5 T02,
-# §8) this file is nonempty ONLY during the T15->T34 window. It is now empty,
-# which means the step [2/3] scan admits no incomplete proof anywhere under
-# FinShaRank2/ outside Scratch/.
+# The file is empty: the step [2/3] scan admits no incomplete proof anywhere
+# under FinShaRank2/.

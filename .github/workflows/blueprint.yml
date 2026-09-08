@@ -1,18 +1,12 @@
 name: Blueprint
 
-# Publishing is OFF. The workflow is disabled at GitHub and there is no Pages
-# site, so nothing is served and nothing republishes. Re-enable with
-#   gh workflow enable blueprint.yml
-#   gh api -X POST repos/BarinderBanwait/rank2sha/pages -f build_type=workflow
-#   gh workflow run blueprint.yml
-# and add a push trigger below if it should republish on its own. Pages on a
-# private repository needs a paid plan; on the public repository it is free.
-#
-# The trigger is workflow_dispatch alone, deliberately: re-enabling the workflow
-# should not by itself put the blueprint on the public web.
-#
-# Published address: https://barinderbanwait.github.io/rank2sha/blueprint/
+# Builds the blueprint under formalisation/blueprint and deploys it to GitHub
+# Pages at
+#   https://barinderbanwait.github.io/rank2sha/blueprint/
 # See the staging step for how the subdirectory is laid out.
+#
+# Runs on every push that touches the blueprint sources or this file, and on
+# manual dispatch.
 #
 # This builds the blueprint alone. It does not build the Lean project and does
 # not produce API documentation, so the `\dochome` links in the blueprint
@@ -20,6 +14,11 @@ name: Blueprint
 # Resolving them needs doc-gen4 as a Lake dependency, which means editing
 # lakefile.toml and lake-manifest.json.
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'formalisation/blueprint/**'
+      - '.github/workflows/blueprint.yml'
   workflow_dispatch:
 
 permissions:

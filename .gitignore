@@ -1,38 +1,20 @@
-# ---------------------------------------------------------------------------
-# This is the public-facing repository. `code/` and `formalisation/` are the
-# only directories it tracks. Everything else in the working tree is private
-# working material and is listed here.
-#
-#   paper/               the manuscript (v1, v2, fragments, series). It is its
-#                        own local-only git repository; nothing in it is ever
-#                        pushed anywhere.
-#   literature/          third-party papers. Copyright is not ours to publish.
-#   project_management/  task boards, review notes, WRITING_STYLE.md, STATE.txt.
-#   CLAUDE.md            working rules for this checkout.
-# ---------------------------------------------------------------------------
+# This is the public repository for the paper. It tracks `code/` and
+# `formalisation/` only. Everything else in the working tree is private working
+# material and is listed here.
 /paper/
 /literature/
 /project_management/
+/paper_reviews/
 /CLAUDE.md
 
-# Retired computations, kept on disk because they may be useful to a later
-# project, but not part of this paper and not published with it:
-#   legacy/magma/  the pi-descent written for the withdrawn Paper I
-#   legacy/sage/   the six-prime "A5 certificate" pipeline, the reach
-#                  measurement, and the table generators that fed it
-#   legacy/gp/     superseded one-off gp scripts
-#   legacy/data/   the raw output of every run above
+# Computations the paper quotes no number from. Kept on disk, not published.
 /code/legacy/
 
-# Retired Lean declarations, kept on disk for the record but outside Lake's
-# build and outside scripts/audit.sh:
-#   legacy/Anchors.lean  the withdrawn anchor corollaries cor_sha5/cor_sha13,
-#                        the Certificates structure and its two Fact instances,
-#                        and the digit-certificate extraction lemmas
+# Working files of the formalisation, outside the build and the audit. Kept on
+# disk, not published.
 /formalisation/legacy/
 
-# Belt and braces. The manuscript must never be committed here, whatever
-# directory it is copied into.
+# The manuscript is never committed here, whatever directory it is copied into.
 main.tex
 main.pdf
 STATE.txt
@@ -43,6 +25,3 @@ STATE.txt
 
 .DS_Store
 .claude/
-
-# Referee reports and the replies to them. Private.
-/paper_reviews/

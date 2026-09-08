@@ -83,20 +83,15 @@ https://barinderbanwait.github.io/rank2sha/blueprint/
 with the PDF beside them at `blueprint/blueprint.pdf`. Pages serves a project
 repository at `https://<user>.github.io/<repo>/`, so the workflow stages the web
 output into a `blueprint/` subdirectory and writes a redirect at the site root.
-`src/web.tex` gives that same address as `\home`.
-
-Publishing is off: the workflow is disabled at GitHub, its only trigger is
-`workflow_dispatch`, and no Pages site exists. The workflow header lists the
-three commands that turn it on. Pages on a private repository needs a paid plan,
-so the repository goes public first.
+`src/web.tex` gives that same address as `\home`. The workflow runs on every
+push that touches `blueprint/` or the workflow itself, and on manual dispatch.
 
 Every link the rendered blueprint emits is relative, so the subdirectory needs no
 other configuration. The one exception is the declaration links, which
 leanblueprint builds as `{dochome}/find/#doc/NAME`; while `\dochome` is empty
 they point at `/find/`, which nothing serves, and the workflow rewrites them as
 plain text. Setting `\dochome` requires doc-gen4 as a Lake dependency and its
-output published alongside. `\github` is empty while the repository is private;
-set it to `https://github.com/BarinderBanwait/rank2sha` at go-live.
+output published alongside.
 
 ## Authoring a node
 

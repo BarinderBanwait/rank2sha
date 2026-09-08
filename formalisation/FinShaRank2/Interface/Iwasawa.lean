@@ -40,8 +40,7 @@ scalars along `algebraMap ℤ_[p] (Λ p)`, compatibly
 (`IsScalarTower ℤ_[p] (Λ p) X`). The `ℤ_[p]`-structure is what lets us speak of
 `Module.finrank ℤ_[p] X` and of the `ℤ_[p]`-linear control isomorphism. These
 are declared as instance-implicit fields and re-exported as instances just
-below each structure (the working pattern verified in
-`Scratch/NameCheck.lean` §8). `SelDual` and `ShaDual` are finitely generated
+below each structure. `SelDual` and `ShaDual` are finitely generated
 `ℤ_[p]`-modules.
 
 ## The Γ-coinvariants term

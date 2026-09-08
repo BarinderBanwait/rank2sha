@@ -388,36 +388,6 @@ mistaken for an oversight.
 \end{proof}
 
 % ===========================================================================
-\chapter{The withdrawn anchor corollaries}
-\label{ch:anchors}
-
-An earlier version of the paper carried two unconditional corollaries at the
-anchor primes $p = 5$ and $p = 13$: $\Sha(E/\Q)[5^\infty] = 0$ and
-$\Sha(E/\Q)[13^\infty] = 0$ for the testbed curve, each with the
-accompanying corank, $\mu$, $\lambda$ and height-nondegeneracy conclusions.
-They were derived from Theorem~\ref{prop:consequence} and
-Proposition~\ref{prop:dictionary} by feeding in machine-verified $p$-adic
-expansions of $c_2(p)$, carried as fields of a structure
-\texttt{Certificates}.
-
-Both were withdrawn. The same vanishing was already in the literature:
-Coates, Liang and Sujatha proved $\Sha(E_1/\Q)[p^\infty] = 0$ for
-$E_1 : y^2 = x^3 + 14x$, the $2$-isogenous partner of $E$, at every prime
-$p \equiv 1 \pmod 4$ with $p < 30{,}000$, and the two groups differ by a
-$2$-isogeny, so the corollaries were not new. Their Lean counterparts ---
-\texttt{cor\_sha5}, \texttt{cor\_sha13}, the \texttt{Certificates} structure
-and the four digit-certificate extraction lemmas --- are in
-\texttt{legacy/Anchors.lean}, which is gitignored and outside the build and
-the axiom audit. Nothing in the formalization depends on them.
-
-This chapter is kept, without theorem-like environments, so that the
-withdrawal is visible rather than inferred from a gap. The numerical $c_2$
-data survive in one place only: \texttt{toySha\_fails\_c2\_5\_certificate}
-(Chapter~\ref{ch:nonvacuity}), which uses the seven computed $5$-adic digits
-of $c_2(5)$ to exclude the anti-vacuity world. The paper displays those
-digits nowhere, so that lemma has no paper cross-reference.
-
-% ===========================================================================
 \chapter{The Bannai--Kobayashi jet and the criterion class}
 
 \begin{assumption}[The central second jet as a second moment]
@@ -663,8 +633,7 @@ that produce them are in \texttt{code/}, not in the Lean tree.
 \texttt{lem:isogeny}, \texttt{cor:shavanishing}).} The vanishing of
 $\Sha[p^\infty]$ for the five curves of Coates, Liang and Sujatha at every
 split $p < 30{,}000$, and its transfer along the $2$-isogeny to the testbed
-curve. Cited from the literature, and the reason the two anchor corollaries
-were withdrawn (Chapter~\ref{ch:anchors}); not formalized.
+curve. Cited from the literature; not formalized.
 
 \paragraph{The questions (\texttt{sec:questions}).} Prospective
 discussion of contrasts with Rubin's conjecture on local units, Rubin's

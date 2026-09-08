@@ -248,7 +248,7 @@ rec(x) = {
               Str(q));}
 
 \\ --- gate: the fast slot routines against a full bivariate expansion --------
-\\ ckl below is the bivariate routine of legacy/gp/m2_katz.gp, run at one class
+\\ ckl below is a full bivariate expansion, run at one class
 \\ point with KZ = 8, KW = 9: it reaches the three slots (8,0), (4,4), (0,8) that
 \\ p = 5 uses, and the whole 5 x 5 block.
 KZ = 8; KW = 9; DEG = KZ + KW;

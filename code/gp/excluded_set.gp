@@ -1,7 +1,7 @@
 \\ excluded_set.gp -- the excluded set S_E for E: y^2 = x^3 - 56x.
 \\ ---------------------------------------------------------------------------
 \\ Discharges the five sets of eq:Sexc for the testbed curve, as the display in
-\\ paper Section 5.1 (ssec:testbed) records them:
+\\ paper Section 7.1 (ssec:testbed) records them:
 \\
 \\   S_bad  <= {2,3,7}   6N * prod_v c_v * #tors * d_K = 2^14 * 3 * 7^2
 \\   S_an   =  {}        lem:noanomalous leaves at most p = 5, and a_5 = -2
@@ -12,7 +12,7 @@
 \\ and concludes S_E <= {2,3,7}, a set containing no prime = 1 mod 4.  It also
 \\ derives the Grossencharacter conductor f = (56) from N = |d_K| * Nm(f) and
 \\ the uniqueness of the ideal of Z[i] of norm 3136, and factors Nm(f) - 1 =
-\\ 3135, which is check (iii) of Section 6.4.
+\\ 3135.
 \\
 \\ Computed here: a_5 for E and for the counterexample y^2 = x^3 + 3x; the
 \\ enumeration of the ideals of Z[i] of norm 3136; the ray class group Cl_f(K)
@@ -52,7 +52,7 @@ fmtset(v) = {
 };
 supp(n) = Set(Vec(factor(abs(n))[,1]~));
 
-say("### the excluded set S_E of eq:Sexc, paper Section 5.1 (ssec:testbed)");
+say("### the excluded set S_E of eq:Sexc, paper Section 7.1 (ssec:testbed)");
 say(Str("pari version      : ", version()));
 say("curve             : E : y^2 = x^3 - 56x   [0,0,0,-56,0]");
 say("field             : K = Q(i), d_K = -4");
@@ -81,7 +81,7 @@ say(Str("  ideals of Z[i] of norm ", NMF, " : ", nid, "   (paper: unique)"));
 f56 = idealhnf(K, 56);
 say(Str("  (56) in HNF       : ", f56));
 say(Str("  unique ideal of norm ", NMF, " equals (56) : ", nid == 1 && il[NMF][1] == f56));
-say(Str("  Nm(f) - 1         : ", NMF - 1, " = ", fmtfac(NMF - 1), "   (Section 6.4 check (iii): 3135 = 3 * 5 * 11 * 19)"));
+say(Str("  Nm(f) - 1         : ", NMF - 1, " = ", fmtfac(NMF - 1), "   (3135 = 3 * 5 * 11 * 19)"));
 say("");
 
 \\ --- S_bad ---------------------------------------------------------------
@@ -102,7 +102,7 @@ say(Str("  E  : #Etilde(F_5) : ", 5 + 1 - a5E, "   (paper: 8)"));
 say(Str("  E  : 5 | #Etilde(F_5)? : ", (5 + 1 - a5E) % 5 == 0, "   (0 = not anomalous)"));
 say(Str("  S_an              : ", if((5 + 1 - a5E) % 5 == 0, "{5}", "{}"), "   (paper: empty)"));
 say("  The exception at p = 5 is not vacuous.  The counterexample of");
-say("  Section 5.1 is E' : y^2 = x^3 + 3x.");
+say("  Section 7.1 is E' : y^2 = x^3 + 3x.");
 F = ellinit([0,0,0,3,0]);
 a5F = ellap(F, 5);
 say(Str("  E' : j            : ", F.j, "   (1728: CM by Z[i])"));
@@ -128,7 +128,7 @@ say("        together with supp(omega_E)");
 Cmp = 6*N*NMF;
 say(Str("  6N * Nm(f)        : ", Cmp, " = ", fmtfac(Cmp), "   (paper: 2^15 * 3 * 7^4)"));
 say(Str("  its prime support : ", fmtset(supp(Cmp))));
-say("  supp(omega_E)     : {2, 7}   (quoted from Section 5.1, not computed)");
+say("  supp(omega_E)     : {2, 7}   (quoted from Section 7.1, not computed)");
 Scmp = Set(concat(supp(Cmp), [2,7]));
 say(Str("  S_cmp             : ", fmtset(Scmp), "   (paper: <= {2, 3, 7})"));
 say("");

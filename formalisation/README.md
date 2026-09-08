@@ -3,13 +3,12 @@
 A Lean 4 formalisation of the main statements of *Second derivatives of $p$-adic
 $L$-functions and the Shafarevich–Tate group of rank-two CM elliptic curves*,
 together with a blueprint linking the informal argument to the Lean declarations.
+The blueprint is published at <https://barinderbanwait.github.io/rank2sha/blueprint/>;
+see §8.
 
 Part 3 of the paper says what the formalisation establishes and what it
 does not. This file is how you navigate it: what to read, what to run, and where
 the Lean differs from the paper.
-
-The formalisation of the withdrawn Theorem C and of the horizontal rigidity
-conjecture is preserved at tag `v2` of this repository.
 
 This directory holds the Lean project and nothing else. The computer algebra —
 the PARI/GP and SageMath scripts behind Part 2 of the paper, and the output of
@@ -20,7 +19,6 @@ not part of this repository.
 |---|---|
 | `FinShaRank2/` | the Lean sources: interface, kernel lemmas, main theorems |
 | `FinShaRank2/Interface/` | the assumption surface — the six files §3 asks you to read |
-| `FinShaRank2/Scratch/` | working files, excluded from the build and the audit gate |
 | `FinShaRank2/Toy/` | the two witness worlds of §7 |
 | `blueprint/` | the blueprint; see §8 |
 | `scripts/` | `audit.sh` and the (empty) sorry allowlist |
@@ -106,8 +104,7 @@ scripts/audit.sh
 `audit.sh` runs three steps and prints `AUDIT: PASS` or fails loudly:
 
 1. `lake build` is green.
-2. No `sorry` and no `admit` anywhere in `FinShaRank2/` outside `Scratch/`,
-   modulo `scripts/sorry-allowlist.txt` — **which is empty**, so no incomplete
+2. No `sorry` and no `admit` anywhere in `FinShaRank2/`, modulo `scripts/sorry-allowlist.txt` — **which is empty**, so no incomplete
    proof is tolerated in the imported tree.
 3. Every declaration listed in `FinShaRank2/AxiomAudit.lean` depends on no axiom
    beyond `propext`, `Classical.choice` and `Quot.sound`. In particular nothing
@@ -246,8 +243,7 @@ grep -rn 'rubin_structure' FinShaRank2/
 
 The live use is in `Main/Consequence.lean`, where it is destructured and fed to
 `selmer_dual_structure` — Theorem A (Theorem 3.8) Step 3, matching the `PAPER` line.
-The remaining hits are the toy worlds of §7 and files under `Scratch/`, which is
-excluded from the build and from the audit.
+The remaining hits are the toy worlds of §7.
 
 **Step 6. Decide.** If the field says what the two theorems say, that assumption
 is discharged, and nothing downstream of it needs your attention: the kernel
@@ -362,14 +358,19 @@ correspond to no display in the paper; the lemma's docstring says so.
 
 ## 8. The blueprint
 
-`blueprint/` holds a blueprint in the usual Lean style, stating each result
-informally beside the declaration that formalises it. Build it locally with
+`blueprint/` holds a blueprint in the usual Lean style: one node per statement
+of the paper, each stating the result informally beside the declaration that
+formalises it, with a dependency graph over the nodes. It is published at
+
+<https://barinderbanwait.github.io/rank2sha/blueprint/>
+
+with the PDF beside it at `blueprint.pdf`. The GitHub Pages workflow
+`.github/workflows/blueprint.yml` at the repository root rebuilds and redeploys
+it on every push that touches `blueprint/`. To build it locally:
 
 ```sh
 blueprint/bp pdf   # writes blueprint/print/print.pdf
 blueprint/bp web   # writes blueprint/web/
 ```
 
-See `blueprint/README.md` for the dependencies. The GitHub Pages workflow at
-`.github/workflows/blueprint.yml` in the repository root runs the same two
-commands, on manual dispatch only.
+See `blueprint/README.md` for the dependencies.

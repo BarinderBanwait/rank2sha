@@ -32,15 +32,12 @@
 % repository at https://<user>.github.io/<repo>/, and the Pages workflow stages
 % the blueprint into a blueprint/ subdirectory of that site.
 %
-% \github and \dochome are empty deliberately.  A \github link would fail for a
-% reader while the repository is private; set it to
-% https://github.com/BarinderBanwait/rank2sha at go-live.  \dochome needs
-% doc-gen4 API documentation published alongside, which needs doc-gen4 as a Lake
-% dependency; while it is empty the declaration links resolve to /find/, which
-% does not exist, and the Pages workflow strips them so the names render as
-% plain text.
+% \dochome is empty deliberately: it needs doc-gen4 API documentation published
+% alongside, which needs doc-gen4 as a Lake dependency.  While it is empty the
+% declaration links resolve to /find/, which does not exist, and the Pages
+% workflow strips them so the names render as plain text.
 \home{https://barinderbanwait.github.io/rank2sha/blueprint/}
-\github{}
+\github{https://github.com/BarinderBanwait/rank2sha}
 \dochome{}
 
 \title{Second derivatives of $p$-adic $L$-functions and the Shafarevich--Tate group of rank-two CM elliptic curves: formalization blueprint}

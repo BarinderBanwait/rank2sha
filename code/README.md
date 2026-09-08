@@ -20,7 +20,7 @@ order of Sha equal to 1, and isogeny degrees $[1,2]$.
 
 The curve $D = 56$ is the testbed of Part 1, 2-isogenous to the curve
 $y^2 = x^3 + 14x$ of CLS. The LMFDB rows are in `data/lmfdb_five_curves.json`
-(pulled 2026-09-05) and are quoted, not recomputed; see §1.8 of the paper. The
+(pulled 2026-09-05) and are quoted, not recomputed; see §1.6 of the paper. The
 Mordell–Weil bases of the four curves other than $D = 56$ are in
 `data/family_bases.txt`, saturated at every prime up to 30011.
 
@@ -78,7 +78,7 @@ marker, so a clean run leaves evidence of being clean.
 
 ## Running the computations
 
-### The horizontal regulator scan (§5.3)
+### The regulator scan (§7.4)
 
 The interval is given by the environment. The paper scans every split prime
 below 30,000, which is the range in which `prop:scaneq` makes a clean prime a
@@ -100,7 +100,7 @@ increasing order of $p$ give the committed file.
 A re-run writes a terminal `JOBDONE` line that the committed file does not carry,
 so compare on the data lines.
 
-The working precision follows the rule stated in §5.3: $n = 6$ below 2000,
+The working precision follows the rule stated in §7.4: $n = 6$ below 2000,
 $n = 5$ below $10^4$, $n = 4$ above. If a computed valuation $v$ satisfies
 $v \ge n-1$, where finite precision could mask a larger true valuation, the prime
 is recomputed at precision $n+4$ and its line flagged `ESC`. No line in the
@@ -117,7 +117,7 @@ The bases are in `data/family_bases.txt` and must be used as given, since the va
 
 The one case below 30,000 that Coates, Liang and Sujatha left open, $p = 577$ for $y^2 = x^3 + 34x$, is decided by `sage/e4_577.py`, which computes the $577$-adic $L$-function from eclib modular symbols in about a minute and records the invariants that place $577$ outside $S_E$. Its second coefficient is $529 + O(577)$, a unit.
 
-### The control on the normalisation (§5.3)
+### The control on the normalisation (§7.5)
 
 ```bash
 cd sage && ./run.sh 5 8 5 3600                  # D = 56, output data/cert_5.out
@@ -140,7 +140,7 @@ exponential in the number of certified digits. `run.sh` never lets a
 lower-precision run replace a higher-precision certificate, so it is safe to
 re-run at any $n$, in any order.
 
-### The unit condition by modular symbols below 1000
+### The unit condition by modular symbols below 1000 (§7.8)
 
 ```bash
 cd sage && D=-34 sage unit_ms_family.py
@@ -155,7 +155,7 @@ the five are independent. `verify_unit_ms.py` compares the result with the
 regulator scan at every prime outside $S_E$ and with the LMFDB valuations of the
 $p$-adic regulator, and exits 0 when they agree.
 
-### The bracket $B(\mathfrak{p})$ (§6.8)
+### The bracket $B(\mathfrak{p})$ (§8)
 
 ```bash
 cd gp && gp -q m2_w1.gp                                  # D = 56, p = 5, 13, 17
@@ -202,7 +202,7 @@ the kappa gate as SKIPPED if the file is absent.
 
 ## The map from paper to script to file
 
-### §5 — the testbed and the scan
+### §7 — the curve $D = 56$
 
 | Quantity | Script | Output |
 |---|---|---|
@@ -212,18 +212,18 @@ the kappa gate as SKIPPED if the file is absent.
 | The re-verification of that file | `sage/verify_scan.py` | `data/verify_scan.out` |
 | The per-prime timings | `gp/timings.gp` | `data/timings.out` |
 | The $p = 5, 13$ control at $D = 56$ | `sage/run.sh` | `data/cert_5.out`, `data/cert_13.out` |
-| §5.4, $\lambda$ and the likelihood ratios | `sage/null_model.py` | `data/null_model.out` |
+| §7.6, the chance model: $\lambda$ and the clean-scan probability | `sage/null_model.py` | `data/null_model.out` |
 
-### §6 — the Eisenstein–Kronecker invariants
+### §8 — the bracket $B(\mathfrak{p})$ at $D = 56$
 
 | Quantity | Script | Output |
 |---|---|---|
 | The unit character $\varepsilon$, re-determined | `gp/epsilon_check.gp` | `data/epsilon_check.out` |
-| §6.8, $v_\mathfrak{p}(B(\mathfrak{p})) = 2$ at $p = 5, 13, 17$ | `gp/m2_w1.gp` | `data/m2_w1.out` |
-| §6.8, the same at $p = 29, 37$ | `gp/m2_w1.gp`, `W1PRIMES=29,37` | `data/m2_w1_2937.out` |
-| §6.8, the modular-symbol side $\kappa(p)$ | `sage/m2_msd.sage` | `data/m2_msd.out` |
+| $v_\mathfrak{p}(B(\mathfrak{p})) = 2$ at $p = 5, 13, 17$ | `gp/m2_w1.gp` | `data/m2_w1.out` |
+| The same at $p = 29, 37$ | `gp/m2_w1.gp`, `W1PRIMES=29,37` | `data/m2_w1_2937.out` |
+| The modular-symbol side $\kappa(p)$ | `sage/m2_msd.sage` | `data/m2_msd.out` |
 
-### §7 — the five curves
+### §7 and §8 — the four other curves
 
 | Quantity | Script | Output |
 |---|---|---|
@@ -389,11 +389,5 @@ also carries the section names of a superseded draft — `A5 CERTIFICATE`,
 
 ## What is not here
 
-`legacy/` holds the $\pi$-descent written for the withdrawn Paper I, the
-six-prime certificate pipeline that the v2 rewrite cut, several superseded
-one-off scripts, and `gp/m2_katz.gp`, the Katz-side companion to `gp/m2_w1.gp`
-that the paper does not quote. None of it supports the paper, it is gitignored, and it is not
-published. `legacy/README.md` says what each part was for and, where a script is
-wrong, why. Do not cite anything in it. The versions of this directory and of
-`../formalisation/` that accompany v2 of the paper, including the resultant
-computations that v2 quotes, are at tag `v2` of this repository.
+Computations the paper quotes no number from are kept in `legacy/`, which is
+gitignored and not published. Nothing here depends on it.

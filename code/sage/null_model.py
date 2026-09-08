@@ -1,29 +1,23 @@
 #!/usr/bin/env python3
-"""null_model.py -- the null model of paper Section 5.4 (ssec:scanweight).
+"""null_model.py -- the chance model of paper Section 7.6 (ssec:scanweight).
 
-Backs every number of Section 5.4.  The model treats the events
-v_fp(Reg_fp) > 2, one per scanned split prime, as independent, and assigns
-each the probability 1/p that a random element of Z_p is divisible by p.  The
-number of exceptions is then approximately Poisson with mean
+The model treats the events v_fp(Reg_fp) > 2, one per scanned split prime,
+as independent, and assigns each the probability 1/p that a random element
+of Z_p is divisible by p.  The number of exceptions is then approximately
+Poisson with mean
 
     lambda = sum over the scanned primes of 1/p,
 
-the sum being taken over the 1611 primes of ../data/all_primes_vreg.txt.  The
-three hypotheses of Section 5.4 assign a clean scan the probabilities
+the sum being taken over the 1611 primes of ../data/all_primes_vreg.txt, the
+scan of y^2 = x^3 - 56x.  The paper prints lambda and the probability
+exp(-lambda) of a clean scan.  For reference the script also prints the
+probability of a clean scan when exceptions occur at density c/p, the
+likelihood ratios of a model with no exceptions (H1) against chance (H2) and
+against density c/p (H3), the Poisson probability of five or more exceptions,
+and the same lambda over every split prime below 10^6.
 
-    (H1) Conjecture conj:strong                       1
-    (H2) chance, exceptions at density 1/p            exp(-lambda)
-    (H3) Wieferich collapse at density c/p            exp(-c*lambda)
-
-so the likelihood ratio of (H1) to (H2) is exp(lambda) and that of (H1) to
-(H3) is exp(c*lambda).
-
-The script also computes the Poisson probability of five or more exceptions,
-and repeats the computation of lambda over every split prime below 10^6 --
-the split primes of K = Q(i) are the primes p = 1 mod 4 -- which is the
-extension Section 5.4 considers and rejects.
-
-Each computed value is printed beside the value printed in the paper.
+Each computed value is printed beside the value printed in the paper, or
+"not printed".
 
 Status: arithmetic on the committed prime list and on a sieve.  It uses no
 regulator data beyond the list of scanned primes.
@@ -41,19 +35,19 @@ DATA = os.path.join(HERE, os.pardir, "data")
 SCAN = os.path.join(DATA, "all_primes_vreg.txt")
 EXTENSION_BOUND = 10 ** 6
 
-# the values printed in Section 5.4, for comparison
+# the values printed in Section 7.6, for comparison
 PAPER = {
     "count": "1611",
     "lambda": "0.880...",
     "clean_H2": "0.41",
-    "clean_H3_c5": "0.012",
-    "ratio_H1_H2": "2.4",
-    "ratio_H1_H3_c5": "82",
-    "ratio_H1_H3_c1": "2.4",
-    "lambda_1e6": "1.03",
-    "clean_1e6": "0.36",
-    "ratio_1e6": "2.8",
-    "five_or_more": "2.1e-03",
+    "clean_H3_c5": "not printed",
+    "ratio_H1_H2": "not printed",
+    "ratio_H1_H3_c5": "not printed",
+    "ratio_H1_H3_c1": "not printed",
+    "lambda_1e6": "not printed",
+    "clean_1e6": "not printed",
+    "ratio_1e6": "not printed",
+    "five_or_more": "not printed",
 }
 
 _log = []
@@ -90,9 +84,9 @@ def poisson_tail(lam, k):
 
 
 def main():
-    say("### the null model of paper Section 5.4 (ssec:scanweight)")
+    say("### the chance model of paper Section 7.6 (ssec:scanweight)")
     say("python            : %s" % sys.version.split()[0])
-    say("scanned primes    : %s" % os.path.normpath(SCAN))
+    say("scanned primes    : %s" % os.path.relpath(SCAN, HERE))
     say("")
 
     primes = [int(line.split()[0]) for line in open(SCAN) if line.strip()]
@@ -105,7 +99,7 @@ def main():
     say("")
 
     say("probability of a clean scan")
-    row("(H1) conj:strong", "1", "1")
+    row("(H1) no exceptions", "1", "not printed")
     row("(H2) chance, exp(-lambda)", "%.4f" % math.exp(-lam),
         PAPER["clean_H2"])
     row("(H3) c = 5, exp(-5 lambda)", "%.4f" % math.exp(-5 * lam),

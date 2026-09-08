@@ -30,7 +30,7 @@ Unfolds to `c2tilde ((coeff 2 Lp : ℤ_[p]) : ℚ_[p]) (((α : ℤ_[p]) : ℚ_[p
 with `Lp = D.analytic.Lp`, `α = D.analytic.α`, and `tst = D.torsSqOverTam` (the
 `PrimeData` parameter). This is exactly Definition 3.2 applied to `D`'s MTT
 L-function; the double coercion `((… : ℤ_[p]) : ℚ_[p])` is mandatory (the
-single-coercion form mis-elaborates — `AnalyticData` gotcha, `NOTES/MathlibAudit.md`).
+single-coercion form mis-elaborates).
 
 By `PrimeData.c2norm_tie` this equals the height-side proxy `D.height.c2norm`, so
 statements phrased through this jet transfer to the height dictionary

@@ -1,6 +1,6 @@
-### the null model of paper Section 5.4 (ssec:scanweight)
+### the chance model of paper Section 7.6 (ssec:scanweight)
 python            : 3.14.2
-scanned primes    : /Users/barinder/Documents/fin_sha_rank_2/code/data/all_primes_vreg.txt
+scanned primes    : ../data/all_primes_vreg.txt
 
 the scanned set
   number of primes                   1611                   paper 1611
@@ -8,24 +8,24 @@ the scanned set
   lambda = sum 1/p                   0.880191               paper 0.880...
 
 probability of a clean scan
-  (H1) conj:strong                   1                      paper 1
+  (H1) no exceptions                 1                      paper not printed
   (H2) chance, exp(-lambda)          0.4147                 paper 0.41
-  (H3) c = 5, exp(-5 lambda)         0.0123                 paper 0.012
+  (H3) c = 5, exp(-5 lambda)         0.0123                 paper not printed
 
 likelihood ratios
-  (H1):(H2) = exp(lambda)            2.411                  paper 2.4
-  (H1):(H3) at c = 5                 81.529                 paper 82
-  (H1):(H3) at c = 1                 2.411                  paper 2.4
+  (H1):(H2) = exp(lambda)            2.411                  paper not printed
+  (H1):(H3) at c = 5                 81.529                 paper not printed
+  (H1):(H3) at c = 1                 2.411                  paper not printed
   (H3) at c = 1 is (H2), so the two ratios agree.
 
 the extension to every split prime below 10^6
   number of split primes             39175                  paper not printed
-  lambda                             1.026174               paper 1.03
-  clean probability exp(-lambda)     0.3584                 paper 0.36
-  (H1):(H2) = exp(lambda)            2.790                  paper 2.8
+  lambda                             1.026174               paper not printed
+  clean probability exp(-lambda)     0.3584                 paper not printed
+  (H1):(H2) = exp(lambda)            2.790                  paper not printed
 
 the opposite outcome
-  Poisson(lambda), P(X >= 5)         2.131e-03              paper 2.1e-03
+  Poisson(lambda), P(X >= 5)         2.131e-03              paper not printed
 
 exact Bernoulli model, for comparison with the Poisson approximation
   The paper states the Poisson approximation.  Under the independent

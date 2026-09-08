@@ -124,7 +124,7 @@ structure PrimeData (p : ℕ) [Fact p.Prime] (hsplit : p % 4 = 1)
   global rational factor `torsSqOverTam`.
 
   The double coercion `((coeff 2 analytic.Lp : ℤ_[p]) : ℚ_[p])` is mandatory: the
-  single-coercion form mis-elaborates (`AnalyticData` gotcha, `NOTES/MathlibAudit.md`). This
+  single-coercion form mis-elaborates. This
   routes the `HeightData` dictionary onto the analytic jet so that
   Proposition 4.2 about `c2norm` becomes a statement about `coeff 2 Lp`.
   SOURCE: Definition 3.2 (`def:c2tilde`) (the normalisation) tying the `KatzData` proxy
