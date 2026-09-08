@@ -163,6 +163,14 @@ repository root, which installs `landrun`, `lean4export`, `nanoda` and
 run it yourself you need Linux, for the Landlock sandbox; the workflow file is
 the recipe.
 
+The run of 2026-09-08, on commit `ac70cc9`, passed:
+<https://github.com/BarinderBanwait/rank2sha/actions/runs/34215978606>. Its
+log records the sandboxed builds, the statement match for all five theorems,
+the axiom check, and acceptance by both kernels; nanoda checked 37,355
+declarations. The commits since then change docstrings, this README and the
+blueprint; no Lean declaration or proof has changed. Rerun the workflow after
+any change to the Lean sources, and replace this paragraph with the new run.
+
 What comparator certifies is that the derivation of the five statements from
 the assumption surface is sound. It does not certify that the assumption
 surface says what the cited theorems say. That remains the human task of §3,
