@@ -43,3 +43,6 @@ STATE.txt
 
 .DS_Store
 .claude/
+
+# Referee reports and the replies to them. Private.
+/paper_reviews/
