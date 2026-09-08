@@ -17,27 +17,13 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 
-% --- The classical-input / assumption environment ------------------------
-% Interface fields of `ClassicalInputs` (citable classical theorems: Rubin,
-% Mazur, Greenberg, MTT, Bannai–Kobayashi, de Shalit, Schneider/Perrin-Riou,
-% Hasse) are rendered in this environment rather than as
-% `lemma`/`proposition`/`theorem`, so a reader can see at a glance, by the
-% header word alone ("Assumption" vs "Lemma"/"Theorem"), which statements are
-% asserted on citation and which are Lean-kernel-proved. `\leanok` is never
-% applied to a node in this environment: these are the human-refereeable
-% trust boundary, not proof obligations.
-%
-% plasTeX's `plastexdepgraph` plugin draws dependency-graph nodes only for
-% theorem *kinds* listed in the `thms=` option passed to
-% `\usepackage[showmore, dep_graph]{blueprint}` in `src/web.tex`, whose
-% default is `definition+lemma+proposition+theorem+corollary`. `src/web.tex`
-% lists `assumption` there (added 2026-08-18), so assumption nodes do appear
-% in the graph. An earlier note here said they did not, and described a
-% workaround of declaring them as `definition` instead; that note was stale
-% by the time it was read, and was removed on 2026-08-29 (R3bp). Nodes in
-% this environment never carry `\leanok`, so they never receive the green
-% fill a proved node gets.
-\newtheorem{assumption}[theorem]{Assumption}
+% The classical inputs: theorems of the literature and standing hypotheses of
+% the paper, each stated in Lean as a field of the assumption surface and
+% proved nowhere in the project. Registered as a graph-visible kind in
+% web.tex. Each node carries \leanok in its statement (the statement is in
+% Lean) and has no proof environment, so the graph shows a green border and
+% no green body.
+\newtheorem{assumption}[theorem]{Classical input}
 
 %% --- The paper's macros. The blueprint restates the paper's results, so it
 %% needs the paper's notation; keep this block in sync with the paper's preamble.

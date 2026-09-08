@@ -3,259 +3,613 @@
 % It should *not* include the \begin{document}
 %
 % ---------------------------------------------------------------------------
-% CONTENT — one node per paper statement, keyed to the paper's own tex labels.
-% See blueprint/README.md for build instructions and the authoring conventions
-% this file follows (in particular the `assumption` environment, registered in
-% macros/common.tex).
+% CONTENT. One node per statement: the classical inputs (the `assumption`
+% environment, registered in macros/common.tex), the kernel lemmas, the two
+% theorems, and the two non-vacuity witnesses. Node labels are short names,
+% because the dependency graph prints the label with its prefix stripped;
+% the paper's own numbering is given in the text of each node.
 %
-% There is no build gate on the \lean{} names in this file: `blueprint/bp
-% checkdecls` cannot run, because `lake exe checkdecls` is not a Lake
-% dependency of this project. Every \lean{} name below is checked against
-% the built environment by running a file that imports FinShaRank2 and
-% asserts `env.contains n` for each of them; all 24 exist.
-% An editor who adds a \lean{} must check it the same way. Neither
-% `lake build` nor scripts/audit.sh reads this file, so nothing else will
-% catch a dead name.
+% Every \lean{} name in this file must exist in the built library. Nothing in
+% the build checks this: `lake build` and scripts/audit.sh do not read this
+% file. Check by running a Lean file that imports FinShaRank2 and asserts
+% `env.contains n` for each name.
 % ---------------------------------------------------------------------------
 
 \chapter{Introduction}
 
-This blueprint tracks the Lean~4 formalization (library
-\texttt{FinShaRank2}, mathlib pin \texttt{v4.33.1}) of the paper
+This blueprint tracks the Lean~4 formalisation (library
+\texttt{FinShaRank2}, Mathlib \texttt{v4.33.1}) of the paper
 \emph{Second derivatives of $p$-adic $L$-functions and the
-Shafarevich--Tate group of rank-two CM elliptic curves}, for the testbed
-curve $E : y^2 = x^3 - 56x$ over $\mathbb{Q}$ (CM by $\mathbb{Z}[i]$,
-conductor $N = 12544$, rank $2$, torsion $\mathbb{Z}/2$, $\prod_v c_v = 4$,
-root number $w(E) = +1$; split primes $p \equiv 1 \pmod 4$).
+Shafarevich--Tate group of rank-two CM elliptic curves}. The curve
+throughout is $E : y^2 = x^3 - 56x$ over $\Q$: CM by $\Z[i]$, conductor
+$N = 12544$, rank $2$, torsion $\Z/2$, $\prod_v c_v = 4$, root number
+$w(E) = +1$; the primes are the split primes $p \equiv 1 \pmod 4$.
 
-Theorem~A (Theorem~3.8) is \texttt{prop:consequence}
-(Chapter~\ref{ch:consequence}); the paper's other lettered result, Theorem~B
-(Theorem~6.7, \texttt{thm:criterion}), has no Lean counterpart, though the
-arithmetic half of its equivalence is Proposition~\ref{prop:dictionary}.
+Theorem~A of the paper (Theorem~3.8) is the node \emph{TheoremA}
+(Chapter~\ref{ch:theoremA}). Theorem~B (Theorem~6.7) has no Lean
+counterpart; the arithmetic half of its equivalence is the node
+\emph{Dictionary} (Chapter~\ref{ch:dictionary}).
 
 \section{What is machine-checked, and what is assumed}
 
-The formalization machine-checks the paper's \emph{new} mathematics --- its
-definitions, its deductions, and its full logical chain --- while treating
-universally accepted classical theorems (Rubin, Mazur, Greenberg,
-Mazur--Tate--Teitelbaum, Bannai--Kobayashi, de~Shalit,
-Schneider/Perrin-Riou, Hasse) as explicitly documented, human-refereeable
-\emph{hypotheses}: fields of the structure \texttt{ClassicalInputs}, never
-global \texttt{axiom} declarations. No conjectural statement occurs anywhere
-in the project.
+Mathlib has no Selmer group, no Shafarevich--Tate group and no $p$-adic
+$L$-function. The formalisation therefore assumes the classical theorems the
+paper takes from the literature, as fields of one structure,
+\texttt{ClassicalInputs}, and machine-checks everything the paper deduces
+from them. Every theorem takes \texttt{H : ClassicalInputs} as an ordinary
+hypothesis. There is no \texttt{axiom} declaration in the project and no
+conjectural hypothesis.
 
-Every declaration marked \texttt{\textbackslash leanok} below is sorry-free, uses no
-\texttt{native\_decide}, and --- for the project's audited declarations ---
-has been confirmed by \texttt{FinShaRank2/AxiomAudit.lean} to depend on no
-axiom outside $\{\texttt{propext}, \texttt{Classical.choice},
-\texttt{Quot.sound}\}$ (73 audited declarations, empty allowlist).
-\textbf{A \texttt{\textbackslash leanok} mark is never applied to an assumption node}: those are
-citations, not proof obligations, and marking them would misrepresent the
-trust boundary this blueprint exists to make visible.
+Every declaration marked \texttt{\textbackslash leanok} in a proof below is
+sorry-free, uses no \texttt{native\_decide}, and is confirmed by
+\texttt{FinShaRank2/AxiomAudit.lean} to depend on no axiom beyond
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. The
+derivation of the two theorems from the classical inputs has also been
+checked with Lean's \texttt{comparator}, as the README of the formalisation
+records.
 
 \section{Reading the graph}
+\label{sec:reading}
 
-Interface fields --- citable classical theorems, packaged as data the main
-theorems consume as a hypothesis \texttt{H : ClassicalInputs} --- are
-rendered in the \textbf{Assumption} environment, a distinct header word from
-Lemma/Proposition/Theorem/Corollary/Definition. \texttt{src/web.tex} lists
-\texttt{assumption} among the graph-visible kinds, so these nodes appear in
-the auto-generated dependency graph; they are never marked
-\texttt{\textbackslash leanok}, so they never receive the green fill a proved node gets.
-Every such node carries its pinpoint citation, and is distinguished from a
-Lean-kernel-proved result by header word and by fill colour alike.
+There are three kinds of node.
 
-Material the paper contains but this formalization deliberately does not
-attempt (the exact criterion of \texttt{thm:criterion}, the analytic content of
-\texttt{prop:jetformula}'s integral formula, the construction of the divisor
-$D_E$ and of the class functions $r_{a,b}$, the height-pairing analytics, the
-expository background of \S\texttt{sec:background}, the regulator scans of
-Part~2, the Coates--Liang--Sujatha input, and the questions of Part~4) is listed
-in the closing chapter with no theorem-like environment at all, so it cannot be
-mistaken for an oversight.
+\begin{itemize}
+  \item \textbf{Classical inputs} (Chapter~\ref{ch:inputs}), in the
+    environment \emph{Classical input}. Each is a theorem of the literature,
+    or a standing hypothesis of the paper, stated in Lean as a field of the
+    assumption surface. Each node names the field and the source. None has
+    a proof in the project, and none will: they are cited. In the graph they
+    have a green border, which means the statement is in Lean, and no green
+    body, which means no proof is.
+  \item \textbf{Kernel lemmas} (Chapter~\ref{ch:kernel}) and the two
+    \textbf{theorems} (Chapters~\ref{ch:theoremA} and~\ref{ch:dictionary}).
+    Each is proved in Lean, and its node has a green body. A node is dark
+    green when everything it depends on is proved, and light green when
+    something it depends on is a classical input. The theorems are light
+    green: that is the statement ``proved modulo the literature'', made
+    visible.
+  \item \textbf{Definitions} (Chapter~\ref{ch:definitions}), drawn as
+    boxes.
+\end{itemize}
+
+A dashed arrow from $A$ to $B$ means the Lean proof of $B$ consumes $A$. The
+arrows into \emph{TheoremA} are the paper's Steps 1--5 in the order the
+proof takes them, and the classical inputs among them are exactly the
+theorems the paper cites there: Mazur--Tate--Teitelbaum, Rubin, Greenberg,
+Mazur.
+
+Material the paper contains but the formalisation does not attempt is
+listed in Chapter~\ref{ch:descoped} with no theorem-like environment, so it
+cannot be mistaken for an oversight.
 
 % ===========================================================================
-\chapter{Foundational definitions}
+\chapter{Definitions}
+\label{ch:definitions}
 
 \begin{definition}[The normalised second jet]
-  \label{def:c2tilde}
-  \lean{FinShaRank2.c2tilde}
+  \label{def:NormalisedSecondJet}
+  \lean{FinShaRank2.c2tilde, FinShaRank2.PrimeData.c2tilde}
   \leanok
-  For $p$ split with $\alpha_p$ the unit root of $X^2 - a_pX + p$, set
+  For $p$ split with $\alpha_p$ the unit root of $X^2 - a_pX + p$, and
+  $L_p(E,T) = c_0(p) + c_1(p)\,T + c_2(p)\,T^2 + \cdots$, set
   \[
      \tilde c_2(p) \;:=\; c_2(p) \cdot (1 - \alpha_p^{-1})^{-2} \cdot
      \frac{(\#E(\Q)_{\mathrm{tors}})^2}{\prod_v c_v} .
   \]
+  This is Definition~3.2 of the paper.
 \end{definition}
 \begin{proof}[Lean]
   \leanok
-  A standalone total function \texttt{c2tilde (c2 alphaInv : \(\mathbb{Q}_p\)) (torsSqOverTam : \(\mathbb{Q}\)) : \(\mathbb{Q}_p\)}
-  of its three numerical arguments, matching the definition verbatim.
-  \textbf{Junk-value convention}: at an anomalous prime $1 - \alpha_p^{-1} = 0$
-  and the value degenerates; every theorem about \texttt{c2tilde} therefore
-  carries the non-anomalous hypothesis explicitly (discharged for the
-  testbed curve by \texttt{lem:noanomalous}).
+  \texttt{c2tilde} is a total function of its three numerical arguments,
+  matching the display. At an anomalous prime $1 - \alpha_p^{-1} = 0$ and the
+  value is a junk value; every theorem about \texttt{c2tilde} therefore
+  carries the non-anomalous hypothesis explicitly.
+  \texttt{PrimeData.c2tilde} applies it to the $L$-function, unit root and
+  rational factor of a per-prime bundle.
+\end{proof}
+
+\begin{definition}[Iwasawa invariants of a power series]
+  \label{def:IwasawaInvariants}
+  \lean{FinShaRank2.MuZero, FinShaRank2.lambdaAn}
+  \leanok
+  For $f \in \Lambda = \Z_p[[T]]$, $\mu(f) = 0$ means some coefficient of
+  $f$ is a $p$-adic unit, and $\lambda(f)$ is the least index of a unit
+  coefficient.
+\end{definition}
+\begin{proof}[Lean]
+  \leanok
+  \texttt{MuZero f} is $\exists n,\ \mathrm{IsUnit}(\mathrm{coeff}\ n\ f)$
+  and \texttt{lambdaAn f} is the infimum of that set of indices, with the
+  convention $\inf \varnothing = 0$. The two are used together: $\lambda$
+  carries information only where $\mu = 0$.
 \end{proof}
 
 % ===========================================================================
-\chapter{Second-order vanishing at the trivial character}
+\chapter{The classical inputs}
+\label{ch:inputs}
 
-\begin{lemma}
-  \label{lem:c0c1}
+Each node of this chapter is a field of the assumption surface, the six
+files under \texttt{FinShaRank2/Interface/}. Its statement is the field's
+type; its source is the theorem of the literature the field renders, or the
+hypothesis of the paper it records. The nodes are grouped by the layer of
+the interface that carries them. Fields that no theorem of the project
+consumes are not nodes, with one exception noted at the end.
+
+\section{The $p$-adic $L$-function}
+
+\begin{assumption}[Interpolation at the trivial character]
+  \label{assum:Interpolation}
+  \lean{FinShaRank2.AnalyticData.interp}
+  \leanok
+  For a good ordinary prime $p$ with unit root $\alpha_p$,
+  \[
+    L_p(E,0) \;=\; (1 - \alpha_p^{-1})^2\, \frac{L(E,1)}{\Omega_E} .
+  \]
+
+  Cited from Mazur--Tate--Teitelbaum, Invent.\ Math.\ 84 (1986), 1--48. In
+  Lean the field \texttt{AnalyticData.interp} states the identity in $\Q_p$
+  between the constant coefficient of $L_p$ and the modular symbol.
+\end{assumption}
+
+\begin{assumption}[Vanishing of the central value]
+  \label{assum:CentralValueZero}
+  \lean{FinShaRank2.AnalyticData.msymb_zero}
+  \leanok
+  $L(E,1)/\Omega_E = 0$.
+
+  This is the hypothesis $L(E,1) = 0$ of the paper's theorems. For the curve
+  $y^2 = x^3 - 56x$ it is an exact computation on modular symbols (Stein--Wuthrich,
+  Math.\ Comp.\ 82 (2013), \S 12), and it follows from
+  $\rank E(\Q) = 2$ and the theorem of Gross--Zagier and Kolyvagin. In Lean
+  it is the field \texttt{AnalyticData.msymb\_zero}.
+\end{assumption}
+
+\begin{assumption}[The $p$-adic functional equation]
+  \label{assum:FunctionalEquation}
+  \lean{FinShaRank2.AnalyticData.funct_eq}
+  \leanok
+  With $w(E) = +1$, there is a unit $U \in \Lambda^\times$ with $U(0) = 1$
+  and
+  \[
+    L_p\bigl(E, (1+T)^{-1} - 1\bigr) \;=\; U(T)\, L_p(E,T) .
+  \]
+
+  Cited from Mazur--Tate--Teitelbaum, op.\ cit. In Lean the field
+  \texttt{AnalyticData.funct\_eq} states the existence of $U$, with the
+  substitution $(1+T)^{-1} - 1$ rendered as \texttt{Lp.subst} $\sigma$.
+\end{assumption}
+
+\begin{assumption}[The unit root]
+  \label{assum:UnitRoot}
+  \lean{FinShaRank2.AnalyticData.alpha_root}
+  \leanok
+  At a good ordinary prime, $X^2 - a_pX + p$ has a root
+  $\alpha_p \in \Z_p^\times$.
+
+  Hensel's lemma at a good ordinary prime. In Lean the field
+  \texttt{AnalyticData.alpha\_root} states the equation for the unit
+  $\alpha$.
+\end{assumption}
+
+\begin{assumption}[The Hasse bound]
+  \label{assum:HasseBound}
+  \lean{FinShaRank2.AnalyticData.hasse}
+  \leanok
+  $a_p^2 \le 4p$.
+
+  Hasse's theorem. In Lean the field \texttt{AnalyticData.hasse}.
+\end{assumption}
+
+\begin{assumption}[{The Frobenius trace of a curve with CM by $\Z[i]$}]
+  \label{assum:DeuringTrace}
+  \lean{FinShaRank2.AnalyticData.ap_from_CM}
+  \leanok
+  For $p \equiv 1 \pmod 4$ there is $\pi \in \Z[i]$ with $\pi\bar\pi = p$
+  and $a_p = \pi + \bar\pi = 2\,\mathrm{Re}(\pi)$.
+
+  Deuring's theorem. In Lean the field \texttt{AnalyticData.ap\_from\_CM},
+  with $\pi$ a Gaussian integer of norm $p$.
+\end{assumption}
+
+\section{The standing hypotheses of the paper}
+
+\begin{assumption}[The excluded set and the rational factor]
+  \label{assum:StandingHypotheses}
+  \lean{FinShaRank2.ClassicalInputs.notAnomalous, FinShaRank2.ClassicalInputs.torsSqOverTam_eq}
+  \leanok
+  For every split prime $p \notin S_E$, $a_p \not\equiv 1 \pmod p$; and
+  $(\#E(\Q)_{\mathrm{tors}})^2 / \prod_v c_v = 1$.
+
+  The first is the clause $S_{\mathrm{an}} \subseteq S_E$ of the paper's
+  definition~(8) of the excluded set. The second is the arithmetic of
+  Table~1: $2^2/4 = 1$. In Lean the fields
+  \texttt{ClassicalInputs.notAnomalous} and
+  \texttt{ClassicalInputs.torsSqOverTam\_eq}. What the first assumes beyond
+  the proved Lemma~\ref{lem:NoAnomalousPrimes} is the single value
+  $a_5 \ne -4$.
+\end{assumption}
+
+\section{Iwasawa theory and descent}
+
+\begin{assumption}[The structure of the Selmer dual and Rubin's main conjecture]
+  \label{assum:RubinStructure}
+  \lean{FinShaRank2.IwasawaData.rubin_structure}
+  \leanok
+  Let $X = \mathrm{Sel}_{p^\infty}(E/\Q_\infty)^\vee$. There are $n$,
+  elements $f_1, \dots, f_n \in \Lambda$ and a $\Lambda$-linear map
+  $X \to \prod_i \Lambda/(f_i)$ with finite kernel and cokernel, such that
+  $\prod_i f_i$ and $L_p(E,T)$ generate the same ideal.
+
+  The pseudo-isomorphism is the structure theorem for finitely generated
+  $\Lambda$-modules, Washington, \emph{Introduction to Cyclotomic Fields},
+  2nd ed., Thm.~13.12. The identification of the characteristic ideal with
+  $(L_p)$ is Rubin, Invent.\ Math.\ 103 (1991), Thm.~12.3, through Yager's
+  identification of the two-variable characteristic ideal with the Katz
+  measure restricted to the cyclotomic line. In Lean the field
+  \texttt{IwasawaData.rubin\_structure} states the conjunction.
+\end{assumption}
+
+\begin{assumption}[No finite submodule]
+  \label{assum:NoFiniteSubmodule}
+  \lean{FinShaRank2.IwasawaData.no_finite_submodule}
+  \leanok
+  $X = \mathrm{Sel}_{p^\infty}(E/\Q_\infty)^\vee$ has no nonzero finite
+  $\Lambda$-submodule.
+
+  Greenberg, \emph{Iwasawa theory for elliptic curves}, LNM 1716 (1999),
+  Prop.~4.14, which applies because $X$ is $\Lambda$-torsion and
+  $E(\Q)[p] = 0$. In Lean the field
+  \texttt{IwasawaData.no\_finite\_submodule}.
+\end{assumption}
+
+\begin{assumption}[Mazur's control theorem]
+  \label{assum:MazurControl}
+  \lean{FinShaRank2.IwasawaData.control}
+  \leanok
+  $X/TX \cong \mathrm{Sel}_{p^\infty}(E/\Q)^\vee$ as $\Z_p$-modules.
+
+  Mazur, Invent.\ Math.\ 18 (1972), in the form of an isomorphism, which is
+  what the hypotheses of Theorem~A give: $p$ is a good ordinary prime,
+  $E(\Q)[p] = 0$, and $p \nmid \prod_v c_v$. In Lean the field
+  \texttt{IwasawaData.control} is the $\Z_p$-linear equivalence.
+\end{assumption}
+
+\begin{assumption}[The dual descent sequence]
+  \label{assum:DescentSequence}
+  \lean{FinShaRank2.SelmerData.mw_sha_exact, FinShaRank2.SelmerData.π_surj, FinShaRank2.SelmerData.ι_inj}
+  \leanok
+  With $\rank E(\Q) = 2$, the Pontryagin dual of
+  $0 \to E(\Q) \otimes \Q_p/\Z_p \to \mathrm{Sel}_{p^\infty}(E/\Q) \to
+  \Sha(E/\Q)[p^\infty] \to 0$ is an exact sequence of $\Z_p$-modules
+  \[
+    0 \to \Sha(E/\Q)[p^\infty]^\vee \xrightarrow{\ \iota\ }
+    \mathrm{Sel}_{p^\infty}(E/\Q)^\vee \xrightarrow{\ \pi\ } \Z_p^2 \to 0 .
+  \]
+
+  Exactness is Pontryagin duality applied to the descent sequence; the
+  target $\Z_p^2$ is the rank, which for $y^2 = x^3 - 56x$ is a $2$-descent
+  with saturation (\S 7.1 of the paper). In Lean the fields
+  \texttt{SelmerData.}$\iota$\texttt{\_inj}, \texttt{SelmerData.}$\pi$\texttt{\_surj} and
+  \texttt{SelmerData.mw\_sha\_exact}.
+\end{assumption}
+
+\section{$p$-adic heights}
+
+\begin{assumption}[The leading term of $L_p$]
+  \label{assum:PadicBSDLeadingTerm}
+  \lean{FinShaRank2.HeightData.spr_padicBSD, FinShaRank2.HeightData.spr_nondeg}
+  \leanok
+  For a split prime $p$ with $\prod_v c_v/(\#E(\Q)_{\mathrm{tors}})^2 = 1$,
+  \[
+    \|\tilde c_2(p)\| \;=\; \|\Reg_\gamma\| \cdot \|\#\Sha(E/\Q)[p^\infty]\| ,
+  \]
+  and $\tilde c_2(p) \in \Z_p^\times$ if and only if the cyclotomic $p$-adic
+  height pairing on $E(\Q)$ is nondegenerate, $v_p(\Reg_\gamma) = 0$, and
+  $\Sha(E/\Q)[p^\infty] = 0$. This is display~(7) of the paper.
+
+  Schneider, Invent.\ Math.\ 79 (1985), Thms.~2 and~2$'$, and Perrin-Riou,
+  Invent.\ Math.\ 109 (1992), \S\S 3.4.2--3.4.3, in the form of
+  Stein--Wuthrich, Math.\ Comp.\ 82 (2013), Thm.~6.1, under Rubin's main
+  conjecture. In Lean the fields \texttt{HeightData.spr\_padicBSD} (the norm
+  identity) and \texttt{HeightData.spr\_nondeg} (the equivalence), both
+  stated for the height layer's own values \texttt{c2norm} and
+  \texttt{shaOrd}; the next node ties those values to the analytic jet and to
+  $\Sha$.
+\end{assumption}
+
+\begin{assumption}[Identification of the height-side values]
+  \label{assum:ProxyTies}
+  \lean{FinShaRank2.PrimeData.c2norm_tie, FinShaRank2.PrimeData.shaOrd_tie}
+  \leanok
+  The value \texttt{c2norm} of the height layer is $\tilde c_2(p)$, and
+  \texttt{shaOrd} is a $p$-adic unit if and only if
+  $\Sha(E/\Q)[p^\infty] = 0$.
+
+  These are not theorems of the literature. They are the two equations that
+  weld the height layer to the analytic and Selmer layers, and the
+  Dictionary depends on them. In Lean the fields
+  \texttt{PrimeData.c2norm\_tie} and \texttt{PrimeData.shaOrd\_tie}. The
+  height layer keeps its own values so that the witness of
+  Theorem~\ref{thm:AssumptionsDoNotForceShaZero} can be constructed.
+\end{assumption}
+
+\section{The Katz measure}
+
+\begin{assumption}[Comparison of $L_p$ with the Katz branch]
+  \label{assum:KatzComparison}
+  \lean{FinShaRank2.KatzData.comparison}
+  \leanok
+  Let $L^{\mathrm{Katz}}_\fp(T)$ be the restriction of the Katz measure
+  $\mu_{\ff\fp^\infty}$ to the cyclotomic line through the central character
+  of $\psi_E$. Then
+  \[
+    L_p(E,T) = c_p \cdot u(T) \cdot L^{\mathrm{Katz}}_\fp(T)
+  \]
+  for some $c_p \in \overline{\Q}_p^\times$ and some unit power series
+  $u(T)$ over the ring of integers of a finite extension of $\Q_p$, and
+  $v_p(c_p) = 0$ for every split $p \notin S_{\mathrm{cmp}}$, where
+  $S_{\mathrm{cmp}} := \{p : p \mid 6N\,\Nm\ff\} \cup
+  \operatorname{supp}(\omega_E)$ and $\omega_E$ is the period ratio. This is
+  Lemma~3.5 of the paper.
+
+  Bannai--Kobayashi, Duke Math.\ J.\ 153 (2010), Cor.~3.12, with de~Shalit,
+  \emph{Iwasawa theory of elliptic curves with complex multiplication}
+  (1987), II \S 4, for the local terms. In Lean the field
+  \texttt{KatzData.comparison}: after base change to the coefficient ring
+  $W$, $L_p = c \cdot u(T) \cdot L^{\mathrm{Katz}}$ with $c \in W^\times$ and
+  $u$ a unit series. The conclusion $v_p(c_p) = 0$ is part of the field's
+  type, for the primes $S_{\mathrm{cmp}}$ does not exclude; for
+  $y^2 = x^3 - 56x$ the period ratio is supported on $\{2, 7\}$, so
+  $S_{\mathrm{cmp}}$ contains no split prime.
+\end{assumption}
+
+\begin{assumption}[The grading congruence for the second moment]
+  \label{assum:GradingCongruence}
+  \lean{FinShaRank2.KatzData.grading_congr}
+  \leanok
+  Let $L^{\mathrm{K}}(T) \in W[[T]]$ be the Katz branch of the previous node
+  and $M_2(\fp)$ the second moment of \S 6.1 of the paper. Then
+  \[
+    2\log_p(1+p)^2\, c_2(L^{\mathrm{K}}) \equiv M_2(\fp) \pmod{p^3 W} .
+  \]
+  This is Proposition~6.2(1) of the paper.
+
+  Bannai--Kobayashi, op.\ cit., Prop.~3.3 and Thm.~3.7, with de~Shalit II
+  \S 4. The integral formula for $c_2(L^{\mathrm{K}})$ as a second moment
+  (Proposition~6.1 of the paper) is not carried in Lean; only this
+  congruence is, as the field \texttt{KatzData.grading\_congr}:
+  $\exists\, \kappa_0 \in W^\times,\ p^2\bigl(\kappa_0 \cdot
+  \mathrm{coeff}_2\,L^{\mathrm{Katz}} - \texttt{m2core}\bigr) \in (p^3)$.
+\end{assumption}
+
+\section{The Eisenstein--Kronecker data}
+
+\begin{assumption}[The divisor and the class functions]
+  \label{assum:ClassFunctions}
+  \lean{FinShaRank2.EKPackage}
+  \leanok
+  Let $\ff$ be the conductor of $\psi_E$, $\varepsilon$ its unit character,
+  $f_0$ a generator of $\ff$, and for $g \in (\OK/\ff)^\times$ put
+  $t_g := g\,\Omega_\infty/f_0$. The divisor is
+  $D_E := \mathrm{Cl}_\ff(K) = (\OK/\ff)^\times/\mu_K$, and for $a \ge 0$,
+  $b \ge 1$ the class function $r_{a,b}$ on $D_E$ is
+  \[
+    r_{a,b} \colon [g] \longmapsto
+      \varepsilon(g)^{-(a+b)}\, \frac{e^*_{a,b}(t_g, 0)}{A(\Gamma)^a}
+      \;\in\; \Qbar .
+  \]
+  This is Definition~5.1 of the paper.
+
+  Bannai--Kobayashi, op.\ cit., (15) and Thm.~1.17 for the coefficients
+  $e^*_{a,b}$, Thm.~2.9 and Cor.~2.11 for algebraicity. In Lean the structure
+  \texttt{EKPackage}: a coefficient field \texttt{K}, a value field
+  \texttt{L}, a finite nonempty set \texttt{D} of points, six functions
+  \texttt{r} at the indices with $a + b \le 3$, and a valuation on
+  \texttt{L} at each rational prime. The truncation to six indices is the
+  formalisation's own.
+
+  This is the exception announced above: no theorem of the project reads a
+  value of \texttt{r}. The class functions enter the paper through the
+  analytic half of Theorem~B, which is not formalised
+  (Chapter~\ref{ch:descoped}). The node is kept so that the assumption
+  surface shown here is the whole of \texttt{ClassicalInputs}.
+\end{assumption}
+
+% ===========================================================================
+\chapter{Kernel lemmas}
+\label{ch:kernel}
+
+The lemmas of this chapter are proved in Lean. Some are pure algebra with no
+classical input behind them; those are dark green in the graph. The others
+consume classical inputs and are light green.
+
+\begin{lemma}[Linear coefficient under the functional equation]
+  \label{lem:FunctionalEquationCoefficient}
+  \lean{FinShaRank2.coeff_one_eq_zero_of_functionalEquation, FinShaRank2.coeff_one_Lp_eq_zero}
+  \leanok
+  Let $R$ be a commutative ring in which $2x = 0$ implies $x = 0$, let
+  $f, U \in R[[T]]$ with $f(0) = 0$ and $U(0) = 1$, and suppose
+  $f\bigl((1+T)^{-1} - 1\bigr) = U\,f$. Then the coefficient of $T$ in $f$ is
+  $0$.
+\end{lemma}
+\begin{proof}[Lean]
+  \leanok
+  Comparing coefficients of $T$ on both sides gives $-c_1 = c_1$, so
+  $2c_1 = 0$. \texttt{coeff\_one\_Lp\_eq\_zero} is the specialisation to
+  $R = \Z_p$.
+\end{proof}
+
+\begin{lemma}[Second-order vanishing at the trivial character]
+  \label{lem:VanishingC0C1}
   \lean{FinShaRank2.c0_eq_zero, FinShaRank2.c1_eq_zero}
   \leanok
+  \uses{assum:Interpolation, assum:CentralValueZero, assum:FunctionalEquation, lem:FunctionalEquationCoefficient}
   Assume $L(E,1) = 0$ and $w(E) = +1$. Then for every good ordinary prime
   $p$, writing $L_p(E,T) = c_0(p) + c_1(p)\,T + c_2(p)\,T^2 + \cdots$,
   \[
     c_0(p) = c_1(p) = 0 .
   \]
+  This is Lemma~3.1 of the paper.
 \end{lemma}
-
 \begin{proof}[Lean]
   \leanok
-  \textbf{$c_0(p) = 0$} (\texttt{c0\_eq\_zero}): the Mazur--Tate--Teitelbaum
-  interpolation formula at the trivial character is carried as a
-  data-equation, the interface field \texttt{AnalyticData.interp}:
-  $\bigl((\mathrm{constantCoeff}\ L_p : \Z_p) : \Q_p\bigr) = (1 -
-  \alpha_p^{-1})^2 \cdot (\text{modularSymbol0} : \Q_p)$. Combined with the
-  certificate \texttt{AnalyticData.msymb\_zero} (the exact vanishing
-  $L(E,1)/\Omega_E = 0$, computed by exact linear algebra on modular
-  symbols), the right side collapses to $0$, and injectivity of
-  $\Z_p \hookrightarrow \Q_p$ gives $c_0(p) = 0$ integrally.
-
-  \textbf{$c_1(p) = 0$} (\texttt{c1\_eq\_zero}): the interface field
-  \texttt{AnalyticData.funct\_eq} supplies the $p$-adic functional equation
-  with $w(E) = +1$ already folded in --- a unit series
-  $U \in \Lambda^\times$, $U(0)=1$, with $L_p(E,(1+T)^{-1}-1) = U(T)\,L_p(E,T)$.
-  The ring-generic kernel lemma \texttt{FinShaRank2.coeff\_one\_Lp\_eq\_zero}
-  (\texttt{Kernel/FunctionalEquation.lean}, mathlib-only, no interface
-  dependence) compares linear
-  coefficients of both sides abstractly, consuming $c_0(p) = 0$ from the
-  first half, to conclude $-c_1(p) = c_1(p)$, hence $c_1(p) = 0$.
+  $c_0(p) = 0$ (\texttt{c0\_eq\_zero}): the interpolation formula with
+  $L(E,1)/\Omega_E = 0$ gives $c_0(p) = 0$ in $\Q_p$, hence in $\Z_p$.
+  $c_1(p) = 0$ (\texttt{c1\_eq\_zero}): the functional equation and
+  $c_0(p) = 0$ put $L_p$ under
+  Lemma~\ref{lem:FunctionalEquationCoefficient}.
 \end{proof}
 
-% ===========================================================================
-\chapter{The normalisation dictionary}
+\begin{lemma}[{Anomalous primes of a curve with CM by $\Z[i]$}]
+  \label{lem:NoAnomalousPrimes}
+  \lean{FinShaRank2.anomalous_iff_five, FinShaRank2.noAnomalous, FinShaRank2.eq_five_or_thirteen_le}
+  \leanok
+  \uses{assum:HasseBound, assum:DeuringTrace, assum:UnitRoot}
+  Let $E/\Q$ have complex multiplication by $\Z[i]$ and let
+  $p \equiv 1 \pmod 4$ be a prime of good reduction. Then $a_p$ is even,
+  and $p$ is anomalous for $E$ if and only if $p = 5$ and $a_5 = -4$.
+  This is Lemma~2.2 of the paper, for split $p$.
+\end{lemma}
+\begin{proof}[Lean]
+  \leanok
+  \texttt{anomalous\_iff\_five}: over $p \equiv 1 \pmod 4$, $2 \mid a$ and
+  $a^2 \le 4p$, $(a : \Z/p) = 1$ if and only if $p = 5$ and $a = -4$.
+  \texttt{eq\_five\_or\_thirteen\_le} splits into $p = 5$ and $p \ge 13$;
+  for $p \ge 13$ the Hasse bound excludes $a \equiv 1$, and at $p = 5$ the
+  congruence, the bound and evenness leave $a = -4$. Evenness is
+  \texttt{two\_dvd\_ap}, from $a_p = 2\,\mathrm{Re}(\pi)$.
+  \texttt{noAnomalous} is the form the normalisation consumes: for split
+  $p$ with $a_5 \ne -4$ when $p = 5$, $1 - \alpha_p^{-1}$ is a $p$-adic
+  unit. The part of the paper's lemma for $p \not\equiv 1 \pmod 4$ is not
+  formalised; no theorem uses it.
+\end{proof}
 
 \begin{proposition}[Normalisation]
-  \label{prop:normalisation}
-  \lean{FinShaRank2.isPUnit_c2tilde_iff, FinShaRank2.isPUnit_c2tilde_iff_of_split}
+  \label{prop:Normalisation}
+  \lean{FinShaRank2.isPUnit_c2tilde_iff, FinShaRank2.isPUnit_c2tilde_iff_of_split, FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv}
   \leanok
-  \uses{def:c2tilde, lem:noanomalous}
+  \uses{def:NormalisedSecondJet, lem:NoAnomalousPrimes, assum:StandingHypotheses}
   Let $p = \fp\bar\fp$ be a split prime of good reduction with
-  $p \nmid \prod_v c_v \cdot \#E(\Q)_{\mathrm{tors}}$, and suppose $p$ is not
-  anomalous. Then
-  \[
-    v_\fp\bigl(\tilde c_2(p)\bigr) = v_\fp\bigl(c_2(p)\bigr) ;
-  \]
-  in particular $\tilde c_2(p) \in \Z_p^\times$ if and only if
-  $v_\fp(c_2(p)) = 0$.
+  $p \nmid \prod_v c_v \cdot \#E(\Q)_{\mathrm{tors}}$, not anomalous. Then
+  $\tilde c_2(p) \in \Z_p^\times$ if and only if $c_2(p) \in \Z_p^\times$.
+  This is Proposition~3.3 of the paper.
 \end{proposition}
 \begin{proof}[Lean]
   \leanok
-  Rendered as the equivalence, not as the equality of valuations:
-  \texttt{isPUnit\_c2tilde\_iff} states $\tilde c_2(p) \in \Z_p^\times \iff
-  c_2(p) \in \Z_p^\times$ from the two hypotheses that
-  $1 - \alpha_p^{-1}$ is a $p$-adic unit and that the rational factor
-  $(\#\mathrm{tors})^2/\prod_v c_v$ equals $1$ (the testbed value, pinned by
-  the interface field \texttt{ClassicalInputs.torsSqOverTam\_eq}). It is
-  ring-generic and carries no interface dependence.
-
-  \texttt{isPUnit\_c2tilde\_iff\_of\_split} is the same statement with the
-  unit hypothesis discharged from the \texttt{AnalyticData} fields
-  \texttt{hasse}, \texttt{ap\_from\_CM} and \texttt{alpha\_root} through
-  \texttt{noAnomalous} (Lemma~\ref{lem:noanomalous}). It is not the route the
-  main theorems take: \texttt{prop\_consequence} calls
-  \texttt{isPUnit\_c2tilde\_iff} with non-anomality supplied by the interface
-  field \texttt{ClassicalInputs.notAnomalous}, through
-  \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv}. It is kept audited
-  because it bounds what \texttt{notAnomalous} assumes beyond the proved
-  Lemma~\ref{lem:noanomalous}.
+  \texttt{isPUnit\_c2tilde\_iff} proves the equivalence from two
+  hypotheses: $1 - \alpha_p^{-1}$ is a $p$-adic unit, and
+  $(\#\mathrm{tors})^2/\prod_v c_v = 1$. Theorem~A discharges the first
+  through \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv}, from the
+  field \texttt{notAnomalous}, and the second from
+  \texttt{torsSqOverTam\_eq}. \texttt{isPUnit\_c2tilde\_iff\_of\_split}
+  discharges the first instead from Lemma~\ref{lem:NoAnomalousPrimes}; it
+  is kept because it bounds what \texttt{notAnomalous} assumes.
 \end{proof}
 
-% ===========================================================================
-\chapter{The Katz-measure comparison}
-
-\begin{assumption}[Comparison of $L_p$ with the Katz branch]
-  \label{lem:comparison}
-  \lean{FinShaRank2.KatzData.comparison}
-  Let $E/\Q$ have CM by $\OK$ and conductor $N$, let $p = \fp\bar\fp \ge 5$
-  be a good split prime, and let $L^{\mathrm{Katz}}_\fp(T)$ be the
-  restriction of the Katz measure $\mu_{\ff\fp^\infty}$ to the cyclotomic
-  line through the central character of $\psi_E$. Then
-  \[
-    L_p(E,T) = c_p \cdot u(T) \cdot L^{\mathrm{Katz}}_\fp(T)
-  \]
-  for some $c_p \in \overline{\Q}_p^\times$ and some unit power series
-  $u(T)$ over the ring of integers of a finite extension of $\Q_p$.
-  Moreover $v_p(c_p) = 0$ for every split $p \notin S_{\mathrm{cmp}}$, where
-  $S_{\mathrm{cmp}} := \{p : p \mid 6N\,\Nm\ff\} \cup
-  \operatorname{supp}(\omega_E)$ is finite, $\omega_E$ being the period
-  ratio.
-
-  \textbf{Classical input, not formalized as a theorem.} SOURCE:
-  Bannai--Kobayashi, \emph{Algebraic theta functions and the $p$-adic
-  interpolation of Eisenstein--Kronecker numbers}, Duke Math. J. 153 (2010),
-  no. 2, 229--295, Cor. 3.12, together with de~Shalit, \emph{Iwasawa theory
-  of elliptic curves with complex multiplication}, Perspectives in
-  Mathematics 3 (1987), II \S4, for the local terms. Rendered in Lean as the
-  interface field \texttt{KatzData.comparison}: after base change to the
-  coefficient ring $W$, $L_p$ equals $c \cdot u(T) \cdot L^{\mathrm{Katz}}$
-  for a \emph{unit} $c \in W^\times$ and a unit series $u$. The
-  $v_p(c_p) = 0$ conclusion is baked into the field's type, for the primes
-  $S_{\mathrm{cmp}}$ already excludes; for the testbed curve the period
-  ratio is supported on $\{2,7\}$, so $S_{\mathrm{cmp}}$ excludes no split
-  prime.
-\end{assumption}
-
-% ===========================================================================
-\chapter{Non-anomalous primes}
-
-\begin{lemma}[{Anomalous primes of a curve with CM by $\Z[i]$}]
-  \label{lem:noanomalous}
-  \lean{FinShaRank2.anomalous_iff_five, FinShaRank2.noAnomalous, FinShaRank2.eq_five_or_thirteen_le}
+\begin{lemma}[A series with a double zero and unit second coefficient]
+  \label{lem:TSquaredUnit}
+  \lean{FinShaRank2.tsq_factor, FinShaRank2.muZero_of_coeffs, FinShaRank2.lambdaAn_eq_two_of_coeffs, FinShaRank2.associated_X_sq_of_coeffs}
   \leanok
-  Let $E/\Q$ be an elliptic curve with complex multiplication by $\Z[i]$ and
-  let $p$ be a prime of good reduction for $E$. If $p \equiv 1 \pmod 4$,
-  then $a_p$ is even, and $p$ is anomalous for $E$ if and only if $p = 5$
-  and $a_5 = -4$.
+  \uses{def:IwasawaInvariants}
+  Let $f \in \Lambda$ with $c_0(f) = c_1(f) = 0$ and $c_2(f) \in
+  \Z_p^\times$. Then $f = T^2 u$ for a unit $u \in \Lambda^\times$; hence
+  $\mu(f) = 0$, $\lambda(f) = 2$, and $f$ and $T^2$ generate the same
+  ideal.
 \end{lemma}
 \begin{proof}[Lean]
   \leanok
-  \texttt{anomalous\_iff\_five} is the equivalence, over the hypotheses
-  $p \equiv 1 \pmod 4$, $2 \mid a$ and $a^2 \le 4p$: it proves
-  $(a : \Z/p) = 1 \iff (p = 5 \wedge a = -4)$. Forward,
-  \texttt{eq\_five\_or\_thirteen\_le} splits the split prime into $p = 5$ and
-  $p \ge 13$; the second branch is killed by the Hasse-bound squeeze
-  \texttt{ap\_ne\_one\_of\_hasse}, and at $p = 5$ the congruence, the Hasse
-  bound and evenness leave only $a = -4$. Backward is
-  $-4 \equiv 1 \pmod 5$, by \texttt{decide}. Evenness of $a_p$ is
-  \texttt{two\_dvd\_ap}, from the \texttt{AnalyticData} field
-  \texttt{ap\_from\_CM} ($a_p = 2\,\mathrm{Re}(\pi)$ for a Gaussian integer
-  $\pi$ of norm $p$).
+  \texttt{tsq\_factor} produces $u$; the three consequences are read off
+  from the factorisation.
+\end{proof}
 
-  \texttt{noAnomalous} is the composed form the normalisation consumes: from
-  \texttt{hasse}, \texttt{ap\_from\_CM}, \texttt{alpha\_root} and the case
-  split $13 \le p \vee (p = 5 \wedge a_p = -2)$ it concludes that
-  $1 - \alpha_p^{-1}$ is a $p$-adic unit. The testbed curve has $a_5 = -2$,
-  so it is not the anomalous case.
+\begin{lemma}[The Selmer dual is free of rank two]
+  \label{lem:SelmerDualStructure}
+  \lean{FinShaRank2.selmer_dual_structure, FinShaRank2.quotient_collapse, FinShaRank2.rank_lower_bound}
+  \leanok
+  Let $X$ be a finitely generated $\Lambda$-module with no nonzero finite
+  submodule, and suppose there is a $\Lambda$-linear map
+  $X \to \prod_i \Lambda/(f_i)$ with finite kernel and cokernel such that
+  $\prod_i f_i$ and $T^2$ generate the same ideal. If
+  $\dim_{\Q_p}(X/TX) \otimes \Q_p \ge 2$, then $TX = 0$ and $X \cong \Z_p^2$.
+\end{lemma}
+\begin{proof}[Lean]
+  \leanok
+  \texttt{selmer\_dual\_structure} is the statement. The pseudo-isomorphism
+  and the characteristic ideal $(T^2)$ bound the $\Z_p$-rank of $X/TX$ by
+  $2$; with the lower bound, $X/TX$ is free of rank $2$, and the absence of
+  finite submodules forces $TX = 0$. \texttt{rank\_lower\_bound} supplies
+  the lower bound from a surjection onto $\Z_p^2$, and
+  \texttt{quotient\_collapse} identifies $X/TX$ with $X$ once $TX = 0$.
+  This is the algebraic core of Theorem~A, Steps 2 and 3 of the paper.
+\end{proof}
 
-  Part~(1) of the paper's lemma --- $p \not\equiv 1 \pmod 4$ implies
-  $p \mid a_p$ --- is not formalized. Its proof reduces to Deuring's
-  reduction criterion, and mathlib has neither that criterion nor the
-  reduction of a CM elliptic curve. Every downstream theorem uses the split
-  case only.
+\begin{lemma}[The descent endgame]
+  \label{lem:ShaEndgame}
+  \lean{FinShaRank2.sha_endgame, FinShaRank2.sha_endgame_of_nonempty}
+  \leanok
+  Let $0 \to A \xrightarrow{\iota} S \xrightarrow{\pi} \Z_p^2 \to 0$ be an
+  exact sequence of finitely generated $\Z_p$-modules with $S \cong \Z_p^2$.
+  Then $A = 0$ and $\mathrm{rank}_{\Z_p} S = 2$.
+\end{lemma}
+\begin{proof}[Lean]
+  \leanok
+  $\pi$ is a surjective endomorphism of a finitely generated module over a
+  commutative ring, up to the identification $S \cong \Z_p^2$, hence
+  injective; so $\ker \pi = \iota(A) = 0$. This is Step~5 of the paper.
+\end{proof}
+
+\begin{lemma}[Decoupling]
+  \label{lem:Decoupling}
+  \lean{FinShaRank2.Decoupling.coeff_two_mul, FinShaRank2.Decoupling.isUnit_coeff_two_of_comparison}
+  \leanok
+  \uses{assum:KatzComparison}
+  \begin{enumerate}
+    \item Let $R$ be a commutative ring and $A, B \in R[[T]]$ with
+      $c_0(B) = c_1(B) = 0$. Then $c_2(AB) = A(0)\, c_2(B)$.
+    \item For $p \notin S_E$ split, $c_2(p)$ is a $p$-adic unit if and only
+      if $c_2(L^{\mathrm{K}})$ is.
+  \end{enumerate}
+  This is Lemma~6.3 of the paper.
+\end{lemma}
+\begin{proof}[Lean]
+  \leanok
+  Part (1) is \texttt{Decoupling.coeff\_two\_mul}: $c_2(AB) = c_0(A)c_2(B) +
+  c_1(A)c_1(B) + c_2(A)c_0(B)$ and the last two terms vanish. Part (2) is
+  \texttt{Decoupling.isUnit\_coeff\_two\_of\_comparison}: part (1) along a
+  local ring homomorphism moves the unit property across the comparison of
+  Classical input~\ref{assum:KatzComparison}. No derivative of the
+  comparison factor or of the Euler factor reaches the second coefficient.
+\end{proof}
+
+\begin{proposition}[The criterion class]
+  \label{prop:CriterionClass}
+  \lean{FinShaRank2.isUnit_iff_residue_ne_zero_of_grading_congr}
+  \leanok
+  \uses{assum:GradingCongruence}
+  Let $W$ be a local integral domain with maximal ideal $(\varpi)$, let
+  $\kappa_0 \in W^\times$, and let $c, m \in W$ with
+  $\varpi^2(\kappa_0 c - m) \in (\varpi^3)$. Then $c$ is a unit if and only
+  if the residue of $m$ is nonzero. Applied to the grading congruence:
+  $v_p(c_2(L^{\mathrm{K}})) = 0$ if and only if the criterion class
+  $\mathfrak{c}(\fp) := p^{-2}M_2(\fp) \bmod \mathfrak{m}_W$ is nonzero.
+  This is Proposition~6.2(2) of the paper.
+\end{proposition}
+\begin{proof}[Lean]
+  \leanok
+  The Lean lemma is the abstract statement about $W$, with no interface
+  dependence; it is instantiated at $\varpi = p$ over the Katz coefficient
+  ring.
 \end{proof}
 
 % ===========================================================================
-\chapter{The arithmetic consequence of a unit second jet}
-\label{ch:consequence}
+\chapter{Theorem A}
+\label{ch:theoremA}
 
-\begin{theorem}[$=$ Theorem A]
-  \label{prop:consequence}
-  \lean{FinShaRank2.prop_consequence, FinShaRank2.ClassicalInputs.isPUnit_one_sub_alphaInv}
+\begin{theorem}[Theorem A]
+  \label{thm:TheoremA}
+  \lean{FinShaRank2.prop_consequence}
   \leanok
-  \uses{lem:c0c1, prop:normalisation, lem:noanomalous, def:c2tilde}
+  \uses{def:NormalisedSecondJet, def:IwasawaInvariants, prop:Normalisation, lem:VanishingC0C1, lem:TSquaredUnit, lem:SelmerDualStructure, lem:ShaEndgame, assum:RubinStructure, assum:NoFiniteSubmodule, assum:MazurControl, assum:DescentSequence}
   Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
   field $K$, with $\rank E(\Q) = 2$, $L(E,1) = 0$ and $w(E) = +1$. Let
   $p = \fp\bar\fp \ge 5$ be a split prime of good reduction with
@@ -265,105 +619,41 @@ mistaken for an oversight.
     \item $\corank_{\Z_p}\, \Sel_{p^\infty}(E/\Q) = 2$;
     \item $\Sha(E/\Q)[p^\infty] = 0$.
   \end{enumerate}
+  This is Theorem~3.8 of the paper.
 \end{theorem}
 \begin{proof}[Lean]
   \leanok
-  The theorem's content is the implication from the unit condition at a
-  \emph{single} prime, so the formal statement takes that condition as a
-  hypothesis and mentions no conjecture. The curve-level hypotheses --- CM by
-  the maximal order, $\rank E(\Q) = 2$, $L(E,1) = 0$, $w(E) = +1$ --- are
-  carried by $H : \texttt{ClassicalInputs}$ and its per-prime bundles, and
-  are not restated in the Lean statement; this is the standing convention of
-  the project. ``$p \ge 5$ of good reduction, $p \notin S_E$'' is
-  \texttt{hsplit : p \% 4 = 1} together with \texttt{hpS : p \(\notin\) H.S}.
-  \textbf{Assembly route}: (1)
-  Proposition~\ref{prop:normalisation} turns the unit hypothesis into
-  $c_2(p) \in \Z_p^\times$; (2) Lemma~\ref{lem:c0c1} gives $c_0=c_1=0$; (3)
-  the ring-generic $T^2$-factorisation kernel
-  (\texttt{Kernel/TsqUnit.lean}) turns $c_0=c_1=0$,
-  $c_2 \in \Z_p^\times$ into $L_p = X^2 \cdot (\text{unit})$, i.e. $\mu=0$,
-  $\lambda=2$; (4) Mazur's control theorem (interface field
-  \texttt{IwasawaData.control}) transports the resulting rank bound onto the
-  Selmer dual's coinvariants; (5) Rubin's main conjecture for CM elliptic
-  curves, via the structure theorem for finitely generated
-  $\Lambda$-modules (interface field \texttt{IwasawaData.rubin\_structure}),
-  identifies the characteristic ideal with $(L_p)$ and feeds
-  \texttt{FinShaRank2.selmer\_dual\_structure} (the project's
-  highest-risk kernel lemma, \texttt{Kernel/LambdaModule.lean}) to pin $\mathrm{Sel}_{p^\infty}(E/\Q)^\vee
-  \simeq \Z_p^2$; (6) the Pontryagin dual of the Mordell--Weil/$\Sha$ descent
-  sequence (interface \texttt{SelmerData}, via
-  \texttt{FinShaRank2.sha\_endgame\_of\_nonempty},
-  \texttt{Kernel/ShaEndgame.lean}) then delivers
-  $\Sha(E/\Q)[p^\infty]=0$ and the corank $2$ conclusion.
+  \texttt{prop\_consequence} takes $H : \texttt{ClassicalInputs}$, a split
+  prime $p \notin H.S$, and the unit condition at $p$, and concludes the
+  four statements on the Pontryagin-dual side: \texttt{MuZero},
+  \texttt{lambdaAn = 2}, \texttt{finrank SelDual = 2} and
+  \texttt{Subsingleton ShaDual}. The curve-level hypotheses are carried by
+  $H$ and not restated.
 
-  \textbf{Where non-anomality comes from.} The exclusion $p \notin S_E$ is
-  otherwise opaque \texttt{Finset} data. The interface field
-  \texttt{ClassicalInputs.notAnomalous} renders the $S_{\mathrm{an}}$
-  clause of the paper's definition of $S_E$, as $a_p \not\equiv 1 \pmod p$
-  for every split $p \notin S$. The
-  bridge from that field to Proposition~\ref{prop:normalisation} is
-  \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv}, which feeds it
-  through \texttt{isPUnit\_one\_sub\_alphaInv\_iff}. Lemma~\ref{lem:noanomalous}
-  proves the clause outright at every split $p \ge 13$ and reduces it at
-  $p = 5$ to $a_5 \ne -4$, so what \texttt{notAnomalous} assumes beyond the
-  proved lemma is a single numerical value.
+  The proof follows the paper's steps. Proposition~\ref{prop:Normalisation}
+  turns the unit condition into $c_2(p) \in \Z_p^\times$.
+  Lemma~\ref{lem:VanishingC0C1} gives $c_0 = c_1 = 0$.
+  Lemma~\ref{lem:TSquaredUnit} gives $L_p = T^2 u$, hence (1), and the
+  characteristic ideal $(T^2)$. Mazur's control theorem
+  (\ref{assum:MazurControl}) and the surjection of the descent sequence
+  (\ref{assum:DescentSequence}) give $\mathrm{rank}\,(X/TX) \ge 2$. Rubin's
+  structure statement (\ref{assum:RubinStructure}) and the absence of finite
+  submodules (\ref{assum:NoFiniteSubmodule}) feed
+  Lemma~\ref{lem:SelmerDualStructure}, which gives
+  $\mathrm{Sel}_{p^\infty}(E/\Q)^\vee \cong \Z_p^2$ through the control
+  isomorphism. Lemma~\ref{lem:ShaEndgame} on the descent sequence gives (2)
+  and (3).
 \end{proof}
-
-\begin{assumption}[No finite submodule]
-  \label{rmk:nofinitesub}
-  The compact Selmer dual $X = \mathrm{Sel}_{p^\infty}(E/\Q_\infty)^\vee$ has
-  no nonzero finite $\Lambda$-submodule --- the hypothesis that lets Mazur's
-  control theorem produce an honest isomorphism onto
-  $\mathrm{Sel}_{p^\infty}(E/\Q)^\vee$ rather than a map with kernel/cokernel.
-
-  \textbf{Classical input, not a separately labeled paper statement}
-  (recorded in the running commentary of \texttt{prop:consequence}'s proof).
-  SOURCE: Greenberg, \emph{Iwasawa theory for elliptic curves}, LNM 1716
-  (Springer, 1999), Prop.~4.14, applicable here because
-  $\mathrm{Sel}_{p^\infty}(E/\Q_\infty)$ is $\Lambda$-cotorsion (Step 2,
-  $\mathrm{car}_\Lambda(X) = (L_p) = (T^2)$) and $E(\Q)[p]=0$. Rendered as
-  the interface field \texttt{IwasawaData.no\_finite\_submodule}.
-\end{assumption}
 
 % ===========================================================================
 \chapter{The height dictionary}
-
-\begin{assumption}[$p$-adic BSD, leading-term form]
-  \label{eq:padicbsd}
-  \lean{FinShaRank2.HeightData.spr_padicBSD, FinShaRank2.HeightData.spr_nondeg}
-  Let $p$ be a split prime with $\prod_v c_v/(\#E(\Q)_{\mathrm{tors}})^2 = 1$.
-  The expected leading-coefficient identity reads
-  \[
-     c_2(p) \;=\; (1-\alpha_p^{-1})^2 \cdot \frac{\mathrm{Reg}_p}{\log_p(1+p)^2}
-     \cdot \#\Sha(E/\Q)[p^\infty]
-  \]
-  up to a $p$-adic unit, equivalently
-  $\|\tilde c_2(p)\| = \|\mathrm{Reg}_\gamma\| \cdot \|\#\Sha[p^\infty]\|$,
-  and (leading-term dictionary) $\tilde c_2(p) \in \Z_p^\times \iff$
-  (the cyclotomic $p$-adic height pairing is nondegenerate,
-  $v_p(\mathrm{Reg}_\gamma)=0$, and $\Sha(E/\Q)[p^\infty]=0$).
-
-  \textbf{Classical input, not formalized as a theorem.} SOURCE: Schneider,
-  \emph{$p$-adic height pairings II}, Invent. Math. 79 (1985), 329--374, and
-  Perrin-Riou, \emph{Théorie d'Iwasawa et hauteurs $p$-adiques}, Invent.
-  Math. 109 (1992), 137--185, packaged as Stein--Wuthrich, \emph{Algorithms
-  for the arithmetic of elliptic curves using Iwasawa theory}, Math. Comp.
-  82 (2013), 1757--1792, Thm.~6.1. Rendered as the two interface fields
-  \texttt{HeightData.spr\_padicBSD} (the norm identity) and
-  \texttt{HeightData.spr\_nondeg} (the iff), both phrased over
-  \texttt{HeightData}'s own proxies \texttt{c2norm}, \texttt{shaOrd} rather
-  than \texttt{IsUnit (coeff 2 Lp)} or \texttt{Subsingleton ShaDual}. The
-  proxies are the one deliberate exception to the rule that an interface
-  field states its conclusion in the terms the theorems use; they are kept
-  so that the anti-vacuity witness \texttt{ToySha}
-  (Chapter~\ref{ch:nonvacuity}) stays constructible.
-\end{assumption}
+\label{ch:dictionary}
 
 \begin{proposition}[Analytic--arithmetic dictionary]
-  \label{prop:dictionary}
+  \label{prop:Dictionary}
   \lean{FinShaRank2.prop_dictionary}
   \leanok
-  \uses{eq:padicbsd, def:c2tilde}
+  \uses{def:NormalisedSecondJet, assum:PadicBSDLeadingTerm, assum:ProxyTies}
   Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
   field $K$, with $\rank E(\Q) = 2$, $L(E,1) = 0$ and $w(E) = +1$, and let
   $p \notin S_E$ be a split prime of good reduction. The following are
@@ -373,285 +663,90 @@ mistaken for an oversight.
     \item the cyclotomic $p$-adic height pairing on $E(\Q)$ is nondegenerate
       with $v_p(\Reg_\gamma) = 0$, and $\Sha(E/\Q)[p^\infty] = 0$.
   \end{enumerate}
+  This is Proposition~4.2 of the paper, and the equivalence (1) $\iff$ (2) of
+  Theorem~B.
 \end{proposition}
 \begin{proof}[Lean]
   \leanok
-  Both directions are a single rewrite along three definitional
-  tie-equations of \texttt{PrimeData}: \texttt{c2norm\_tie} identifies the
-  height-side proxy \texttt{c2norm} with the normalised analytic jet
-  $\tilde c_2(p)$; the interface iff \texttt{HeightData.spr\_nondeg}
-  (Assumption~\ref{eq:padicbsd}) supplies the equivalence in the proxy's own
-  terms; \texttt{shaOrd\_tie} identifies the $\Sha$-order proxy being a unit
-  with \texttt{Subsingleton ShaDual}. No non-anomality hypothesis is needed:
-  unlike Theorem~\ref{prop:consequence}, this route never converts between
-  $\tilde c_2$ and $c_2$.
+  Both directions are a rewrite along the two identifications of
+  Classical input~\ref{assum:ProxyTies} and the equivalence of Classical
+  input~\ref{assum:PadicBSDLeadingTerm}. No non-anomality hypothesis is
+  needed: this route never converts between $\tilde c_2$ and $c_2$.
 \end{proof}
-
-% ===========================================================================
-\chapter{The Bannai--Kobayashi jet and the criterion class}
-
-\begin{assumption}[The central second jet as a second moment]
-  \label{prop:jetformula}
-  \lean{FinShaRank2.KatzData.grading_congr}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $L(E,1) = 0$ and $w(E) = +1$, and let
-  $p = \fp\bar\fp \ge 5$ be a prime of good reduction split in $K$. Let
-  $L^{\mathrm{K}}(T) \in W[[T]]$ be the restriction of the Katz measure of
-  $E$, twisted to the central character of $\psi_E$, to the cyclotomic line,
-  and let $\ell$ be the composite of the cyclotomic character with $\log_p$.
-  Then $\int d\mu_\psi = \int \ell\, d\mu_\psi = 0$ and
-  \[
-    c_2(L^{\mathrm{K}}) = \frac{1}{2\log_p(1+p)^2}\int_{G_\infty} \ell(g)^2\, d\mu_\psi(g) .
-  \]
-
-  \textbf{Descope.} The integral formula is not carried in Lean; only the
-  algebraic congruence it feeds into (Proposition~\ref{prop:grading}(1)) is
-  present, as the interface field \texttt{KatzData.grading\_congr}:
-  $\exists\, \kappa_0 \in W^\times,\ p^2\bigl(\kappa_0 \cdot
-  \mathrm{coeff}_2\,L^{\mathrm{Katz}} - \texttt{m2core}\bigr) \in (p^3)$.
-  Formalizing the measure-theoretic integral is out of scope for this
-  project. SOURCE: Bannai--Kobayashi, Duke Math. J. 153 (2010),
-  Prop.~3.3/Thm.~3.7, plus de~Shalit II \S4.
-\end{assumption}
-
-\begin{proposition}[Grading of the second moment; the criterion class]
-  \label{prop:grading}
-  \lean{FinShaRank2.isUnit_iff_residue_ne_zero_of_grading_congr}
-  \uses{prop:jetformula}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, with $L(E,1) = 0$ and $w(E) = +1$, let $\ff$ be the conductor
-  of $\psi_E$, and let $p = \fp\bar\fp \ge 5$ be a prime of good reduction
-  split in $K$ with $p \nmid \#\mathrm{Cl}_\ff(K)$. Write
-  $G_\infty = \Delta \times G^{(1)}$; for $\delta \in \Delta$ let
-  $\mu_\delta$ be the restriction of $\mu_\psi$ to the coset
-  $\delta \times G^{(1)}$, in coordinates $(x,y)$ on $(1+p\Z_p)^2$; put
-  $u_1 = x - 1$, $u_2 = y - 1$, and set
-  $M_2(\fp) := \sum_{\delta \in \Delta} \int (u_1 + u_2)^2\, d\mu_\delta$.
-  Then:
-  \begin{enumerate}
-    \item $2\log_p(1+p)^2\, c_2(L^{\mathrm{K}}) \equiv M_2(\fp)
-      \pmod{p^3 W}$;
-    \item $v_p(M_2(\fp)) \ge 2$, and $v_p(c_2(L^{\mathrm{K}})) = 0$ if and
-      only if the \emph{criterion class}
-      $\mathfrak{c}(\fp) := p^{-2}M_2(\fp) \bmod \mathfrak{m}_W$ is nonzero.
-  \end{enumerate}
-\end{proposition}
-
-Part (1) is the classical premise, carried as the interface field
-\texttt{KatzData.grading\_congr} of Assumption~\ref{prop:jetformula} and not
-independently proved here; the node therefore carries no
-\texttt{\textbackslash leanok}, so as not to overclaim it. Part (2) is proved
-unconditionally, as an abstract local-domain valuation criterion with no
-interface dependence: given a local integral domain $W$ with maximal ideal
-$(\varpi)$, a unit $\kappa_0$, and $c, m \in W$ with
-$\varpi^2(\kappa_0 c - m) \in (\varpi^3)$, then
-$\mathrm{IsUnit}\, c \iff \mathrm{residue}(m) \ne 0$. That is the kernel
-lemma named above, sorry-free and mathlib-only, instantiated at
-$\varpi := p$ over the Katz coefficient ring $W$.
-
-\begin{lemma}[Decoupling]
-  \label{lem:decoupling}
-  \lean{FinShaRank2.Decoupling.coeff_two_mul, FinShaRank2.Decoupling.isUnit_coeff_two_of_comparison}
-  \leanok
-  \uses{lem:comparison}
-  \begin{enumerate}
-    \item Let $R$ be a commutative ring and let $A, B \in R[[T]]$ satisfy
-      $c_0(B) = c_1(B) = 0$. Then $c_2(AB) = A(0)\, c_2(B)$.
-    \item Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary
-      quadratic field $K$, with $L(E,1) = 0$ and $w(E) = +1$, and let
-      $p = \fp\bar\fp \ge 5$ be a prime of good reduction split in $K$ with
-      $p \notin S_E$. Then $v_p(c_2(p)) = v_p(c_2(L^{\mathrm{K}}))$.
-  \end{enumerate}
-\end{lemma}
-\begin{proof}[Lean]
-  \leanok
-  Part (1) is \texttt{Decoupling.coeff\_two\_mul}: $c_2(AB) = c_0(A)c_2(B) +
-  c_1(A)c_1(B) + c_2(A)c_0(B)$ and the last two terms vanish. It is
-  ring-generic, with no interface dependence.
-
-  Part (2) is rendered as the transfer of unit-ness rather than as the
-  equality of valuations: \texttt{Decoupling.isUnit\_coeff\_two\_of\_comparison}
-  applies part (1) along a local ring hom to move
-  $\mathrm{IsUnit}(\mathrm{coeff}_2\, L^{\mathrm{Katz}})$ across the
-  comparison of Assumption~\ref{lem:comparison} to
-  $\mathrm{IsUnit}(\mathrm{coeff}_2\, L_p)$.
-
-  What part (1) rules out is a contribution to the leading grade from any
-  derivative of the comparison or Euler-type factors, and in particular a
-  Fermat-quotient term. The paper makes that point in the remark
-  \texttt{rmk:fq} after the lemma.
-\end{proof}
-
-\begin{assumption}[The divisor and the class functions]
-  \label{def:classsums}
-  \lean{FinShaRank2.EKPackage}
-  Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
-  field $K$, let $\ff$ be the conductor of its Grossencharacter $\psi_E$, let
-  $\varepsilon$ be its unit character, fix a generator $f_0$ of $\ff$, and
-  for $g \in (\OK/\ff)^\times$ put $t_g := g\,\Omega_\infty/f_0$. The divisor
-  is the ray class group $D_E := \mathrm{Cl}_\ff(K) = (\OK/\ff)^\times/\mu_K$,
-  and for $a \ge 0$, $b \ge 1$ the class function $r_{a,b}$ on $D_E$ is
-  \[
-    r_{a,b} \colon [g] \longmapsto
-      \varepsilon(g)^{-(a+b)}\, \frac{e^*_{a,b}(t_g, 0)}{A(\Gamma)^a}
-      \;\in\; \Qbar .
-  \]
-
-  \textbf{Classical input, not formalized as a theorem.} SOURCE:
-  Bannai--Kobayashi, \emph{Algebraic theta functions and the $p$-adic
-  interpolation of Eisenstein--Kronecker numbers}, Duke Math. J. 153 (2010),
-  no. 2, 229--295, (15) and Thm.~1.17 for the coefficients $e^*_{a,b}$, and
-  Thm.~2.9 with Cor.~2.11 for algebraicity of the values after division by
-  $A(\Gamma)^a$; finiteness of $D_E$ is finiteness of the ray class group.
-  Rendered in Lean as the structure \texttt{EKPackage}: the coefficient field
-  \texttt{K}, the value field \texttt{L} (the paper's $\Qbar$), a finite
-  nonempty \texttt{Finset} \texttt{D} of points, six sections
-  \texttt{r : Fin 6 \(\to\) \(\iota\) \(\to\) L} at the indices with
-  $a + b \le 3$, and a multiplicative \texttt{Valuation} \texttt{v p} on
-  \texttt{L} for each rational prime $p$. The truncation to six indices is the
-  formalization's; the paper states no finite index set.
-  The elliptic-curve construction behind those values is not unfolded; that is
-  the descope recorded in the closing chapter.
-
-  Nothing in the project consumes a section value. The class functions enter
-  the paper through the exact criterion, which is not formalized
-  (Chapter~\ref{ch:descoped}); \texttt{EKPackage} is carried as a field of
-  \texttt{ClassicalInputs} and read by no theorem.
-\end{assumption}
 
 % ===========================================================================
 \chapter{Non-vacuity of the assumption surface}
 \label{ch:nonvacuity}
 
 \begin{theorem}[The assumption surface is satisfiable]
-  \label{nonvac:trivial}
+  \label{thm:AssumptionsSatisfiable}
   \lean{FinShaRank2.ToyTrivial}
   \leanok
-  There is a proved instance \texttt{ToyTrivial : ClassicalInputs}, with
-  every field discharged in a toy world ($S = \varnothing$, $D_E$ a single
-  point, $L_p = X^2$, \ldots) and no incomplete proofs. So
-  \texttt{ClassicalInputs} is not internally contradictory, and the headline
-  theorems are not vacuously true.
+  There is an instance \texttt{ToyTrivial : ClassicalInputs}, with every
+  field discharged in a toy world ($S = \varnothing$, $D_E$ a single point,
+  $L_p = T^2$) and no incomplete proof. So \texttt{ClassicalInputs} is
+  consistent and the theorems are not vacuously true.
 \end{theorem}
 \begin{proof}[Lean]
   \leanok
-  Every one of the interface layers (\texttt{AnalyticData},
-  \texttt{IwasawaData}/\texttt{SelmerData}, \texttt{HeightData},
-  \texttt{KatzData}, \texttt{EKPackage}) is instantiated concretely
-  (\texttt{Toy/Analytic.lean}, \texttt{Toy/Iwasawa.lean},
-  \texttt{Toy/Heights.lean}, \texttt{Toy/Katz.lean}, \texttt{Toy/EK.lean})
-  and the three tie-equations of \texttt{PrimeData} are discharged by direct
-  computation. \texttt{ClassicalInputs.notAnomalous} is discharged from the
-  existing toy data through \texttt{Toy.Setup.ap\_ne\_one}; no toy datum was
-  changed to fit it. \texttt{\#print axioms ToyTrivial} shows only
-  \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}.
-
-  \texttt{Toy.toyEK} is the shared Eisenstein--Kronecker package of both toy
-  instances: a one-point divisor over $\Q$, six constant sections, and the
-  trivial valuation at every rational prime.
+  Every interface layer is instantiated concretely under \texttt{Toy/}, and
+  the tie-equations of \texttt{PrimeData} are discharged by computation.
+  \texttt{\#print axioms ToyTrivial} shows only \texttt{propext},
+  \texttt{Classical.choice} and \texttt{Quot.sound}.
 \end{proof}
 
 \begin{theorem}[The assumption surface does not entail the conclusion]
-  \label{nonvac:sha}
+  \label{thm:AssumptionsDoNotForceShaZero}
   \lean{FinShaRank2.ToySha, FinShaRank2.interface_does_not_force_sha_trivial, FinShaRank2.toySha_conclusions_fail, FinShaRank2.toySha_fails_c2_5_certificate}
   \leanok
-  The interface \texttt{ClassicalInputs} does \emph{not}, by itself, entail
-  $\Sha(E/\Q)[p^\infty] = 0$: there is a second proved instance
+  \texttt{ClassicalInputs} does not by itself entail
+  $\Sha(E/\Q)[p^\infty] = 0$: there is a second instance
   \texttt{ToySha : ClassicalInputs} at which $\Sha[p^\infty] \ne 0$,
-  $\mu_{\mathrm{an}} \ne 0$ and $\lambda_{\mathrm{an}} \ne 2$, and at which
-  the computed $5$-adic expansion of $c_2(5)$ is false. So the numerical
-  $c_2$ datum, not the interface, is what excludes this world.
+  $\mu_{\mathrm{an}} \ne 0$ and $\lambda_{\mathrm{an}} \ne 2$ at every split
+  prime, and at which the computed $5$-adic expansion of $c_2(5)$ is false.
+  The unit condition, not the interface, is what excludes this world.
 \end{theorem}
 \begin{proof}[Lean]
   \leanok
-  \texttt{ToySha : ClassicalInputs} (\texttt{FinShaRank2/Toy/ShaTrivial.lean})
-  instantiates the interface layers in a second toy world, distinct from
-  \texttt{ToyTrivial}, at which $\Sha$ is nontrivial.
-  \texttt{toySha\_conclusions\_fail} shows three of the headline conclusions
-  --- $\Sha[p^\infty] = 0$, $\mu_{\mathrm{an}} = 0$,
-  $\lambda_{\mathrm{an}} = 2$ --- fail at \emph{every} split prime of this
-  world, not merely at some exceptional prime.
-  \texttt{interface\_does\_not\_force\_sha\_trivial} packages this as the
-  non-entailment statement: \texttt{ClassicalInputs} alone does not force
-  $\Sha = 0$.
-
-  \texttt{toySha\_fails\_c2\_5\_certificate} identifies the datum that does.
-  In this world $\mathrm{coeff}_2\, L_p = p$, so at $p = 5$ the leading
-  $5$-adic digit of $c_2(5)$ is $0$; this project's computation of $c_2(5)$
-  for the testbed curve has leading digit $1$, and the lemma proves the
-  seven-digit congruence fails. Removing the numerical datum therefore does
-  not merely weaken the theorem: it admits a world in which the headline
-  conclusions are false.
-
-  \textbf{No paper cross-reference.} The seven $5$-adic digits appear in
-  this lemma and nowhere else in the project. The paper displays them
-  nowhere, so a referee will find no paper statement to check them against.
-  They are this project's own computation, cross-checked by two independent
-  implementations.
+  \texttt{toySha\_conclusions\_fail} shows the three conclusions fail at
+  every split prime of the world \texttt{ToySha};
+  \texttt{interface\_does\_not\_force\_sha\_trivial} is the non-entailment
+  statement. \texttt{toySha\_fails\_c2\_5\_certificate} shows that in this
+  world $\mathrm{coeff}_2\, L_p = p$, so the leading $5$-adic digit of
+  $c_2(5)$ is $0$, whereas the computed value for $y^2 = x^3 - 56x$ has
+  leading digit $1$. The seven $5$-adic digits used there are this project's
+  own computation, cross-checked by two implementations; the paper does not
+  display them.
 \end{proof}
 
 % ===========================================================================
-\chapter{Descoped material: not formalized}
+\chapter{Not formalised}
 \label{ch:descoped}
 
-The items below are genuine content of the paper that this formalization
-deliberately does not attempt. None of them carries a \texttt{\textbackslash lean} tag or a
-\texttt{\textbackslash leanok} mark, and none of them is a node the proved theorems above
-\texttt{\textbackslash uses}: their absence from the dependency graph is intentional, not an
-oversight. Full prose documentation of each is in the
-\texttt{README.md} of the formalisation directory; this chapter exists so a referee scanning the
-blueprint sees the boundary explicitly rather than inferring it from
-silence.
+The items below are content of the paper that the formalisation does not
+attempt. None carries a \texttt{\textbackslash lean} tag, and none is a node
+the proved theorems depend on.
 
-\paragraph{Expository background (\texttt{thm:gillard}, (BK1)--(BK3)).}
-The Gillard/Sinnott theorem that the $\mu$-invariant of every branch of the
-Katz measure vanishes --- the classical \emph{zeroth}-jet analogue of this
-paper's second-jet question --- and the three foundational
-Bannai--Kobayashi facts about the Kronecker theta function (generating
-function, algebraicity, $p$-adic interpolation at ordinary primes) that
-\S\texttt{sec:background} recalls as background. Purely expository; nothing
-downstream depends on a Lean rendering of these.
+\paragraph{Background (\S 2 of the paper).} The theorem of Gillard and
+Sinnott that the $\mu$-invariant of every branch of the Katz measure
+vanishes, and the facts about the Kronecker theta function recalled from
+Bannai--Kobayashi. Expository; nothing downstream depends on them.
 
-\paragraph{The exact criterion (\texttt{thm:criterion}, \texttt{lem:moments},
-\texttt{prop:exactreduction}, \texttt{prop:classsumsL},
-\texttt{cor:bracketL}).} Theorem~B is a three-way equivalence, and its analytic
-half --- that the unit condition is equivalent to $v_\fp(B(\fp)) = 2$ for the
-combination $B(\fp)$ of three Eisenstein--Kronecker class sums --- has no Lean
-rendering. A formalization of it would begin at \texttt{lem:moments} and
-\texttt{prop:exactreduction}. The arithmetic half, $(1) \Leftrightarrow (2)$, is
-Proposition~\ref{prop:dictionary}. This is why nothing consumes
-\texttt{EKPackage} (Assumption~\ref{def:classsums}).
+\paragraph{The analytic half of Theorem~B (Lemma~6.5, Proposition~6.6,
+Corollary~6.8).} That the unit condition is equivalent to
+$v_\fp(B(\fp)) = 2$ for the combination $B(\fp)$ of three
+Eisenstein--Kronecker class sums has no Lean rendering. A formalisation
+would begin at Lemma~6.5. The arithmetic half is
+Proposition~\ref{prop:Dictionary}. This is why nothing consumes the class
+functions of Classical input~\ref{assum:ClassFunctions}.
 
-\paragraph{The regulator scans (\texttt{ssec:scan}, \texttt{ssec:family},
-\texttt{ssec:scanweight}) and the bracket computation (\texttt{sec:bracket}).}
-The cyclotomic regulator at every split prime below $30{,}000$ for each of the
-five curves, the null model it is weighed against, and the evaluation of
-$B(\fp)$ at sixteen pairs $(E, p)$. Computational, not formalized. The scripts
-that produce them are in \texttt{code/}, not in the Lean tree.
+\paragraph{The computations (Part~2 of the paper).} The cyclotomic
+regulator at every split prime below $30{,}000$ for each of the five
+curves, the chance model, and the evaluation of $B(\fp)$. The scripts and
+their outputs are in \texttt{code/}, not in the Lean tree.
 
-\paragraph{The Coates--Liang--Sujatha input (\texttt{thm:cls},
-\texttt{lem:isogeny}, \texttt{cor:shavanishing}).} The vanishing of
-$\Sha[p^\infty]$ for the five curves of Coates, Liang and Sujatha at every
-split $p < 30{,}000$, and its transfer along the $2$-isogeny to the testbed
-curve. Cited from the literature; not formalized.
+\paragraph{The Coates--Liang--Sujatha input (\S 7.3).} The vanishing of
+$\Sha[p^\infty]$ for the five curves at every split $p < 30{,}000$, and its
+transfer along the $2$-isogeny. Cited from the literature.
 
-\paragraph{The questions (\texttt{sec:questions}).} Prospective
-discussion of contrasts with Rubin's conjecture on local units, Rubin's
-inert-prime $p$-adic Gross--Zagier analysis, and other open directions.
-Prospective by nature; not a target for formalization.
-
-\paragraph{Geometric and analytic content left inside interface fields.}
-Beyond \texttt{prop:jetformula}'s integral formula
-(Assumption~\ref{prop:jetformula}), the construction of the divisor $D_E$
-and of the class functions $r_{a,b}$ (Assumption~\ref{def:classsums}) and the
-$p$-adic height-pairing analytics behind Assumption~\ref{eq:padicbsd} are
-consumed as opaque data, never unfolded into their underlying
-analytic/geometric construction. This is by design: the referee checks
-these field \emph{statements} against the cited literature, and Lean's
-kernel certifies everything built on top of them.
-
-\paragraph{Part (1) of \texttt{lem:noanomalous}.} That $p \not\equiv 1
-\pmod 4$ implies $p \mid a_p$. Its proof reduces to Deuring's reduction
-criterion, and mathlib has neither that criterion nor the reduction of an
-elliptic curve with complex multiplication. Every downstream theorem uses
-the split case, Lemma~\ref{lem:noanomalous}, only.
+\paragraph{The questions (Part~4).} Not a target for formalisation.

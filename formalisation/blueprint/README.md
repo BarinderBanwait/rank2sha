@@ -5,9 +5,8 @@ paper, each stating the result informally beside the Lean declaration that
 formalises it, with a dependency graph over the nodes.
 
 `src/content.tex` is the content; everything else in `src/` is scaffolding from
-`leanblueprint new`. Nodes are labelled by the paper's own TeX labels
-(`lem:c0c1`, `prop:consequence`, …), not by printed numbers, so a renumbering of
-the paper does not touch this file.
+`leanblueprint new`. Nodes carry short names (`TheoremA`, `RubinStructure`, …), which is what the
+dependency graph prints; each node's text gives the paper's own number.
 
 ## Building
 
