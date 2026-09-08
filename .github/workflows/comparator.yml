@@ -1,0 +1,92 @@
+name: Comparator
+
+# Judges the formalisation with Lean's comparator
+# (https://github.com/leanprover/comparator): the theorems named in
+# formalisation/scripts/comparator.json, as stated in
+# formalisation/Challenge.lean, are proved by the environment of
+# formalisation/Solution.lean, using only propext, Quot.sound and
+# Classical.choice, with the exported proof terms accepted by the Lean kernel
+# and by the external kernel nanoda. Builds run inside landrun's Landlock
+# sandbox, and comparator itself runs under the systemd-run unit the
+# comparator README specifies.
+#
+# Manual trigger only. The run reads the repository and writes nothing.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  comparator:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the project toolchain
+        id: toolchain
+        run: echo "name=$(cat formalisation/lean-toolchain)" >> "$GITHUB_OUTPUT"
+
+      - name: Install elan and the project toolchain
+        run: |
+          curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "${{ steps.toolchain.outputs.name }}"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # landrun: the Landlock sandbox comparator runs every build and export in.
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - name: Install landrun (main branch, as the comparator README requires)
+        run: |
+          go install github.com/zouuup/landrun/cmd/landrun@main
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+
+      # nanoda: the second, independent kernel.
+      - name: Build nanoda
+        run: |
+          git clone --depth 1 https://github.com/ammkrn/nanoda_lib "$RUNNER_TEMP/nanoda_lib"
+          cd "$RUNNER_TEMP/nanoda_lib"
+          cargo build --release
+          echo "$RUNNER_TEMP/nanoda_lib/target/release" >> "$GITHUB_PATH"
+
+      # comparator and lean4export, built on the project's own Lean version so
+      # that lean4export can read the project's .olean files.
+      - name: Build comparator and lean4export
+        run: |
+          git clone --branch v4.33.0 --depth 1 https://github.com/leanprover/comparator "$RUNNER_TEMP/comparator"
+          cd "$RUNNER_TEMP/comparator"
+          echo "${{ steps.toolchain.outputs.name }}" > lean-toolchain
+          lake build lean4export comparator
+          echo "$RUNNER_TEMP/comparator/.lake/build/bin" >> "$GITHUB_PATH"
+          echo "$RUNNER_TEMP/comparator/.lake/packages/lean4export/.lake/build/bin" >> "$GITHUB_PATH"
+
+      # The Mathlib cache is the one pre-built input the comparator README
+      # allows. Nothing of the project itself is built here: comparator builds
+      # Challenge and Solution inside the sandbox.
+      - name: Fetch the Mathlib cache
+        working-directory: formalisation
+        run: lake exe cache get
+
+      - name: Tool versions
+        working-directory: formalisation
+        run: |
+          lean --version
+          landrun --version || true
+          which landrun lean4export comparator nanoda_bin
+
+      - name: Run comparator
+        working-directory: formalisation
+        run: |
+          # A user systemd instance for the runner account, so that the
+          # systemd-run wrapper from the comparator README is available.
+          sudo loginctl enable-linger "$USER"
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+          for _ in $(seq 1 30); do [ -S "$XDG_RUNTIME_DIR/bus" ] && break; sleep 1; done
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+          systemd-run --property=RestrictAddressFamilies=~AF_UNIX --user --wait --pipe --collect \
+            -E PATH="$PATH" -E HOME="$HOME" --working-directory "$(pwd)" -- \
+            bash -c 'lake env comparator scripts/comparator.json'

@@ -24,6 +24,7 @@ not part of this repository.
 | `FinShaRank2/Toy/` | the two witness worlds of §7 |
 | `blueprint/` | the blueprint; see §8 |
 | `scripts/` | `audit.sh` and the (empty) sorry allowlist |
+| `Challenge.lean`, `Solution.lean` | the two halves of the comparator run; see §2 |
 
 Paper statements are referred to by their printed numbers, as the PDF prints
 them, and the lettered results by both, Theorem A (Theorem 3.8) and Theorem B
@@ -124,6 +125,48 @@ AUDIT: PASS
 The whole thing takes well under a minute from a warm cache. If you want to see
 which declarations are covered, read `AxiomAudit.lean`: the list is explicit, not
 a wildcard.
+
+### Comparator
+
+The audit above runs inside the same Lean process that loaded the `.olean`
+files produced by the code being audited. A second check, independent of
+those files and of the elaborator, is provided by Lean's
+[comparator](https://github.com/leanprover/comparator), the tool the Lean FRO
+wrote to judge proofs from untrusted sources. The threat it addresses is a
+proof that passes `lake build` and `#print axioms` by exploiting the checker
+rather than by proving the theorem. The Lean in this project was written by AI
+agents, so the check is pertinent.
+
+Comparator takes two modules. `Challenge.lean` states the theorems, each with
+`sorry`, and imports only `Defs.lean`, the six files under `Interface/` and
+`Statements.lean`: the assumption surface, which §3 asks you to read.
+`Solution.lean` imports the proofs, from `Kernel/`, `Main/` and `Toy/`.
+Comparator builds each module in a sandbox, exports each with `lean4export`
+without loading any `.olean` into its own process, and accepts only if all of
+the following hold.
+
+1. Every declaration occurring in the statements is identical in the two
+   environments. The proofs cannot have redefined anything the statements
+   depend on.
+2. The proofs use no axiom beyond `propext`, `Quot.sound` and
+   `Classical.choice`.
+3. The exported proof terms are accepted by the Lean kernel, replayed from an
+   empty environment.
+4. They are also accepted by `nanoda`, an independent kernel written in Rust.
+
+The five theorems judged are `c0_eq_zero`, `c1_eq_zero`, `prop_consequence`
+(Theorem A), `prop_dictionary` (Proposition 4.2) and
+`interface_does_not_force_sha_trivial`; the list is `scripts/comparator.json`.
+The run is the GitHub Actions workflow `.github/workflows/comparator.yml` at the
+repository root, which installs `landrun`, `lean4export`, `nanoda` and
+`comparator` from source and prints `Your solution is okay!` on success. To
+run it yourself you need Linux, for the Landlock sandbox; the workflow file is
+the recipe.
+
+What comparator certifies is that the derivation of the five statements from
+the assumption surface is sound. It does not certify that the assumption
+surface says what the cited theorems say. That remains the human task of §3,
+and comparator confines it to the import closure of `Challenge.lean`.
 
 ## 3. What you actually have to read
 

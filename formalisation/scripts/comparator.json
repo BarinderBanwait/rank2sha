@@ -1,0 +1,13 @@
+{
+    "challenge_module": "Challenge",
+    "solution_module": "Solution",
+    "theorem_names": [
+        "FinShaRank2.c0_eq_zero",
+        "FinShaRank2.c1_eq_zero",
+        "FinShaRank2.prop_consequence",
+        "FinShaRank2.prop_dictionary",
+        "FinShaRank2.interface_does_not_force_sha_trivial"
+    ],
+    "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+    "enable_nanoda": true
+}

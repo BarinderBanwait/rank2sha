@@ -13,3 +13,13 @@ rev = "v4.33.1"
 
 [[lean_lib]]
 name = "FinShaRank2"
+
+# The two halves of the comparator run (see Challenge.lean and
+# scripts/comparator.json). Not default targets: `lake build` does not build
+# them, and `scripts/audit.sh` does not scan Challenge.lean, whose theorems
+# are stated with `sorry` by design.
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"
