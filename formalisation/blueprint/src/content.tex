@@ -28,9 +28,10 @@ curve $E : y^2 = x^3 - 56x$ over $\mathbb{Q}$ (CM by $\mathbb{Z}[i]$,
 conductor $N = 12544$, rank $2$, torsion $\mathbb{Z}/2$, $\prod_v c_v = 4$,
 root number $w(E) = +1$; split primes $p \equiv 1 \pmod 4$).
 
-Theorem~A is \texttt{prop:consequence} (Chapter~\ref{ch:consequence}); the
-paper's other lettered result, \texttt{thm:criterion}, has no Lean
-counterpart.
+Theorem~A (Theorem~3.8) is \texttt{prop:consequence}
+(Chapter~\ref{ch:consequence}); the paper's other lettered result, Theorem~B
+(Theorem~6.7, \texttt{thm:criterion}), has no Lean counterpart, though the
+arithmetic half of its equivalence is Proposition~\ref{prop:dictionary}.
 
 \section{What is machine-checked, and what is assumed}
 
@@ -42,10 +43,6 @@ Schneider/Perrin-Riou, Hasse) as explicitly documented, human-refereeable
 \emph{hypotheses}: fields of the structure \texttt{ClassicalInputs}, never
 global \texttt{axiom} declarations. No conjectural statement occurs anywhere
 in the project.
-
-A second structure \texttt{Certificates}, carrying this project's own
-machine-verified numerics, was retired on 2026-08-29 together with the two
-anchor corollaries it served (Chapter~\ref{ch:anchors}).
 
 Every declaration marked \texttt{\textbackslash leanok} below is sorry-free, uses no
 \texttt{native\_decide}, and --- for the project's audited declarations ---
@@ -69,13 +66,13 @@ Every such node carries its pinpoint citation, and is distinguished from a
 Lean-kernel-proved result by header word and by fill colour alike.
 
 Material the paper contains but this formalization deliberately does not
-attempt (the analytic content of \texttt{prop:jetformula}'s integral
-formula, the construction of the divisor $D_E$ and of the sections
-$r_{a,b}$, the height-pairing analytics, the expository background of
-\S\texttt{sec:mechanism}, the regulator scan of Part~2, the
-Coates--Liang--Sujatha input, and the outlook) is listed in the closing
-chapter with no theorem-like environment at all, so it cannot be mistaken
-for an oversight.
+attempt (the exact criterion of \texttt{thm:criterion}, the analytic content of
+\texttt{prop:jetformula}'s integral formula, the construction of the divisor
+$D_E$ and of the class functions $r_{a,b}$, the height-pairing analytics, the
+expository background of \S\texttt{sec:background}, the regulator scans of
+Part~2, the Coates--Liang--Sujatha input, and the questions of Part~4) is listed
+in the closing chapter with no theorem-like environment at all, so it cannot be
+mistaken for an oversight.
 
 % ===========================================================================
 \chapter{Foundational definitions}
@@ -167,11 +164,10 @@ for an oversight.
   \texttt{isPUnit\_c2tilde\_iff\_of\_split} is the same statement with the
   unit hypothesis discharged from the \texttt{AnalyticData} fields
   \texttt{hasse}, \texttt{ap\_from\_CM} and \texttt{alpha\_root} through
-  \texttt{noAnomalous} (Lemma~\ref{lem:noanomalous}). Since the interface
-  field \texttt{ClassicalInputs.notAnomalous} was added on 2026-08-29 this
-  composed form is no longer the route the main theorems take:
-  \texttt{prop\_consequence} and \texttt{thm\_reduction} call
-  \texttt{isPUnit\_c2tilde\_iff} with non-anomality supplied by
+  \texttt{noAnomalous} (Lemma~\ref{lem:noanomalous}). It is not the route the
+  main theorems take: \texttt{prop\_consequence} calls
+  \texttt{isPUnit\_c2tilde\_iff} with non-anomality supplied by the interface
+  field \texttt{ClassicalInputs.notAnomalous}, through
   \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv}. It is kept audited
   because it bounds what \texttt{notAnomalous} assumes beyond the proved
   Lemma~\ref{lem:noanomalous}.
@@ -300,13 +296,11 @@ for an oversight.
   \texttt{Kernel/ShaEndgame.lean}) then delivers
   $\Sha(E/\Q)[p^\infty]=0$ and the corank $2$ conclusion.
 
-  \textbf{Where non-anomality comes from.} Until 2026-08-29 the exclusion
-  $p \notin S_E$ carried no formal content --- $S$ was opaque
-  \texttt{Finset} data --- and this theorem carried the residual hypothesis
-  $p = 5 \Rightarrow a_p = -2$ in its place. The interface field
-  \texttt{ClassicalInputs.notAnomalous} now renders the $S_{\mathrm{an}}$
+  \textbf{Where non-anomality comes from.} The exclusion $p \notin S_E$ is
+  otherwise opaque \texttt{Finset} data. The interface field
+  \texttt{ClassicalInputs.notAnomalous} renders the $S_{\mathrm{an}}$
   clause of the paper's definition of $S_E$, as $a_p \not\equiv 1 \pmod p$
-  for every split $p \notin S$, and the residual hypothesis is gone. The
+  for every split $p \notin S$. The
   bridge from that field to Proposition~\ref{prop:normalisation} is
   \texttt{ClassicalInputs.isPUnit\_one\_sub\_alphaInv}, which feeds it
   through \texttt{isPUnit\_one\_sub\_alphaInv\_iff}. Lemma~\ref{lem:noanomalous}
@@ -397,8 +391,8 @@ for an oversight.
 \chapter{The withdrawn anchor corollaries}
 \label{ch:anchors}
 
-Paper v1 carried two unconditional corollaries at the anchor primes
-$p = 5$ and $p = 13$: $\Sha(E/\Q)[5^\infty] = 0$ and
+An earlier version of the paper carried two unconditional corollaries at the
+anchor primes $p = 5$ and $p = 13$: $\Sha(E/\Q)[5^\infty] = 0$ and
 $\Sha(E/\Q)[13^\infty] = 0$ for the testbed curve, each with the
 accompanying corank, $\mu$, $\lambda$ and height-nondegeneracy conclusions.
 They were derived from Theorem~\ref{prop:consequence} and
@@ -406,23 +400,21 @@ Proposition~\ref{prop:dictionary} by feeding in machine-verified $p$-adic
 expansions of $c_2(p)$, carried as fields of a structure
 \texttt{Certificates}.
 
-Both were withdrawn from paper v2 on 2026-08-25. The same vanishing was
-already in the literature: Coates, Liang and Sujatha proved
-$\Sha(E_1/\Q)[p^\infty] = 0$ for $E_1 : y^2 = x^3 + 14x$, the
-$2$-isogenous partner of $E$, at every prime $p \equiv 1 \pmod 4$ with
-$p < 30{,}000$, and the two groups differ by a $2$-isogeny, so the
-corollaries were not new. On 2026-08-29 their Lean counterparts ---
-\texttt{cor\_sha5},
-\texttt{cor\_sha13}, the \texttt{Certificates} structure and the four
-digit-certificate extraction lemmas --- were moved to
+Both were withdrawn. The same vanishing was already in the literature:
+Coates, Liang and Sujatha proved $\Sha(E_1/\Q)[p^\infty] = 0$ for
+$E_1 : y^2 = x^3 + 14x$, the $2$-isogenous partner of $E$, at every prime
+$p \equiv 1 \pmod 4$ with $p < 30{,}000$, and the two groups differ by a
+$2$-isogeny, so the corollaries were not new. Their Lean counterparts ---
+\texttt{cor\_sha5}, \texttt{cor\_sha13}, the \texttt{Certificates} structure
+and the four digit-certificate extraction lemmas --- are in
 \texttt{legacy/Anchors.lean}, which is gitignored and outside the build and
-the axiom audit. Nothing in the current formalization depends on them.
+the axiom audit. Nothing in the formalization depends on them.
 
 This chapter is kept, without theorem-like environments, so that the
 withdrawal is visible rather than inferred from a gap. The numerical $c_2$
 data survive in one place only: \texttt{toySha\_fails\_c2\_5\_certificate}
 (Chapter~\ref{ch:nonvacuity}), which uses the seven computed $5$-adic digits
-of $c_2(5)$ to exclude the anti-vacuity world. Paper v2 displays those
+of $c_2(5)$ to exclude the anti-vacuity world. The paper displays those
 digits nowhere, so that lemma has no paper cross-reference.
 
 % ===========================================================================
@@ -520,21 +512,20 @@ $\varpi := p$ over the Katz coefficient ring $W$.
   \texttt{rmk:fq} after the lemma.
 \end{proof}
 
-\begin{assumption}[The divisor and the jet package]
-  \label{eq:jetpackage}
+\begin{assumption}[The divisor and the class functions]
+  \label{def:classsums}
   \lean{FinShaRank2.EKPackage}
   Let $E/\Q$ have CM by the maximal order $\OK$ of an imaginary quadratic
   field $K$, let $\ff$ be the conductor of its Grossencharacter $\psi_E$, let
   $\varepsilon$ be its unit character, fix a generator $f_0$ of $\ff$, and
   for $g \in (\OK/\ff)^\times$ put $t_g := g\,\Omega_\infty/f_0$. The divisor
   is the ray class group $D_E := \mathrm{Cl}_\ff(K) = (\OK/\ff)^\times/\mu_K$,
-  and the package is the set of six functions on $D_E$
+  and for $a \ge 0$, $b \ge 1$ the class function $r_{a,b}$ on $D_E$ is
   \[
-    \mathcal{R}_E := \Bigl\{ r_{a,b} \colon [g] \mapsto
+    r_{a,b} \colon [g] \longmapsto
       \varepsilon(g)^{-(a+b)}\, \frac{e^*_{a,b}(t_g, 0)}{A(\Gamma)^a}
-      \;:\; a \ge 0,\ b \ge 1,\ a + b \le 3 \Bigr\},
+      \;\in\; \Qbar .
   \]
-  graded by $a + b - 1$, with values in $\Qbar$.
 
   \textbf{Classical input, not formalized as a theorem.} SOURCE:
   Bannai--Kobayashi, \emph{Algebraic theta functions and the $p$-adic
@@ -544,11 +535,18 @@ $\varpi := p$ over the Katz coefficient ring $W$.
   $A(\Gamma)^a$; finiteness of $D_E$ is finiteness of the ray class group.
   Rendered in Lean as the structure \texttt{EKPackage}: the coefficient field
   \texttt{K}, the value field \texttt{L} (the paper's $\Qbar$), a finite
-  nonempty \texttt{Finset} \texttt{D} of points, the six sections
-  \texttt{r : Fin 6 \(\to\) \(\iota\) \(\to\) L}, a multiplicative
-  \texttt{Valuation} \texttt{v p} on \texttt{L} for each rational prime $p$.
+  nonempty \texttt{Finset} \texttt{D} of points, six sections
+  \texttt{r : Fin 6 \(\to\) \(\iota\) \(\to\) L} at the indices with
+  $a + b \le 3$, and a multiplicative \texttt{Valuation} \texttt{v p} on
+  \texttt{L} for each rational prime $p$. The truncation to six indices is the
+  formalization's; the paper states no finite index set.
   The elliptic-curve construction behind those values is not unfolded; that is
   the descope recorded in the closing chapter.
+
+  Nothing in the project consumes a section value. The class functions enter
+  the paper through the exact criterion, which is not formalized
+  (Chapter~\ref{ch:descoped}); \texttt{EKPackage} is carried as a field of
+  \texttt{ClassicalInputs} and read by no theorem.
 \end{assumption}
 
 % ===========================================================================
@@ -615,16 +613,11 @@ $\varpi := p$ over the Katz coefficient ring $W$.
   not merely weaken the theorem: it admits a world in which the headline
   conclusions are false.
 
-  Until 2026-08-29 this role was played by
-  \texttt{isEmpty\_certificates\_toySha}, which proved that
-  \texttt{Certificates ToySha} is empty. That structure was retired with the
-  anchor corollaries (Chapter~\ref{ch:anchors}) and the certificate-free
-  lemma above replaced it, carrying the same content.
-
   \textbf{No paper cross-reference.} The seven $5$-adic digits appear in
-  this lemma and nowhere else in the project. Paper v1 displayed them; paper
-  v2 dropped the display together with the anchor corollaries it served, so
-  a referee will find no paper statement to check them against.
+  this lemma and nowhere else in the project. The paper displays them
+  nowhere, so a referee will find no paper statement to check them against.
+  They are this project's own computation, cross-checked by two independent
+  implementations.
 \end{proof}
 
 % ===========================================================================
@@ -646,23 +639,34 @@ Katz measure vanishes --- the classical \emph{zeroth}-jet analogue of this
 paper's second-jet question --- and the three foundational
 Bannai--Kobayashi facts about the Kronecker theta function (generating
 function, algebraicity, $p$-adic interpolation at ordinary primes) that
-\S\texttt{sec:mechanism} recalls as background. Purely expository; nothing
+\S\texttt{sec:background} recalls as background. Purely expository; nothing
 downstream depends on a Lean rendering of these.
 
-\paragraph{The regulator scan (\texttt{ssec:scan},
-\texttt{ssec:scanweight}).} The $508$-prime computational scan testing
-$v_\fp(\Reg_\fp) = 2$ against a null model, and its statistical analysis.
-Computational, not formalized. The scripts that produce it are in
-\texttt{code/}, not in the Lean tree.
+\paragraph{The exact criterion (\texttt{thm:criterion}, \texttt{lem:moments},
+\texttt{prop:exactreduction}, \texttt{prop:classsumsL},
+\texttt{cor:bracketL}).} Theorem~B is a three-way equivalence, and its analytic
+half --- that the unit condition is equivalent to $v_\fp(B(\fp)) = 2$ for the
+combination $B(\fp)$ of three Eisenstein--Kronecker class sums --- has no Lean
+rendering. A formalization of it would begin at \texttt{lem:moments} and
+\texttt{prop:exactreduction}. The arithmetic half, $(1) \Leftrightarrow (2)$, is
+Proposition~\ref{prop:dictionary}. This is why nothing consumes
+\texttt{EKPackage} (Assumption~\ref{def:classsums}).
+
+\paragraph{The regulator scans (\texttt{ssec:scan}, \texttt{ssec:family},
+\texttt{ssec:scanweight}) and the bracket computation (\texttt{sec:bracket}).}
+The cyclotomic regulator at every split prime below $30{,}000$ for each of the
+five curves, the null model it is weighed against, and the evaluation of
+$B(\fp)$ at sixteen pairs $(E, p)$. Computational, not formalized. The scripts
+that produce them are in \texttt{code/}, not in the Lean tree.
 
 \paragraph{The Coates--Liang--Sujatha input (\texttt{thm:cls},
 \texttt{lem:isogeny}, \texttt{cor:shavanishing}).} The vanishing of
-$\Sha[p^\infty]$ for the $2$-isogenous partner of the testbed curve at every
-split $p < 30{,}000$, and its transfer along the isogeny. Cited from the
-literature, and the reason the two anchor corollaries were withdrawn
-(Chapter~\ref{ch:anchors}); not formalized.
+$\Sha[p^\infty]$ for the five curves of Coates, Liang and Sujatha at every
+split $p < 30{,}000$, and its transfer along the $2$-isogeny to the testbed
+curve. Cited from the literature, and the reason the two anchor corollaries
+were withdrawn (Chapter~\ref{ch:anchors}); not formalized.
 
-\paragraph{Open problems and outlook (\texttt{sec:outlook}).} Prospective
+\paragraph{The questions (\texttt{sec:questions}).} Prospective
 discussion of contrasts with Rubin's conjecture on local units, Rubin's
 inert-prime $p$-adic Gross--Zagier analysis, and other open directions.
 Prospective by nature; not a target for formalization.
@@ -670,7 +674,7 @@ Prospective by nature; not a target for formalization.
 \paragraph{Geometric and analytic content left inside interface fields.}
 Beyond \texttt{prop:jetformula}'s integral formula
 (Assumption~\ref{prop:jetformula}), the construction of the divisor $D_E$
-and of the sections $r_{a,b}$ (Assumption~\ref{eq:jetpackage}) and the
+and of the class functions $r_{a,b}$ (Assumption~\ref{def:classsums}) and the
 $p$-adic height-pairing analytics behind Assumption~\ref{eq:padicbsd} are
 consumed as opaque data, never unfolded into their underlying
 analytic/geometric construction. This is by design: the referee checks

@@ -12,7 +12,7 @@
 % which leaves the `assumption` environment (macros/common.tex) entirely
 % invisible in the auto-generated dependency graph -- the five interface
 % nodes a proved theorem's chain passes through (lem:comparison,
-% rmk:nofinitesub, eq:padicbsd, prop:jetformula, eq:jetpackage) would not
+% rmk:nofinitesub, eq:padicbsd, prop:jetformula, def:classsums) would not
 % appear at all. Adding +assumption restores them as graph nodes; they
 % render with the distinct "Assumption" header and, since \leanok is never
 % applied to them (by the fence rule), never receive the green "proved" fill
@@ -28,13 +28,18 @@
 \input{macros/common}
 \input{macros/web}
 
-% \home is where this blueprint is served.  \github and \dochome are empty
-% deliberately: the repository is private, so a \github link would fail for a
-% reader of the public blueprint, and \dochome needs doc-gen4 API documentation
-% published alongside, which needs doc-gen4 as a Lake dependency.  While
-% \dochome is empty the declaration links resolve to /find/, which does not
-% exist; the Pages workflow strips them so the names render as plain text.
-\home{https://barindersbanwait.com/rank2sha/}
+% \home is where this blueprint is served: GitHub Pages serves a project
+% repository at https://<user>.github.io/<repo>/, and the Pages workflow stages
+% the blueprint into a blueprint/ subdirectory of that site.
+%
+% \github and \dochome are empty deliberately.  A \github link would fail for a
+% reader while the repository is private; set it to
+% https://github.com/BarinderBanwait/rank2sha at go-live.  \dochome needs
+% doc-gen4 API documentation published alongside, which needs doc-gen4 as a Lake
+% dependency; while it is empty the declaration links resolve to /find/, which
+% does not exist, and the Pages workflow strips them so the names render as
+% plain text.
+\home{https://barinderbanwait.github.io/rank2sha/blueprint/}
 \github{}
 \dochome{}
 

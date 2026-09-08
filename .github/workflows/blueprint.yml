@@ -1,14 +1,18 @@
 name: Blueprint
 
-# Publishing is OFF. The workflow is disabled at GitHub and the Pages site has
-# been deleted, so nothing is served and nothing republishes. Re-enable with
+# Publishing is OFF. The workflow is disabled at GitHub and there is no Pages
+# site, so nothing is served and nothing republishes. Re-enable with
 #   gh workflow enable blueprint.yml
 #   gh api -X POST repos/BarinderBanwait/rank2sha/pages -f build_type=workflow
 #   gh workflow run blueprint.yml
-# and add a push trigger below if it should republish on its own.
+# and add a push trigger below if it should republish on its own. Pages on a
+# private repository needs a paid plan; on the public repository it is free.
 #
 # The trigger is workflow_dispatch alone, deliberately: re-enabling the workflow
-# should not by itself put the blueprint back on the public web.
+# should not by itself put the blueprint on the public web.
+#
+# Published address: https://barinderbanwait.github.io/rank2sha/blueprint/
+# See the staging step for how the subdirectory is laid out.
 #
 # This builds the blueprint alone. It does not build the Lean project and does
 # not produce API documentation, so the `\dochome` links in the blueprint
@@ -99,14 +103,34 @@ jobs:
               sys.exit("nothing stripped - has \\dochome been set? remove this step if so")
           EOF
 
-      - name: Put the PDF alongside the web pages
+      # Pages serves a project repository at https://<user>.github.io/<repo>/,
+      # so this deploys to https://barinderbanwait.github.io/rank2sha/ and the
+      # blueprint goes in a blueprint/ subdirectory to sit at
+      #   https://barinderbanwait.github.io/rank2sha/blueprint/
+      # which is the address src/web.tex gives as \home.  The PDF sits beside
+      # the web pages, at blueprint/blueprint.pdf.  The root carries a redirect
+      # into the subdirectory so the bare repository address does not 404;
+      # replace index.html here if the root should ever hold something else.
+      - name: Stage the site
         run: |
-          cp formalisation/blueprint/print/print.pdf \
-             formalisation/blueprint/web/blueprint.pdf || true
+          mkdir -p _site/blueprint
+          cp -r formalisation/blueprint/web/. _site/blueprint/
+          cp formalisation/blueprint/print/print.pdf _site/blueprint/blueprint.pdf
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>rank2sha</title>
+          <meta http-equiv="refresh" content="0; url=blueprint/">
+          <p>Formalization blueprint for <em>Second derivatives of p-adic
+          L-functions and the Shafarevich&ndash;Tate group of rank-two CM
+          elliptic curves</em>: <a href="blueprint/">blueprint/</a>.</p>
+          HTML
+          test -f _site/blueprint/index.html
+          test -f _site/blueprint/blueprint.pdf
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: formalisation/blueprint/web
+          path: _site
 
   deploy:
     needs: build

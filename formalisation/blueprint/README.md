@@ -1,82 +1,63 @@
 # Blueprint
 
-leanblueprint scaffold for the `FinShaRank2` formalisation.
+The blueprint for the `FinShaRank2` formalisation: one node per statement of the
+paper, each stating the result informally beside the Lean declaration that
+formalises it, with a dependency graph over the nodes.
 
-This directory was written when the project was not under version control and
-had no remote. That is no longer so: since 2026-08-29 `formalisation/` is part
-of the `rank2sha` repository. The `bp` driver below still works and is still
-the supported way to build, but the reason it exists — leanblueprint's CLI
-refusing to run outside a git repository — no longer applies, so the real CLI
-may now work directly.
+`src/content.tex` is the content; everything else in `src/` is scaffolding from
+`leanblueprint new`. Nodes are labelled by the paper's own TeX labels
+(`lem:c0c1`, `prop:consequence`, …), not by printed numbers, so a renumbering of
+the paper does not touch this file.
 
-## TL;DR — building
+## Building
+
+From `formalisation/`:
 
 ```sh
-cd formal/
 blueprint/bp pdf    # → blueprint/print/print.pdf
 blueprint/bp web    # → blueprint/web/index.html (+ dep_graph_document.html)
 blueprint/bp serve  # serve blueprint/web/ at http://localhost:8000
 ```
 
-Both builds are verified green on this machine (2026-07-15).
+`print/`, `web/`, `src/web.bbl` and `lean_decls` are build products, not tracked
+and not to be hand-edited.
 
-## Why not the `leanblueprint` CLI directly?
+## Why `bp` rather than the `leanblueprint` CLI
 
-`leanblueprint` v0.0.20 opens the enclosing **git repository at import time**
-(`client.py`: `Repo(".", search_parent_directories=True)` at module level), so
-*every* subcommand — not just `new` — fails here with:
-
-> Error: Could not find a Lean project. Please run this command from inside
-> your project folder.
-
-When this was written the project was deliberately not a git repository, and
-hosting was deferred. Both have since changed. Do **not** work
-around this by running `git init`.
-
-`blueprint/bp` runs the *exact* commands the CLI would run (from
-`client.py`'s `mk_pdf` / `mk_web` / `do_checkdecls`):
+`leanblueprint` v0.0.20 opens the enclosing git repository at module import time
+(`client.py`: `Repo(".", search_parent_directories=True)`), which made every
+subcommand fail in a directory that was not a git repository. `blueprint/bp` runs
+the exact commands the CLI runs, so the CLI can take over with no change to the
+blueprint sources:
 
 | CLI command | actual command (run from `blueprint/src/`) |
 |---|---|
 | `leanblueprint pdf` | `latexmk -output-directory=../print` (+ copy `print/print.bbl` → `src/web.bbl` if present) |
 | `leanblueprint web` | `plastex -c plastex.cfg web.tex` |
-| `leanblueprint checkdecls` | `lake exe checkdecls blueprint/lean_decls` (run from `formal/`) |
+| `leanblueprint checkdecls` | `lake exe checkdecls blueprint/lean_decls` (run from `formalisation/`) |
 
-so the real CLI takes over with zero changes
-to the blueprint sources.
+## Toolchain
 
-## Toolchain (installed 2026-07-15)
-
-- Python venv: `~/.venvs/leanblueprint` (Python 3.14.2, Homebrew)
-  - `leanblueprint 0.0.20`, `plasTeX 3.1`, `plastexdepgraph 0.0.5`,
-    `plastexshowmore 0.0.2`, `pygraphviz 2.0`
-- `latexmk 4.88` installed at `~/.venvs/leanblueprint/bin/latexmk`
-  (BasicTeX 2025 lacks latexmk and its TeX tree is root-owned, so the
-  pure-perl `latexmk.pl` from CTAN was dropped into the venv's bin;
-  `blueprint/bp` puts that bin dir on `PATH`).
-- TeX engine: **xelatex** from `/usr/local/texlive/2025basic` (selected by
-  `src/latexmkrc`, as in the stock template; `unicode-math` + Latin Modern
-  Math are present in this BasicTeX).
-- Graphviz `dot` (Homebrew) — required by the dependency graph plugin.
-- Known cosmetic warning in the web build: no `dvisvgm`/`pdf2svg` vector
-  imager found. Harmless while math is rendered by MathJax (it is); only
-  matters if a node ever needs plasTeX to *image* content (e.g. tikz).
+- Python venv at `~/.venvs/leanblueprint`: `leanblueprint 0.0.20`, `plasTeX 3.1`,
+  `plastexdepgraph 0.0.5`, `plastexshowmore 0.0.2`, `pygraphviz 2.0`.
+- `latexmk 4.88` in that venv's `bin`, which `bp` puts on `PATH`. BasicTeX ships
+  no `latexmk` and its TeX tree is root-owned, so the pure-perl `latexmk.pl` from
+  CTAN is dropped in there instead.
+- TeX engine: **xelatex**, selected by `src/latexmkrc`, as in the stock template.
+- Graphviz `dot`, required by the dependency-graph plugin.
+- The web build warns that it found no `dvisvgm`/`pdf2svg` vector imager. This is
+  cosmetic: math is rendered by MathJax, and the imager matters only if a node
+  needs plasTeX to image content such as a TikZ picture.
 
 ## Layout
 
-Matches what `leanblueprint new` (v0.0.20) generates — the templates were
-rendered with the same Jinja settings the CLI uses — **minus** the git/CI
-artifacts (`.github/workflows/blueprint.yml`, jekyll `home_page/`, git
-commit). In `src/web.tex`, `\home{}`, `\github{}`, `\dochome{}` are
-intentionally empty; fill them when the blueprint is published.
-
 ```
 blueprint/
-  bp                     # local build driver (see above)
+  bp                     # build driver (see above)
   README.md              # this file
   lean_decls             # GENERATED by `bp web`: one \lean{} name per line
   src/
-    content.tex          # THE blueprint content — edit this (T51)
+    content.tex          # the blueprint content
     macros/common.tex    # macros for both versions; theorem envs defined here
     macros/print.tex     # pdf-only macros (incl. no-op \lean, \leanok, …)
     macros/web.tex       # web-only macros
@@ -90,36 +71,52 @@ blueprint/
   web/                   # GENERATED: index.html, sect*.html, dep_graph_document.html
 ```
 
-`print/`, `web/`, `src/web.bbl`, and `lean_decls` are build products; don't
-hand-edit them.
+## Publishing
 
-## Notes for T51 (content authoring)
+`.github/workflows/blueprint.yml` in the repository root builds the same two
+targets and deploys them to GitHub Pages at
 
-- **Edit `src/content.tex`** (split into `\input` files per chapter if it
-  grows). It currently holds a stub: an introduction chapter plus ONE example
-  node keyed to the real paper label `lem:c0c1`.
-- **One node per row of TASK_BOARD.md §4**, `\label`ed by the paper's tex
-  label (`lem:c0c1`, `prop:consequence`, …) — never printed numbers.
-- Node markup inside `theorem`/`proposition`/`lemma`/`corollary`/`definition`
-  environments (these five are depgraph-visible, per `macros/common.tex`):
-  - `\lean{FinShaRank2.Foo.bar}` — comma-separate several decls. **Only use
-    names that exist after the T15 freeze** (copy from `Statements.lean` /
-    `Main/*.lean`; the stub node has a `TODO-T51` comment where they go).
-  - `\leanok` — statement (and, inside `proof`, the proof) is formalized.
-  - `\uses{label1, label2}` — dependency edges; also allowed inside `proof`.
-  - `\notready`, `\discussion{…}`, `\mathlibok` also available.
-- Interface fields (`ClassicalInputs` etc.) should be rendered as
-  assumption-styled nodes: give them their own environment, e.g. add in
-  `macros/common.tex`
-  `\newtheorem{assumption}[theorem]{Assumption}` and register it with the
-  depgraph so it gets a distinct color — see the leanblueprint README
-  ("customizing the dependency graph", `thm_types` in `plastex.cfg`).
-- After `bp web`, `blueprint/lean_decls` lists every `\lean{}` name
-  (currently empty — the stub deliberately declares none).
+```
+https://barinderbanwait.github.io/rank2sha/blueprint/
+```
 
-## checkdecls (deferred wiring)
+with the PDF beside them at `blueprint/blueprint.pdf`. Pages serves a project
+repository at `https://<user>.github.io/<repo>/`, so the workflow stages the web
+output into a `blueprint/` subdirectory and writes a redirect at the site root.
+`src/web.tex` gives that same address as `\home`.
 
-`bp checkdecls` will work once someone with lakefile ownership appends
+Publishing is off: the workflow is disabled at GitHub, its only trigger is
+`workflow_dispatch`, and no Pages site exists. The workflow header lists the
+three commands that turn it on. Pages on a private repository needs a paid plan,
+so the repository goes public first.
+
+Every link the rendered blueprint emits is relative, so the subdirectory needs no
+other configuration. The one exception is the declaration links, which
+leanblueprint builds as `{dochome}/find/#doc/NAME`; while `\dochome` is empty
+they point at `/find/`, which nothing serves, and the workflow rewrites them as
+plain text. Setting `\dochome` requires doc-gen4 as a Lake dependency and its
+output published alongside. `\github` is empty while the repository is private;
+set it to `https://github.com/BarinderBanwait/rank2sha` at go-live.
+
+## Authoring a node
+
+A node lives in a `theorem`, `proposition`, `lemma`, `corollary`, `definition` or
+`assumption` environment — the six the dependency graph draws, per
+`macros/common.tex` — and carries:
+
+- `\label{…}`, the paper's TeX label for the statement;
+- `\lean{FinShaRank2.Foo.bar}`, comma-separated for several declarations;
+- `\leanok`, when the statement (or, inside a `proof`, the proof) is formalised.
+  Never mark an `assumption` node `\leanok`: those are citations, not proof
+  obligations, and marking them would misrepresent the trust boundary;
+- `\uses{label1, label2}`, the dependency edges, also allowed inside a `proof`.
+
+`\notready`, `\discussion{…}` and `\mathlibok` are available too.
+
+## Checking the `\lean{}` names
+
+`bp checkdecls` cannot run: `checkdecls` is not a Lake dependency of this project.
+Wiring it up means appending
 
 ```toml
 [[require]]
@@ -127,7 +124,10 @@ name = "checkdecls"
 git = "https://github.com/PatrickMassot/checkdecls.git"
 ```
 
-to `formal/lakefile.toml` and runs `lake update checkdecls` (this is what
-`leanblueprint new` offers to do). **Not done in T50** — the lakefile is
-owned by the T01/T02 agent and off-limits to this task. Sequence for T51:
-`lake build` → `bp web` (regenerates `lean_decls`) → `bp checkdecls`.
+to `formalisation/lakefile.toml` and running `lake update checkdecls`, after which
+the sequence is `lake build` → `bp web` (regenerates `lean_decls`) → `bp
+checkdecls`.
+
+Until then, every name in `lean_decls` is checked by running a file that imports
+`FinShaRank2` and asserts `env.contains n` for each. Neither `lake build` nor
+`scripts/audit.sh` reads `content.tex`, so nothing else catches a dead name.
