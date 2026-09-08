@@ -46,7 +46,7 @@ What is assumed is visible in the source.
 
 **`ClassicalInputs`** (`Interface/Global.lean`) is the assumed classical
 material. Six fields: the excluded set `S` of (8); the Eisenstein–Kronecker
-package `ek`; the rational factor `torsSqOverTam` with its defining equation
+package `ek` of Definition 5.1; the rational factor `torsSqOverTam` with its defining equation
 `torsSqOverTam_eq`; the per-prime bundle `dataAt`, which supplies a `PrimeData` at
 every split `p ∉ S`; and `notAnomalous`. `PrimeData` in turn aggregates five
 layers — `AnalyticData`, `SelmerData`, `IwasawaData`, `HeightData`, `KatzData`.
@@ -193,7 +193,7 @@ through one field end to end.
 | `Interface/Iwasawa.lean` | `IwasawaData p`, `SelmerData p` | Greenberg's no-nonzero-finite-submodule (LNM 1716, Prop. 4.14); the fused structure-theorem-plus-Rubin field `rubin_structure`; Mazur control in consequence form; the dualised descent sequence |
 | `Interface/Heights.lean` | `HeightData p` | the normalised cyclotomic $p$-adic regulator `Reg_γ` as opaque data, the nondegeneracy predicate, and Schneider/Perrin-Riou's leading-term theorem in the two consequence forms Proposition 4.2 uses, packaged as Stein–Wuthrich Thm. 6.1 |
 | `Interface/Katz.lean` | `KatzData p Lp` | the comparison `L_p = c_p · u(T) · L^{Katz}_𝔭` of Lemma 3.5, and the grading congruence behind Proposition 6.1 and Proposition 6.2 |
-| `Interface/EK.lean` | `EKPackage` | the divisor `D_E`, the six sections `𝓡_E`, and a valuation at each rational prime |
+| `Interface/EK.lean` | `EKPackage` | the divisor `D_E`, six of the class functions `r_{a,b}`, and a valuation at each rational prime |
 | `Interface/Global.lean` | `PrimeData`, `ClassicalInputs` | no new mathematics: the aggregation of the five layers and the tie-equations welding them together |
 
 ## 4. A worked example: checking one assumption end to end
@@ -271,7 +271,7 @@ confirms it. The status column takes five values:
 | (7) | `HeightData.spr_padicBSD`, `HeightData.spr_nondeg` | `Interface/Heights.lean` | **interface field + citation** |
 | (8) | `ClassicalInputs.S`, `ClassicalInputs.notAnomalous` | `Interface/Global.lean` | data field + **interface field** |
 | (10) | `EKPackage.ι`, `EKPackage.D`, `EKPackage.D_nonempty` | `Interface/EK.lean` | data fields |
-| (11) | `EKPackage.r`; `jetIndex`, `jetIndex_image`, `jetIndex_injective` | `Interface/EK.lean` | data field + **kernel-proved** |
+| Definition 5.1, (12) | `EKPackage.r`; `jetIndex`, `jetIndex_image`, `jetIndex_injective` | `Interface/EK.lean` | data field + **kernel-proved** |
 | Lemma 2.2 | (2) `anomalous_iff_five`, `noAnomalous`, `ap_ne_one_of_hasse`, `two_dvd_ap` and two more; (1) — | `Kernel/Anomalous.lean` | (2) **kernel-proved**; (1) **no counterpart** |
 | Lemma 3.1 | `c0_eq_zero`, `c1_eq_zero` | `Main/Lemma41.lean` | **kernel-proved** |
 | Definition 3.2 | `c2tilde`; `PrimeData.c2tilde` | `Defs.lean`; `Statements.lean` | formal def |
@@ -306,9 +306,20 @@ separately. Lemma 3.6 compares the Mazur–Swinnerton-Dyer and
 Mazur–Tate–Teitelbaum normalisations; `AnalyticData` starts from the MTT
 `L`-function, so the comparison never arises in Lean.
 
-Theorem B (Theorem 6.7), the exact criterion, is marked **no counterpart** because it
-is not formalised: Lemma 6.5 and Proposition 6.6 of the paper have no Lean
-rendering, and the formalisation of Theorem B would begin there.
+Theorem B (Theorem 6.7), the exact criterion, is **partly formalised**, which is why
+its row is marked no counterpart: no declaration states Theorem 6.7 itself. Its
+statement is a three-way equivalence and one of the two equivalences is formalised:
+(1) ⟺ (2) is Proposition 4.2, `prop_dictionary`. What has no Lean rendering is
+(1) ⟺ (3), the analytic half — Lemma 6.5 and Proposition 6.6 — and a formalisation
+of Theorem B would begin there.
+
+`EKPackage` is assumed but consumed by nothing. It renders the divisor `D_E` and six
+of the class functions `r_{a,b}` of Definition 5.1, which enter the paper through
+that analytic half; with (1) ⟺ (3) absent, no theorem in the project reads a section
+value. The two proved declarations about it, `jetIndex_image` and
+`jetIndex_injective`, say only that the six slots of `EKPackage.r` are six distinct
+pairs `(a, b)` — and the paper states no six-element index set, so that truncation is
+the formalisation's own.
 
 Two further points about where trust sits, neither a defect. The integral content
 behind Proposition 6.1 is assumed as `KatzData.grading_congr` and rests on

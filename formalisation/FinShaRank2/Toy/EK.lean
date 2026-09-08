@@ -4,8 +4,8 @@ import FinShaRank2.Interface.EK
 # Toy Eisenstein–Kronecker layer: `Toy.toyEK`
 
 The `EKPackage` field shared by both `ClassicalInputs` instances, `ToyTrivial` and
-`ToySha`: a one-point divisor over `ℚ`, all six sections of (11) constantly `1`, and
-the trivial valuation at every rational prime. The four instance fields (`fieldK`,
+`ToySha`: a one-point divisor over `ℚ`, all six sections constantly `1`, and the
+trivial valuation at every rational prime. The four instance fields (`fieldK`,
 `fieldL`, `algKL`, `ordΓ`) are synthesised, and the single divisor point is named
 `toyPt` at type `toyEK.ι`.
 -/

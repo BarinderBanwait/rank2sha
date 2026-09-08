@@ -23,7 +23,7 @@ Contents:
   a power series (paper Theorem A (Theorem 3.8), Step 2).
 * `c2tilde` — the normalised second jet Definition 3.2.
 * `corank` — the `ℤ_[p]`-corank abbreviation (`Module.finrank ℤ_[p] ·`) used to
-  phrase the Selmer-corank conclusions (conventions §2.1).
+  phrase the Selmer-corank conclusions on the Pontryagin-dual side.
 
 Paper statements quoted below: Definition 3.2, Proposition 3.3, Lemma 3.1,
 Theorem A.
@@ -116,15 +116,15 @@ theorem isPUnit_coe_iff {x : ℤ_[p]} : IsPUnit (x : ℚ_[p]) ↔ IsUnit x := by
 some coefficient of `f` is a `ℤ_[p]`-unit (equivalently, not every coefficient
 lies in the maximal ideal `(p)`). Paper: Theorem A (Theorem 3.8), Step 2.
 
-Kept **paired** with `lambdaAn` in downstream statements (conventions §2.4): the
-λ-invariant is meaningful only where `MuZero` holds. -/
+Kept **paired** with `lambdaAn` in downstream statements: the λ-invariant is
+meaningful only where `MuZero` holds. -/
 def MuZero (f : Λ p) : Prop := ∃ n, IsUnit (PowerSeries.coeff n f)
 
 /-- The analytic λ-invariant of `f`: the least index `n` whose coefficient is a
 `ℤ_[p]`-unit — i.e. the order of `f` modulo the maximal ideal, when `f ≠ 0` mod
 `(p)`.
 
-**Junk-value convention** (conventions §2.4): `sInf` of the empty set is `0`, so
+**Junk-value convention**: `sInf` of the empty set is `0`, so
 `lambdaAn f = 0` carries no information unless `MuZero f` holds. Statements must
 pair `lambdaAn f = 2` with `MuZero f`. The coefficient ring of `PowerSeries.coeff`
 is implicit in this mathlib release. -/
@@ -144,7 +144,7 @@ This file mentions no interface structure: `Interface/` supplies the arguments,
 and `isPUnit_c2tilde_iff` (Proposition 3.3) proves `IsPUnit (c2tilde …) ↔ IsUnit (coeff 2 L_p)`
 under the non-anomalous hypothesis.
 
-**Junk-value convention** (conventions §2.4): `c2tilde` is total. At an anomalous
+**Junk-value convention**: `c2tilde` is total. At an anomalous
 prime `1 − α_p⁻¹ = 0`, so `(1 − alphaInv)⁻¹ = 0` and the value degenerates; every
 theorem about `c2tilde` therefore carries the non-anomalous hypothesis
 `IsUnit (1 − alphaInv)` explicitly (for the testbed curve it is discharged via
@@ -154,7 +154,7 @@ noncomputable def c2tilde (c2 alphaInv : ℚ_[p]) (torsSqOverTam : ℚ) : ℚ_[p
 
 /-- The `ℤ_[p]`-corank of a module, i.e. `Module.finrank ℤ_[p] M`.
 
-On the dual side (conventions §2.1) the paper's statement
+Everything is phrased on the Pontryagin-dual side, so the paper's statement
 `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2` is phrased as `corank SelDual = 2`, since over
 the DVR `ℤ_[p]` the finrank of the finitely generated dual computes the corank of
 the original discrete module. -/

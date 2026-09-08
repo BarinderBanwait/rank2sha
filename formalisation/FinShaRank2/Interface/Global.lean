@@ -163,7 +163,7 @@ the paper is a field of it.
 
 SOURCE: the paper's standing hypotheses ((8) (`eq:Sexc`); `#tors²/∏cᵥ = 1` for the
         testbed; the Eisenstein–Kronecker data of the Bannai–Kobayashi jet).
-PAPER:  (8) (`eq:Sexc`), (10) (`eq:DEdef`), (11) (`eq:jetpackage`), Theorem A
+PAPER:  (8) (`eq:Sexc`), (10) (`eq:DEdef`), Definition 5.1 (`def:classsums`), Theorem A
 (Theorem 3.8, `prop:consequence`).
 STATUS: interface aggregate. -/
 structure ClassicalInputs where
@@ -177,7 +177,7 @@ structure ClassicalInputs where
   2. `S_an`: `p` is **anomalous**, `a_p ≡ 1 (mod p)` (Definition 2.1; for
      `K = ℚ(i)` this excludes no split prime — Lemma 2.2);
   3. `S_red`: the residual representation `ρ̄_{E,p}` is **reducible** (a rational
-     `p`-isogeny exists — finitely many `p`, none for `p ∈ {5, 13}`);
+     `p`-isogeny exists — finitely many `p`);
   4. `S_cmp`: `p` lies in the finite set of Lemma 3.5 (where the comparison
      constant `c_p` could fail to be a `p`-adic unit; for the testbed the period
      ratio is supported on `{2, 7}`, so this excludes no split `p`);
@@ -190,9 +190,10 @@ structure ClassicalInputs where
   STATUS: data. -/
   S : Finset ℕ
   /-- The **Eisenstein–Kronecker package** of the Bannai–Kobayashi jet: the divisor
-  `D_E` ((10)), the six-function package `𝓡_E` ((11)), and the valuations `v_𝔭`.
+  `D_E` ((10)), six class functions `r_{a,b}` (Definition 5.1), and the valuations
+  `v_𝔭`. No theorem of this project reads a section value; see `Interface/EK.lean`.
   SOURCE: `EKPackage` (`Interface/EK.lean`); per-field citations live there.
-  PAPER:  (10) (`eq:DEdef`), (11) (`eq:jetpackage`), `def:BKjet`.
+  PAPER:  (10) (`eq:DEdef`), Definition 5.1 (`def:classsums`), (12) (`eq:classsums`).
   STATUS: data. -/
   ek : EKPackage
   /-- The global rational factor `(#E(ℚ)_tors)² / ∏_v c_v` of Definition 3.2,

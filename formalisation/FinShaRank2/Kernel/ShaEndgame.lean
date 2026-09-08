@@ -13,8 +13,7 @@ Theorem A: from the dualized descent sequence
 
 together with the fact — established upstream (`Kernel/TsqUnit.lean` and
 `selmer_dual_structure`) — that the Selmer dual is
-`ℤ_[p]`-free of rank two, we read off the two headline conclusions
-(conventions §2.1):
+`ℤ_[p]`-free of rank two, we read off the two headline conclusions, on the Pontryagin-dual side:
 
 * `Subsingleton Sha` (i.e. `Ш(E/ℚ)[p^∞] = 0` on the dual side), and
 * `Module.finrank ℤ_[p] Sel = 2` (i.e. `corank_{ℤ_p} Sel_{p^∞}(E/ℚ) = 2`).

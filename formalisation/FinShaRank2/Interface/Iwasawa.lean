@@ -202,13 +202,13 @@ structure SelmerData (p : ℕ) [Fact p.Prime] where
 
   The target `Fin 2 → ℤ_[p]` is the dual of the Mordell–Weil part. Its rank `2`
   is the **certified Mordell–Weil rank** of the testbed curve, established by
-  2-descent together with saturation (`main.tex` §6); it is *not* the Selmer
+  2-descent together with saturation (§7.1); it is *not* the Selmer
   corank of the conclusion (which is `Module.finrank ℤ_[p] SelDual`, a theorem
   derived downstream, not assumed here).
 
   SOURCE: Pontryagin dual of the descent sequence; rank from 2-descent +
   saturation of `E(ℚ)`.
-  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 5; `main.tex` §6 (rank-2 testbed).
+  PAPER: Theorem A (Theorem 3.8, `prop:consequence`) Step 5; §7.1 (`ssec:testbed`) (rank-2 testbed).
   STATUS: classical (rank from certified data). -/
   π : SelDual →ₗ[ℤ_[p]] (Fin 2 → ℤ_[p])
   /-- `ι` is injective. SOURCE / PAPER / STATUS as for `ι`. -/

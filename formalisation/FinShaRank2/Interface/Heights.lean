@@ -132,8 +132,8 @@ structure HeightData (p : ℕ) [Fact p.Prime] where
   *Algorithms for the arithmetic of elliptic curves using Iwasawa theory*, Math.
   Comp. 82 (2013), no. 283, 1757–1792]. Stein–Wuthrich exclude CM curves from
   their §3 onward; the paper cites Thm 6.1 for the normalisation only, the
-  underlying Schneider / Perrin-Riou theorems applying to CM (main.tex,
-  Proposition 4.2 proof).
+  underlying Schneider / Perrin-Riou theorems applying to CM (Proposition 4.2,
+  proof).
   PAPER: (7) (`eq:padicbsd`), Proposition 4.2 (`prop:dictionary`) proof.
   STATUS: consequence-form. -/
   spr_padicBSD : ‖c2norm‖ = ‖Reg_γ‖ * ‖shaOrd‖
