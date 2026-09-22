@@ -1,9 +1,10 @@
 # `code` — the computations of Part 2
 
 Every number quoted in Part 2 of *Second derivatives of $p$-adic $L$-functions
-and the Shafarevich–Tate group of rank-two CM elliptic curves* is produced by a
-script in this directory and recorded in a file under `data/`. This README maps
-each number to both.
+and the Shafarevich–Tate group of rank-two CM elliptic curves*
+([arXiv:2609.08431](https://arxiv.org/abs/2609.08431)) is produced by a script
+in this directory and recorded in a file under `data/`. This README maps each
+number to both.
 
 Part 2 treats the five rank-two curves $y^2 = x^3 - Dx$ of Coates, Liang and
 Sujatha, $D = 56, 17, -33, -34, -39$. Every one has CM by $\mathbb{Z}[i]$, rank

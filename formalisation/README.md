@@ -1,8 +1,9 @@
 # FinShaRank2 — the Lean formalisation
 
 A Lean 4 formalisation of the main statements of *Second derivatives of $p$-adic
-$L$-functions and the Shafarevich–Tate group of rank-two CM elliptic curves*,
-together with a blueprint linking the informal argument to the Lean declarations.
+$L$-functions and the Shafarevich–Tate group of rank-two CM elliptic curves*
+([arXiv:2609.08431](https://arxiv.org/abs/2609.08431)), together with a
+blueprint linking the informal argument to the Lean declarations.
 The blueprint is published at <https://barinderbanwait.github.io/rank2sha/blueprint/>;
 see §8.
 

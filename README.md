@@ -1,6 +1,7 @@
 # Second derivatives of $p$-adic $L$-functions and the Shafarevich–Tate group of rank-two CM elliptic curves
 
-Supporting material for the paper of that name, by Barinder S. Banwait.
+Supporting material for the paper of that name, by Barinder S. Banwait,
+[arXiv:2609.08431](https://arxiv.org/abs/2609.08431).
 
 There are two directories.
 
@@ -25,7 +26,3 @@ literature it cites. The derivation of the main theorem from the assumed
 classical inputs has also been checked with Lean's `comparator`; §2 of that
 README records the run. The blueprint is published at
 <https://barinderbanwait.github.io/rank2sha/blueprint/>.
-
----
-
-A link to the paper will be added here on release.
